@@ -1,34 +1,53 @@
 ﻿using Azure.Data.Tables;
+using Azure.Storage.Queues;
 using BakerySim.Common.Orleans;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Orleans.Configuration;
 
 
 await Host.CreateDefaultBuilder(args)
     .UseOrleans(static siloBuilder =>
     {
-        // Configure Orleans server to use Azure Storage for clustering.
-        siloBuilder.UseAzureStorageClustering(configureOptions: options =>
+        // CONFIGURE CLUSTERING: use Azure Storage for clustering.
+        siloBuilder.UseAzureStorageClustering(options =>
         {
             options.TableServiceClient = new TableServiceClient(OrleansConstants.STORAGE_CONNECTION_STRING);
         });
 
-        // Configure Orleans Server Cluster Options.
+        // CONFIGURE CLUSTER
         siloBuilder.Configure<ClusterOptions>(options =>
         {
             options.ClusterId = OrleansConstants.CLUSTER_ID;
             options.ServiceId = OrleansConstants.SERVICE_ID;
         });
 
-        // Configure Grain State persistence using Azure Table Storage.
-        siloBuilder.AddAzureTableGrainStorage(OrleansConstants.AZURE_TABLE_GRAIN_STORAGE, configureOptions: options =>
+        // CONFIGURE GRAIN STORAGE: add grain state persistence using Azure Table Storage.
+        siloBuilder.AddAzureTableGrainStorage(OrleansConstants.AZURE_TABLE_GRAIN_STORAGE, options =>
         {
             options.TableServiceClient = new TableServiceClient(OrleansConstants.STORAGE_CONNECTION_STRING);
             options.UseStringFormat = false;
         });
 
-        // Configure the logging level for the Orleans server.
+        // CONFIGURE STREAMING API: add streaming using Azure Queue Storage.
+        siloBuilder.AddAzureQueueStreams(OrleansConstants.AZURE_QUEUE_STREAM_PROVIDER, optionsBuilder =>
+        {
+            optionsBuilder.Configure(options =>
+            {
+                options.QueueServiceClient = new QueueServiceClient(OrleansConstants.STORAGE_CONNECTION_STRING);
+            });
+        });
+        
+        // CONFIGURE STREAMING API: add PubSub store using Azure Table Storage.
+        siloBuilder.AddAzureTableGrainStorage(OrleansConstants.AZURE_TABLE_PUBSUB_STORAGE, options =>
+        {
+            options.TableServiceClient = new TableServiceClient(OrleansConstants.STORAGE_CONNECTION_STRING);
+            options.UseStringFormat = false;
+        });
+
+        // CONFIGURE LOGGING
         siloBuilder.ConfigureLogging(logging =>
         {
             logging.AddConsole();
