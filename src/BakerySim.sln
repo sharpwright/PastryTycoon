@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BakerySim.Grains", "BakeryS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BakerySim.Silo", "BakerySim.Silo\BakerySim.Silo.csproj", "{0E0A628A-6A8E-4ADD-B706-EAE697A819FD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BakerySim.Common", "BakerySim.Common\BakerySim.Common.csproj", "{5751A819-2FA1-4282-9298-78FE1B46E792}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{0E0A628A-6A8E-4ADD-B706-EAE697A819FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E0A628A-6A8E-4ADD-B706-EAE697A819FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E0A628A-6A8E-4ADD-B706-EAE697A819FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5751A819-2FA1-4282-9298-78FE1B46E792}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5751A819-2FA1-4282-9298-78FE1B46E792}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5751A819-2FA1-4282-9298-78FE1B46E792}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5751A819-2FA1-4282-9298-78FE1B46E792}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,21 +1,25 @@
 using System;
+using BakerySim.Common.Orleans;
+using BakerySim.Grains.Commands;
+using BakerySim.Grains.States;
 
 namespace BakerySim.Grains.Actors;
 
 public class GameGrain : Grain, IGameGrain
 {
-    public Task<bool> IsGameRunning()
+    private readonly IPersistentState<GameState> state;
+
+    public GameGrain(
+        [PersistentState("game", OrleansConstants.AZURE_TABLE_GRAIN_STORAGE)]IPersistentState<GameState> state)
     {
-        throw new NotImplementedException();
+        this.state = state;
     }
 
-    public Task StartGame()
+    public async Task StartGame(StartGameCommand command)
     {
-        throw new NotImplementedException();
-    }
-
-    public Task StopGame()
-    {
-        throw new NotImplementedException();
+        state.State.GameId = command.GameId;
+        state.State.GameName = command.GameName;
+        state.State.StartTime = command.StartTime;
+        await state.WriteStateAsync();
     }
 }

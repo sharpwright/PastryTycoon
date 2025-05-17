@@ -10,11 +10,13 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.5" />
     <PackageReference Include="Microsoft.Orleans.Clustering.AzureStorage" Version="9.1.2" />
+    <PackageReference Include="Microsoft.Orleans.Persistence.AzureStorage" Version="9.1.2" />
     <PackageReference Include="Microsoft.Orleans.Runtime" Version="9.1.2" />
     <PackageReference Include="Microsoft.Orleans.Server" Version="9.1.2" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BakerySim.Common\BakerySim.Common.csproj" />
     <ProjectReference Include="..\BakerySim.Grains\BakerySim.Grains.csproj" />
   </ItemGroup>
 

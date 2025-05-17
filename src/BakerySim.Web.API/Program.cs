@@ -1,4 +1,5 @@
 using Azure.Data.Tables;
+using BakerySim.Common.Orleans;
 using Orleans.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,15 +11,14 @@ builder.Host.UseOrleansClient((context, client) =>
     // Configure Orleans client to be able to find Orleans clusters.
     client.UseAzureStorageClustering(configureOptions: options =>
     {
-        options.TableServiceClient = new TableServiceClient("UseDevelopmentStorage=true");
-        options.TableName = "Grains";
+        options.TableServiceClient = new TableServiceClient(OrleansConstants.STORAGE_CONNECTION_STRING);
     });
 
     // Configure Cluster Options, needs to match the silo options.
     client.Configure<ClusterOptions>(options =>
     {
-        options.ClusterId = "BakerySimCluster";
-        options.ServiceId = "BakerySim";
+        options.ClusterId = OrleansConstants.CLUSTER_ID;
+        options.ServiceId = OrleansConstants.SERVICE_ID;  
     });
 });
 
