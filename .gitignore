@@ -1,0 +1,40 @@
+# Azurite local emulator files
+__blobstorage__
+__queuestorage__
+__azurite_db_blob__.json
+__azurite_db_blob_extent__.json
+__azurite_db_queue__.json
+__azurite_db_queue_extent__.json
+__azurite_db_table__.json
+
+# .NET build artifacts
+bin/
+obj/
+out/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# VS Code settings
+.vscode/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Azure Functions local settings
+local.settings.json
+
+# DotCover
+.idea/
+*.dotCover
+
+# Rider
+*.sln.iml
+
+# Others
+*.log
+*.vspscc
+*.vssscc
