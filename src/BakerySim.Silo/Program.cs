@@ -1,7 +1,9 @@
 ﻿using Azure.Data.Tables;
 using Azure.Storage.Queues;
 using BakerySim.Common.Orleans;
+using BakerySim.Grains.Observers;
 using Microsoft.Extensions.Azure;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -9,6 +11,11 @@ using Orleans.Configuration;
 
 
 await Host.CreateDefaultBuilder(args)
+    .ConfigureServices(services =>
+    {
+        // IAsyncObservers are not managed by Orleans and need to be added to the DI container.
+        services.AddSingleton<IGameStartedEventObserver, GameStartedEventObserver>();
+    })
     .UseOrleans(static siloBuilder =>
     {
         // CONFIGURE CLUSTERING: use Azure Storage for clustering.
@@ -39,7 +46,7 @@ await Host.CreateDefaultBuilder(args)
                 options.QueueServiceClient = new QueueServiceClient(OrleansConstants.STORAGE_CONNECTION_STRING);
             });
         });
-        
+
         // CONFIGURE STREAMING API: add PubSub store using Azure Table Storage.
         siloBuilder.AddAzureTableGrainStorage(OrleansConstants.AZURE_TABLE_PUBSUB_STORAGE, options =>
         {
@@ -52,7 +59,7 @@ await Host.CreateDefaultBuilder(args)
         {
             logging.AddConsole();
             logging.SetMinimumLevel(LogLevel.Information);
-        });
+        });          
 
         // Configure how often Grains need to be cleaned up from the cluster.
         // siloBuilder.Configure<GrainCollectionOptions>(options =>
