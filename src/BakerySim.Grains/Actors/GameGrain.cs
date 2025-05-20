@@ -31,6 +31,8 @@ public class GameGrain : Grain, IGameGrain
         // For example, using this.GetPrimaryKey().ToString() will throw an ArgumentException on the streamId on runtime.
         var streamProvider = this.GetStreamProvider(OrleansConstants.AZURE_QUEUE_STREAM_PROVIDER);
         var streamId = StreamId.Create(OrleansConstants.STREAM_GAME_NAMESPACE, this.GetPrimaryKey());
+        Console.WriteLine($"Grain: streamId.ToString()={streamId}");
+
         gameStartedStream = streamProvider.GetStream<GameStartedEvent>(streamId);
         await base.OnActivateAsync(cancellationToken);
 
