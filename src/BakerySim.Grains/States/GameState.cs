@@ -7,5 +7,6 @@ public class GameState
     [Id(1)] public string GameName { get; set; } = string.Empty;
     [Id(2)] public DateTime StartTime { get; set; }
     [Id(3)] public DateTime EndTime { get; set; }
+    [Id(4)] public DateTime LastUpdatedAtTime { get; set; }
 }
  

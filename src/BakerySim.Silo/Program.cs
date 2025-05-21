@@ -1,7 +1,6 @@
 ﻿using Azure.Data.Tables;
 using Azure.Storage.Queues;
 using BakerySim.Common.Orleans;
-using BakerySim.Grains.Observers;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -13,8 +12,7 @@ using Orleans.Configuration;
 await Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
-        // IAsyncObservers are not managed by Orleans and need to be added to the DI container.
-        services.AddSingleton<IGameStartedEventObserver, GameStartedEventObserver>();
+        
     })
     .UseOrleans(static siloBuilder =>
     {

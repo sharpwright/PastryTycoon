@@ -11,7 +11,7 @@ namespace BakerySim.Grains.Actors;
 public class GameGrain : Grain, IGameGrain
 {
     private readonly IPersistentState<GameState> state;
-    private IAsyncStream<GameStartedEvent>? gameStartedStream;
+    private IAsyncStream<GameEvent>? gameEventStream;
 
     public GameGrain(
         [PersistentState("game", OrleansConstants.AZURE_TABLE_GRAIN_STORAGE)] IPersistentState<GameState> state)
@@ -33,14 +33,14 @@ public class GameGrain : Grain, IGameGrain
         var streamId = StreamId.Create(OrleansConstants.STREAM_GAME_NAMESPACE, this.GetPrimaryKey());
         Console.WriteLine($"Grain: streamId.ToString()={streamId}");
 
-        gameStartedStream = streamProvider.GetStream<GameStartedEvent>(streamId);
+        gameEventStream = streamProvider.GetStream<GameEvent>(streamId);
         await base.OnActivateAsync(cancellationToken);
 
         // NOTE: This is an example of explicitly subscribing to a stream!
         // The stream is created but not yet subscribed to. The subscription will be handled by the ExplicitProjectionGrain grain.
         // We need to ensure activation of the ExplicitProjectionGrain to handle events.
-        var projectionGrain = GrainFactory.GetGrain<IExplicitGameProjectionGrain>(this.GetPrimaryKey());
-        await projectionGrain.EnsureActivated();
+        // var projectionGrain = GrainFactory.GetGrain<IExplicitGameProjectionGrain>(this.GetPrimaryKey());
+        // await projectionGrain.EnsureActivated();
     }
 
     /// <summary>
@@ -50,17 +50,31 @@ public class GameGrain : Grain, IGameGrain
     /// <returns></returns>
     public async Task StartGame(StartGameCommand command)
     {
+        // TODO: Add validation and business rules before updating state and pushing event.
         state.State.GameId = command.GameId;
         state.State.GameName = command.GameName;
         state.State.StartTime = command.StartTime;
         await state.WriteStateAsync();
 
-        if (gameStartedStream != null)
+        if (gameEventStream != null)
         {
             var evt = new GameStartedEvent(command.GameId, command.GameName, command.StartTime);
-            await gameStartedStream.OnNextAsync(evt);
+            await gameEventStream.OnNextAsync(evt);
         }
+    }
+    
+    public async Task UpdateGame(UpdateGameCommand command)
+    {
+        // TODO: Add validation and business rules before updating state and pushing event.
+        state.State.GameId = command.GameId;
+        state.State.GameName = command.GameName;
+        state.State.LastUpdatedAtTime = command.UpdateTime;
+        await state.WriteStateAsync();
 
-        
+        if (gameEventStream != null)
+        {
+            var evt = new GameUpdatedEvent(command.GameId, command.GameName, command.UpdateTime);
+            await gameEventStream.OnNextAsync(evt);
+        }
     }
 }
