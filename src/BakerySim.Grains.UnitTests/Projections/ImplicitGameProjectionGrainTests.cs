@@ -1,0 +1,115 @@
+using System;
+using System.Threading.Tasks;
+using BakerySim.Grains.Events;
+using BakerySim.Grains.Projections;
+using Microsoft.Extensions.Logging;
+using Moq;
+using Orleans.Streams;
+using Xunit;
+using Orleans.TestKit;
+using BakerySim.Common.Orleans;
+using System.Reflection;
+using Orleans.Streams.Core; // Add this for TestKit
+
+namespace BakerySim.Grains.Tests.Projections
+{
+    public class ImplicitGameProjectionGrainTests : TestKitBase
+    {
+        private readonly Mock<ILogger<IImplicitGameProjectionGrain>> loggerMock;
+        private readonly ImplicitGameProjectionGrain grain;
+
+        public ImplicitGameProjectionGrainTests()
+        {
+            loggerMock = new Mock<ILogger<IImplicitGameProjectionGrain>>();
+            grain = new ImplicitGameProjectionGrain(loggerMock.Object);
+        }
+
+        [Fact]
+        public void ImplicitGameProjectionGrain_Has_Required_Attribute()
+        {
+            // Arrange
+            var grainType = typeof(ImplicitGameProjectionGrain);
+
+            //  Act
+            var attribute = grainType.GetCustomAttribute<ImplicitStreamSubscriptionAttribute>();
+
+            // Assert
+            Assert.NotNull(attribute);
+            Assert.True(attribute.Predicate.IsMatch(OrleansConstants.STREAM_GAME_NAMESPACE));
+        }
+
+
+        [Fact]
+        public void ImplicitGameProjectionGrain_Implements_Required_Interfaces()
+        {
+            // Arrange
+            var grainType = typeof(ImplicitGameProjectionGrain);
+
+            // Assert
+            Assert.True(typeof(IAsyncObserver<GameEvent>).IsAssignableFrom(grainType),
+                "Should implement IAsyncObserver<GameEvent>");
+            Assert.True(typeof(IStreamSubscriptionObserver).IsAssignableFrom(grainType),
+                "Should implement IStreamSubscriptionObserver");
+        }
+
+        [Fact]
+        public async Task Handle_GameStartedEvent_LogsInformation()
+        {
+            // Arrange
+            var evt = new GameStartedEvent(Guid.NewGuid(), "TestGame", DateTime.UtcNow);
+
+            // Act
+            await grain.Handle(evt);
+
+            // Assert
+            loggerMock.Verify(
+                x => x.Log(
+                    LogLevel.Information,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Game started at")),
+                    null,
+                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                Times.Once);
+        }
+
+        [Fact]
+        public async Task Handle_GameUpdatedEvent_LogsInformation()
+        {
+            // Arrange
+            var evt = new GameUpdatedEvent(Guid.NewGuid(), "TestGame", DateTime.UtcNow);
+
+            // Act
+            await grain.Handle(evt);
+
+            // Assert
+            loggerMock.Verify(
+                x => x.Log(
+                    LogLevel.Information,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Game updated at")),
+                    null,
+                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                Times.Once);
+        }
+
+        [Fact]
+        public async Task OnErrorAsync_LogsError()
+        {
+            // Arrange
+            var ex = new Exception("Test error");
+
+            // Act
+            await grain.OnErrorAsync(ex);
+
+            // Assert
+            loggerMock.Verify(
+                x => x.Log(
+                    LogLevel.Error,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Error: Test error")),
+                    ex,
+                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                Times.Once);
+        }
+    }
+}
