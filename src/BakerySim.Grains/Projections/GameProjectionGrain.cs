@@ -13,15 +13,15 @@ namespace BakerySim.Grains.Projections;
 /// This grain will be automatically activated when events are published to the stream.
 /// NOTE: calling this.GetPrimaryKey(); will return the producers grain's identity.
 /// </summary>
-[ImplicitStreamSubscription(OrleansConstants.STREAM_GAME_NAMESPACE)]
-public class ImplicitGameProjectionGrain : Grain,
-    IImplicitGameProjectionGrain,
+[ImplicitStreamSubscription(OrleansConstants.STREAM_NAMESPACE_GAME_EVENTS)]
+public class GameProjectionGrain : Grain,
+    IGameProjectionGrain,
     IAsyncObserver<GameEvent>,
     IStreamSubscriptionObserver
 {
-    private readonly ILogger<IImplicitGameProjectionGrain> logger;
+    private readonly ILogger<IGameProjectionGrain> logger;
 
-    public ImplicitGameProjectionGrain(ILogger<IImplicitGameProjectionGrain> logger)
+    public GameProjectionGrain(ILogger<IGameProjectionGrain> logger)
     {
         this.logger = logger;
     }

@@ -35,7 +35,7 @@ public class ExplicitGameProjectionGrain : Grain, IExplicitGameProjectionGrain, 
     {
         // Explicitly subscribe to the game events for the game that matches this grain's identity.
         var streamProvider = this.GetStreamProvider(OrleansConstants.AZURE_QUEUE_STREAM_PROVIDER);
-        var streamId = StreamId.Create(OrleansConstants.STREAM_GAME_NAMESPACE, this.GetPrimaryKey());
+        var streamId = StreamId.Create(OrleansConstants.STREAM_NAMESPACE_GAME_EVENTS, this.GetPrimaryKey());
         var stream = streamProvider.GetStream<GameStartedEvent>(streamId);
         subscription = await stream.SubscribeAsync(this);
         await base.OnActivateAsync(cancellationToken);

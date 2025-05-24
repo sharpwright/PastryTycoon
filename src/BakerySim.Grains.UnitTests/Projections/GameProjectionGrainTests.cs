@@ -13,29 +13,29 @@ using Orleans.Streams.Core; // Add this for TestKit
 
 namespace BakerySim.Grains.Tests.Projections
 {
-    public class ImplicitGameProjectionGrainTests : TestKitBase
+    public class GameProjectionGrainTests : TestKitBase
     {
-        private readonly Mock<ILogger<IImplicitGameProjectionGrain>> loggerMock;
-        private readonly ImplicitGameProjectionGrain grain;
+        private readonly Mock<ILogger<IGameProjectionGrain>> loggerMock;
+        private readonly GameProjectionGrain grain;
 
-        public ImplicitGameProjectionGrainTests()
+        public GameProjectionGrainTests()
         {
-            loggerMock = new Mock<ILogger<IImplicitGameProjectionGrain>>();
-            grain = new ImplicitGameProjectionGrain(loggerMock.Object);
+            loggerMock = new Mock<ILogger<IGameProjectionGrain>>();
+            grain = new GameProjectionGrain(loggerMock.Object);
         }
 
         [Fact]
         public void ImplicitGameProjectionGrain_Has_Required_Attribute()
         {
             // Arrange
-            var grainType = typeof(ImplicitGameProjectionGrain);
+            var grainType = typeof(GameProjectionGrain);
 
             //  Act
             var attribute = grainType.GetCustomAttribute<ImplicitStreamSubscriptionAttribute>();
 
             // Assert
             Assert.NotNull(attribute);
-            Assert.True(attribute.Predicate.IsMatch(OrleansConstants.STREAM_GAME_NAMESPACE));
+            Assert.True(attribute.Predicate.IsMatch(OrleansConstants.STREAM_NAMESPACE_GAME_EVENTS));
         }
 
 
@@ -43,7 +43,7 @@ namespace BakerySim.Grains.Tests.Projections
         public void ImplicitGameProjectionGrain_Implements_Required_Interfaces()
         {
             // Arrange
-            var grainType = typeof(ImplicitGameProjectionGrain);
+            var grainType = typeof(GameProjectionGrain);
 
             // Assert
             Assert.True(typeof(IAsyncObserver<GameEvent>).IsAssignableFrom(grainType),

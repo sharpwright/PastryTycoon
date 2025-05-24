@@ -41,5 +41,21 @@ namespace BakerySim.Web.API.GameManager
             return Ok();
         }
 
+        [HttpPost("/update")]
+        public async Task<IActionResult> UpdateGame([FromBody] UpdateGameRequest request)
+        {
+            if (request == null || request.GameId == Guid.Empty)
+            {
+                return BadRequest("Invalid request");
+            }
+
+            // Update the game with the provided game ID
+            var gameGrain = ClusterClient.GetGrain<IGameGrain>(request.GameId);
+            var gameCmd = new UpdateGameCommand(request.GameId, request.GameName, DateTime.UtcNow);
+            await gameGrain.UpdateGame(gameCmd);
+
+            return Ok();
+        }
+
     }
 }
