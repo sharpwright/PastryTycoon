@@ -25,25 +25,57 @@ public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
 
     public async Task StartGame(StartGameCommand command)
     {
-        RaiseEvent(new GameStartedEvent(command.GameId, command.GameName, command.StartTime));
+        if (!command.GameId.Equals(this.GetPrimaryKey()))
+        {
+            throw new ArgumentException("Command GameId does not match grain primary key.");
+        }
+
+        var evt = new GameStartedEvent(command.GameId, command.GameName, command.StartTimeUtc);
+        RaiseEvent(evt);
         await ConfirmEvents();
 
         if (gameEventStream != null)
-        {
-            var evt = new GameStartedEvent(command.GameId, command.GameName, command.StartTime);
+        {            
             await gameEventStream.OnNextAsync(evt);
         }
     }
 
     public async Task UpdateGame(UpdateGameCommand command)
     {
-        RaiseEvent(new GameUpdatedEvent(command.GameId, command.GameName, command.UpdateTime));
+        if (!command.GameId.Equals(this.GetPrimaryKey()))
+        {
+            throw new ArgumentException("Command GameId does not match grain primary key.");
+        }
+
+        var evt = new GameUpdatedEvent(command.GameId, command.GameName, command.UpdateTimeUtc);
+        RaiseEvent(evt);
         await ConfirmEvents();
 
         if (gameEventStream != null)
-        {
-            var evt = new GameUpdatedEvent(command.GameId, command.GameName, command.UpdateTime);
+        {            
             await gameEventStream.OnNextAsync(evt);
         }
+    }
+
+    public async Task AddAvailableRecipeAsync(AddRecipeToGameCommand command)
+    {
+        if (!command.GameId.Equals(this.GetPrimaryKey()))
+        {
+            throw new ArgumentException("Command GameId does not match grain primary key.");
+        }
+
+        if (command.RecipeId == Guid.Empty)
+        {
+            throw new ArgumentException("RecipeId cannot be empty.");
+        }
+
+        var evt = new RecipeAddedEvent(command.GameId, command.RecipeId);
+        RaiseEvent(evt);
+        await ConfirmEvents();
+
+        if (gameEventStream != null)
+        {        
+            await gameEventStream.OnNextAsync(evt);
+        }    
     }
 }

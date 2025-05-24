@@ -6,10 +6,11 @@ namespace BakerySim.Grains.States;
 public class GameState
 {
     [Id(0)] public Guid GameId { get; set; }
-    [Id(1)] public string GameName { get; set; } = string.Empty;
-    [Id(2)] public DateTime StartTime { get; set; }
-    [Id(3)] public DateTime EndTime { get; set; }
-    [Id(4)] public DateTime LastUpdatedAtTime { get; set; }
+    [Id(1)] public Guid PlayerId { get; set; }
+    [Id(2)] public List<Guid> RecipeIds { get; set; } = new List<Guid>();
+    [Id(3)] public string GameName { get; set; } = string.Empty;
+    [Id(4)] public DateTime StartTime { get; set; }
+    [Id(5)] public DateTime LastUpdatedAtTime { get; set; }
 
     // Event sourcing: apply GameStartedEvent
     public void Apply(GameStartedEvent evt)
