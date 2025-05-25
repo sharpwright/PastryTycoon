@@ -1,12 +1,12 @@
 using System;
 using PastryTycoon.Common.Constants;
 using PastryTycoon.Common.Commands;
-using PastryTycoon.Common.Events;
-using PastryTycoon.Common.States;
 using Orleans.EventSourcing;
 using Orleans.Providers;
 using Orleans.Streams;
 using PastryTycoon.Common.Actors;
+using PastryTycoon.Grains.Events;
+using PastryTycoon.Grains.States;
 
 namespace PastryTycoon.Grains.Actors;
 
@@ -23,7 +23,7 @@ private IAsyncStream<PlayerEvent>? playerEventStream;
         await base.OnActivateAsync(cancellationToken);
     }
 
-    public async Task DiscoverRecipe(DiscoverRecipeCommand command)
+    public async Task DiscoverRecipeAsync(DiscoverRecipeCommand command)
     {
         if (command == null)
         {

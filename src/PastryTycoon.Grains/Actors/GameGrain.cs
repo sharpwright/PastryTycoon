@@ -1,12 +1,12 @@
 using System;
 using PastryTycoon.Common.Constants;
 using PastryTycoon.Common.Commands;
-using PastryTycoon.Common.Events;
-using PastryTycoon.Common.States;
-using Orleans.EventSourcing;
 using Orleans.Providers;
 using Orleans.Streams;
 using PastryTycoon.Common.Actors;
+using PastryTycoon.Grains.States;
+using PastryTycoon.Grains.Events;
+using Orleans.EventSourcing;
 
 namespace PastryTycoon.Grains.Actors;
 
@@ -23,7 +23,7 @@ public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
         await base.OnActivateAsync(cancellationToken);
     }
 
-    public async Task InitializeGameState(InitializeGameStateCommand command)
+    public async Task InitializeGameStateAsync(InitializeGameStateCommand command)
     {
         if (!command.GameId.Equals(this.GetPrimaryKey()))
         {
@@ -40,7 +40,7 @@ public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
         }
     }
 
-    public async Task UpdateGame(UpdateGameCommand command)
+    public async Task UpdateGameAsync(UpdateGameCommand command)
     {
         if (!command.GameId.Equals(this.GetPrimaryKey()))
         {
@@ -55,27 +55,5 @@ public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
         {            
             await gameEventStream.OnNextAsync(evt);
         }
-    }
-
-    public async Task AddAvailableRecipeAsync(AddRecipeToGameCommand command)
-    {
-        if (!command.GameId.Equals(this.GetPrimaryKey()))
-        {
-            throw new ArgumentException("Command GameId does not match grain primary key.");
-        }
-
-        if (command.RecipeId == Guid.Empty)
-        {
-            throw new ArgumentException("RecipeId cannot be empty.");
-        }
-
-        var evt = new RecipeAddedEvent(command.GameId, command.RecipeId);
-        RaiseEvent(evt);
-        await ConfirmEvents();
-
-        if (gameEventStream != null)
-        {        
-            await gameEventStream.OnNextAsync(evt);
-        }    
     }
 }

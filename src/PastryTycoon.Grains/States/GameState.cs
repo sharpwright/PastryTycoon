@@ -1,7 +1,7 @@
 using System.Collections.Immutable;
-using PastryTycoon.Common.Events;
+using PastryTycoon.Grains.Events;
 
-namespace PastryTycoon.Common.States;
+namespace PastryTycoon.Grains.States;
 
 [GenerateSerializer]
 public class GameState
@@ -10,8 +10,8 @@ public class GameState
     [Id(1)] public Guid PlayerId { get; set; }
     [Id(2)] public IImmutableList<Guid>? DiscoverableRecipeIds { get; set; }
     [Id(3)] public string GameName { get; set; } = string.Empty;
-    [Id(4)] public DateTime StartTime { get; set; }
-    [Id(5)] public DateTime LastUpdatedAtTime { get; set; }
+    [Id(4)] public DateTime StartTimeUtc { get; set; }
+    [Id(5)] public DateTime LastUpdatedAtTimeUtc { get; set; }
 
     // Event sourcing: apply GameStartedEvent
     public void Apply(GameStateInitializedEvent evt)
@@ -20,15 +20,15 @@ public class GameState
         PlayerId = evt.PlayerId;
         DiscoverableRecipeIds = evt.RecipeIds.ToImmutableList();
         GameName = evt.GameName;
-        StartTime = evt.StartTime;
-        LastUpdatedAtTime = evt.StartTime;
+        StartTimeUtc = evt.StartTimeUtc;
+        LastUpdatedAtTimeUtc = evt.StartTimeUtc;
     }
 
     // Event sourcing: apply GameUpdatedEvent
     public void Apply(GameUpdatedEvent evt)
     {
         GameName = evt.GameName;
-        LastUpdatedAtTime = evt.UpdateTime;
+        LastUpdatedAtTimeUtc = evt.UpdateTimeUtc;
     }
 }
  

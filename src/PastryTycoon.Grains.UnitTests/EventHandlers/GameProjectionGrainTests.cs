@@ -1,16 +1,15 @@
 using System;
 using System.Threading.Tasks;
-using PastryTycoon.Common.Events;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Orleans.Streams;
-using Xunit;
 using Orleans.TestKit;
 using PastryTycoon.Common.Constants;
 using System.Reflection;
 using Orleans.Streams.Core;
 using PastryTycoon.Common.EventHandlers;
 using PastryTycoon.Grains.EventHandlers;
+using PastryTycoon.Grains.Events;
 
 namespace PastryTycoon.Grains.UnitTests.EventHandlers
 {

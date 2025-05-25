@@ -1,6 +1,4 @@
 using System;
-using PastryTycoon.Common.Constants;
-using PastryTycoon.Common.Events;
 using Orleans.Streams;
 
 namespace PastryTycoon.Grains.UnitTests.TestClusterHelpers;

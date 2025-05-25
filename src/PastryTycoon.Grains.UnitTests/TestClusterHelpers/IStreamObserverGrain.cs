@@ -1,5 +1,4 @@
 using System;
-using PastryTycoon.Common.Events;
 
 namespace PastryTycoon.Grains.UnitTests.TestClusterHelpers;
 

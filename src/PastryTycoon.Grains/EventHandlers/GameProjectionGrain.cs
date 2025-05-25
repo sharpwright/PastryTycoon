@@ -1,10 +1,10 @@
 using System;
 using PastryTycoon.Common.Constants;
 using PastryTycoon.Common.EventHandlers;
-using PastryTycoon.Common.Events;
 using Microsoft.Extensions.Logging;
 using Orleans.Streams;
 using Orleans.Streams.Core;
+using PastryTycoon.Grains.Events;
 
 namespace PastryTycoon.Grains.EventHandlers;
 
@@ -63,14 +63,14 @@ public class GameProjectionGrain : Grain,
     public Task Handle(GameStateInitializedEvent item, StreamSequenceToken? token = null)
     {
         // TODO: Handle the GameStartedEvent here.
-        logger.LogInformation($"Game started at {item.StartTime}");
+        logger.LogInformation($"Game started at {item.StartTimeUtc}");
         return Task.CompletedTask;
     }
 
     public Task Handle(GameUpdatedEvent item, StreamSequenceToken? token = null)
     {
         // TODO: Handle the GameUpdatedEvent here
-        logger.LogInformation($"Game updated at {item.UpdateTime}");
+        logger.LogInformation($"Game updated at {item.UpdateTimeUtc}");
         return Task.CompletedTask;
     }
 

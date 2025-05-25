@@ -1,7 +1,7 @@
 using System;
-using PastryTycoon.Common.Events;
+using PastryTycoon.Grains.Events;
 
-namespace PastryTycoon.Common.States;
+namespace PastryTycoon.Grains.States;
 
 public class PlayerState
 {

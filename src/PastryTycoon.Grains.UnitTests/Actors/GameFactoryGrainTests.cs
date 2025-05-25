@@ -47,18 +47,21 @@ public class GameFactoryGrainTests : TestKitBase
             .Setup(r => r.GetAllRecipesAsync())
             .ReturnsAsync(recipes);
 
+        // Add all mock objects to the Silo
         Silo.AddService(guidProviderMock.Object);
         Silo.AddService(recipeRepositoryMock.Object);
+
+        // Add probe to verify interactions with the game grain
         var gameGrainMock = Silo.AddProbe<IGameGrain>(gameId);
-        var grain = await Silo.CreateGrainAsync<GameFactoryGrain>(Guid.Empty);
 
         // Act
+        var grain = await Silo.CreateGrainAsync<GameFactoryGrain>(Guid.Empty);
         var actualGameId = await grain.CreateNewGameAsync(playerId, gameName);
 
         // Assert
         Assert.Equal(gameId, actualGameId);
         gameGrainMock.Verify(
-            g => g.InitializeGameState(It.Is<InitializeGameStateCommand>(cmd =>
+            g => g.InitializeGameStateAsync(It.Is<InitializeGameStateCommand>(cmd =>
                 cmd.GameId == actualGameId &&
                 cmd.PlayerId == playerId &&
                 cmd.GameName == gameName &&

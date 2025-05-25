@@ -1,12 +1,10 @@
 using PastryTycoon.Common.Constants;
-using Orleans.TestKit;
-using Xunit;
-using Moq;
 using PastryTycoon.Common.Actors;
 using PastryTycoon.Common.Commands;
-using PastryTycoon.Common.Events;
 using Orleans.TestingHost;
 using PastryTycoon.Grains.UnitTests.TestClusterHelpers;
+using PastryTycoon.Grains.States;
+using PastryTycoon.Grains.Events;
 
 namespace PastryTycoon.Grains.UnitTests.Actors
 {
@@ -25,7 +23,7 @@ namespace PastryTycoon.Grains.UnitTests.Actors
         private readonly TestCluster cluster = fixture.Cluster;
 
         [Fact]
-        public async Task StartGame_Should_Send_GameStartedEvent()
+        public async Task InitializeGameState_Should_Send_GameInitializedEvent()
         {
             // Arrange           
             var gameId = Guid.NewGuid();
@@ -37,7 +35,7 @@ namespace PastryTycoon.Grains.UnitTests.Actors
             await observer.SubscribeAsync(OrleansConstants.STREAM_NAMESPACE_GAME_EVENTS, OrleansConstants.AZURE_QUEUE_STREAM_PROVIDER);
 
             // Act
-            await grain.InitializeGameState(command);
+            await grain.InitializeGameStateAsync(command);
             var received = await observer.WaitForReceivedEventsAsync();
             var events = await observer.GetReceivedEventsAsync();
 
@@ -47,6 +45,21 @@ namespace PastryTycoon.Grains.UnitTests.Actors
                 evt is GameStateInitializedEvent e &&
                 e.GameId == gameId &&
                 e.GameName == "Test Game");
-        }                
+        }
+
+        [Fact]
+        public async Task InitializeGameState_Throws_When_GameId_Does_Not_Match()
+        {
+            // Arrange
+            var grainId = Guid.NewGuid();
+            var gameId = Guid.NewGuid();
+            var playerId = Guid.NewGuid();
+            var recipeIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
+            var command = new InitializeGameStateCommand(gameId, playerId, recipeIds, "Test Game", DateTime.UtcNow);
+            var grain = this.cluster.GrainFactory.GetGrain<IGameGrain>(grainId);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentException>(() => grain.InitializeGameStateAsync(command));
+        }
     }
 }

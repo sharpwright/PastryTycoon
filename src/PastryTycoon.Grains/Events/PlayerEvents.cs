@@ -1,6 +1,6 @@
 using System;
 
-namespace PastryTycoon.Common.Events;
+namespace PastryTycoon.Grains.Events;
 
 [GenerateSerializer]
 public record PlayerEvent(

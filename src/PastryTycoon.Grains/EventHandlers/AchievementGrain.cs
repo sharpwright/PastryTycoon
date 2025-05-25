@@ -1,10 +1,10 @@
 using System;
 using PastryTycoon.Common.Constants;
-using PastryTycoon.Common.Events;
 using Orleans.Streams;
 using Orleans.Streams.Core;
 using PastryTycoon.Common.Actors;
 using PastryTycoon.Common.EventHandlers;
+using PastryTycoon.Grains.Events;
 
 namespace PastryTycoon.Grains.EventHandlers;
 

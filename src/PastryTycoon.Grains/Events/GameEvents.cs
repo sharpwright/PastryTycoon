@@ -1,6 +1,6 @@
 using System;
 
-namespace PastryTycoon.Common.Events;
+namespace PastryTycoon.Grains.Events;
 
 [GenerateSerializer]
 public record GameEvent(
@@ -13,7 +13,7 @@ public record GameStateInitializedEvent(
     [property: Id(1)] Guid PlayerId,
     [property: Id(2)] IReadOnlyList<Guid> RecipeIds,
     [property: Id(3)] string GameName,
-    [property: Id(4)] DateTime StartTime
+    [property: Id(4)] DateTime StartTimeUtc
 ) : GameEvent(
     GameId
 );
@@ -22,7 +22,7 @@ public record GameStateInitializedEvent(
 public record GameUpdatedEvent(
     Guid GameId,
     [property: Id(1)] string GameName,
-    [property: Id(2)] DateTime UpdateTime
+    [property: Id(2)] DateTime UpdateTimeUtc
 ) : GameEvent(
     GameId
 );

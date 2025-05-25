@@ -39,7 +39,7 @@ public class GameFactoryGrain : Grain, IGameFactoryGrain
 
         // Start the game
         var command = new InitializeGameStateCommand(gameId, playerId, recipeIds, gameName, DateTime.UtcNow);
-        await gameGrain.InitializeGameState(command);
+        await gameGrain.InitializeGameStateAsync(command);
 
         return gameId;
     }

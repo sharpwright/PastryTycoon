@@ -6,6 +6,6 @@ namespace PastryTycoon.Common.Actors;
 
 public interface IPlayerGrain : IGrainWithGuidKey
 {
-    public Task DiscoverRecipe(DiscoverRecipeCommand command);
+    public Task DiscoverRecipeAsync(DiscoverRecipeCommand command);
     public Task UnlockAchievementAsync(string achievement, DateTime unlockedAtUtc);
 }
