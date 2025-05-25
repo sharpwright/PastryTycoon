@@ -3,7 +3,6 @@ using PastryTycoon.Common.Actors;
 using PastryTycoon.Common.Commands;
 using Orleans.TestingHost;
 using PastryTycoon.Grains.UnitTests.TestClusterHelpers;
-using PastryTycoon.Grains.States;
 using PastryTycoon.Grains.Events;
 
 namespace PastryTycoon.Grains.UnitTests.Actors
@@ -21,6 +20,29 @@ namespace PastryTycoon.Grains.UnitTests.Actors
     public class GameGrainTests(ClusterFixture fixture)
     {
         private readonly TestCluster cluster = fixture.Cluster;
+
+        [Fact]
+        public async Task InitializeGameState_Should_Set_GameState()
+        {
+            // Arrange           
+            var gameId = Guid.NewGuid();
+            var playerId = Guid.NewGuid();
+            var recipeIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
+            var startTimeUtc = DateTime.UtcNow;
+            var command = new InitializeGameStateCommand(gameId, playerId, recipeIds, "Test Game", startTimeUtc);
+            var grain = this.cluster.GrainFactory.GetGrain<IGameGrain>(gameId);
+
+            // Act
+            await grain.InitializeGameStateAsync(command);
+            var gameStatistics = await grain.GetGameStatisticsAsync(gameId);
+
+            // Assert
+            Assert.Equal(gameId, gameStatistics.GameId);
+            Assert.Equal(playerId, gameStatistics.PlayerId);
+            Assert.Equal(recipeIds.Count, gameStatistics.TotalRecipes);
+            Assert.Equal("Test Game", gameStatistics.GameName);
+            Assert.Equal(startTimeUtc, gameStatistics.StartTimeUtc);
+        }
 
         [Fact]
         public async Task InitializeGameState_Should_Send_GameInitializedEvent()
@@ -60,6 +82,6 @@ namespace PastryTycoon.Grains.UnitTests.Actors
 
             // Act & Assert
             await Assert.ThrowsAsync<ArgumentException>(() => grain.InitializeGameStateAsync(command));
-        }
+        }        
     }
 }

@@ -7,6 +7,7 @@ using PastryTycoon.Common.Actors;
 using PastryTycoon.Grains.States;
 using PastryTycoon.Grains.Events;
 using Orleans.EventSourcing;
+using PastryTycoon.Common.Dto;
 
 namespace PastryTycoon.Grains.Actors;
 
@@ -35,7 +36,7 @@ public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
         await ConfirmEvents();
 
         if (gameEventStream != null)
-        {            
+        {
             await gameEventStream.OnNextAsync(evt);
         }
     }
@@ -52,8 +53,26 @@ public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
         await ConfirmEvents();
 
         if (gameEventStream != null)
-        {            
+        {
             await gameEventStream.OnNextAsync(evt);
         }
+    }
+    
+    public async Task<GameStatisticsDto> GetGameStatisticsAsync(Guid gameId)
+    {
+        if (!gameId.Equals(this.GetPrimaryKey()))
+        {
+            throw new ArgumentException("GameId does not match grain primary key.");
+        }
+
+        return new GameStatisticsDto
+        {
+            GameId = State.GameId,
+            PlayerId = State.PlayerId,
+            GameName = State.GameName,
+            TotalRecipes = State.DiscoverableRecipeIds != null ? State.DiscoverableRecipeIds.Count : 0,
+            StartTimeUtc = State.StartTimeUtc,
+            LastUpdatedUtc = State.LastUpdatedAtTimeUtc
+        };
     }
 }
