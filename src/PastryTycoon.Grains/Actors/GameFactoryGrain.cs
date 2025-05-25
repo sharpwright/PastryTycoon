@@ -1,52 +1,46 @@
 using System;
+using Microsoft.Extensions.Logging;
 using PastryTycoon.Common.Actors;
 using PastryTycoon.Common.Commands;
+using PastryTycoon.Data.Recipes;
+using PastryTycoon.Grains.Providers;
 
 namespace PastryTycoon.Grains.Actors;
 
+/// <summary>
+/// Factory grain responsible for creating new game instances.
+/// </summary>
 public class GameFactoryGrain : Grain, IGameFactoryGrain
 {
+    private readonly ILogger<GameFactoryGrain> logger;
+    private readonly IRecipeRepository recipeRepository;
+    private readonly IGuidProvider guidProvider;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="GameFactoryGrain"/> class.
+    /// </summary>
+    public GameFactoryGrain(ILogger<GameFactoryGrain> logger,
+        IRecipeRepository recipeRepository,
+        IGuidProvider guidProvider)
+    {
+        this.logger = logger;
+        this.recipeRepository = recipeRepository;
+        this.guidProvider = guidProvider;
+    }
+
     public async Task<Guid> CreateNewGameAsync(Guid playerId, string gameName)
     {
-        var gameId = Guid.NewGuid();
+        var gameId = guidProvider.NewGuid();
         var gameGrain = GrainFactory.GetGrain<IGameGrain>(gameId);
 
-        // Populate with standard recipes
-        foreach (var recipe in DiscoverableRecipes.StandardRecipes)
-        {
-            var command = new AddRecipeToGameCommand(gameId, recipe.RecipeId);
-            await gameGrain.AddAvailableRecipeAsync(command);
-        }
+        // Populate discoverable recipes.
+        var recipes = await recipeRepository.GetAllRecipesAsync();
+        var recipeIds = recipes.Select(r => r.Id).ToList();
 
         // Start the game
-        await gameGrain.StartGame(new StartGameCommand(gameId, playerId, gameName, DateTime.UtcNow));
+        var command = new InitializeGameStateCommand(gameId, playerId, recipeIds, gameName, DateTime.UtcNow);
+        await gameGrain.InitializeGameState(command);
 
         return gameId;
-    }
-
-    /// <summary>
-    /// Represents a recipe in the bakery simulation game.
-    /// TODO: Move this to a shared library or a more appropriate location.
-    /// </summary>
-    private class Recipe
-    {
-        public Guid RecipeId { get; set; }
-        public required string Name { get; set; }
-    }
-
-    /// <summary>
-    /// Contains a collection of discoverable recipes for the bakery simulation game.
-    /// TODO: Move this to a shared library or a more appropriate location.
-    /// </summary>
-    private static class DiscoverableRecipes
-    {
-        public static IEnumerable<Recipe> StandardRecipes { get; } = new List<Recipe>
-        {
-            new Recipe { RecipeId = Guid.NewGuid(), Name = "Sourdough Bread" },
-            new Recipe { RecipeId = Guid.NewGuid(), Name = "Chocolate Cake" },
-            new Recipe { RecipeId = Guid.NewGuid(), Name = "Croissant" },
-            new Recipe { RecipeId = Guid.NewGuid(), Name = "Bagel" },
-            new Recipe { RecipeId = Guid.NewGuid(), Name = "Blueberry Muffin" }
-        };
     }
 }

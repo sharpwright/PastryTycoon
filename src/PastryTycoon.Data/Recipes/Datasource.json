@@ -1,0 +1,56 @@
+{
+  "recipes": [
+    {
+      "id": "e2b7c1f4-3a5d-4e6f-8c9b-1a2d3e4f5b6c",
+      "recipeName": "Shortbread",
+      "ingredients": [
+        {
+          "ingredientId": "a1c2d3e4-f5b6-4c7d-8e9f-0a1b2c3d4e5f",
+          "amount": 300
+        },
+        {
+          "ingredientId": "c3e4f5a6-b7c8-4d9e-0f1a-2b3c4d5e6f7a",
+          "amount": 200
+        },
+        {
+          "ingredientId": "b3f4c5d6-e7f8-4a9b-8c0d-1e2f3a4b5c6d",
+          "amount": 100
+        },      
+        {
+          "ingredientId": "07c8d9e0-f1a2-4b3c-4d5e-6f7a8b9c0d1e",
+          "amount": 5
+        }
+      ]
+    },
+    {
+      "id": "f4a6b8c2-1d3e-4f5a-9b0c-2d3e4f5a6b7c",
+      "recipeName": "Pound Cake",
+      "ingredients": [
+        {
+        "ingredientId": "a1c2d3e4-f5b6-4c7d-8e9f-0a1b2c3d4e5f",
+        "amount": 200
+        },
+        {
+        "ingredientId": "b2d3e4f5-a6b7-4c8d-9e0f-1a2b3c4d5e6f",
+        "amount": 200
+        },
+        {
+        "ingredientId": "c3e4f5a6-b7c8-4d9e-0f1a-2b3c4d5e6f7a",
+        "amount": 200
+        },
+        {
+        "ingredientId": "d4f5a6b7-c8d9-4e0f-1a2b-3c4d5e6f7a8b",
+        "amount": 4
+        },
+        {
+          "ingredientId": "18d9e0f1-a2b3-4c4d-5e6f-7a8b9c0d1e2f",
+          "amount": 6
+        },
+        {
+          "ingredientId": "07c8d9e0-f1a2-4b3c-4d5e-6f7a8b9c0d1e",
+          "amount": 3
+        }
+      ]
+    }
+  ]
+}

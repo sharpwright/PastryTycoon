@@ -1,0 +1,88 @@
+{
+    "ingredients": [
+        {
+            "id": "a1c2d3e4-f5b6-4c7d-8e9f-0a1b2c3d4e5f",
+            "name": "Flour",
+            "type": "dry",
+            "unit": "grams",
+            "description": "All-purpose wheat flour, used as a base for most pastries."
+        },
+        {
+            "id": "b2d3e4f5-a6b7-4c8d-9e0f-1a2b3c4d5e6f",
+            "name": "Sugar",
+            "type": "dry",
+            "unit": "grams",
+            "description": "Granulated white sugar for sweetening recipes."
+        },
+        {
+            "id": "b3f4c5d6-e7f8-4a9b-8c0d-1e2f3a4b5c6d",
+            "name": "Powdered Sugar",
+            "type": "dry",
+            "unit": "grams",
+            "description": "Finely ground sugar, also known as confectioners' sugar, used for icing and dusting."
+        },
+        {
+            "id": "c3e4f5a6-b7c8-4d9e-0f1a-2b3c4d5e6f7a",
+            "name": "Butter",
+            "type": "dairy",
+            "unit": "grams",
+            "description": "Unsalted butter, adds richness and flavor."
+        },
+        {
+            "id": "d4f5a6b7-c8d9-4e0f-1a2b-3c4d5e6f7a8b",
+            "name": "Eggs",
+            "type": "leavening",
+            "unit": "pieces",
+            "description": "Chicken eggs, used for binding and leavening."
+        },
+        {
+            "id": "e5a6b7c8-d9e0-4f1a-2b3c-4d5e6f7a8b9c",
+            "name": "Milk",
+            "type": "dairy",
+            "unit": "milliliters",
+            "description": "Whole milk, adds moisture and richness."
+        },
+        {
+            "id": "f6b7c8d9-e0f1-4a2b-3c4d-5e6f7a8b9c0d",
+            "name": "Yeast",
+            "type": "leavening",
+            "unit": "grams",
+            "description": "Active dry yeast, used for leavening dough."
+        },
+        {
+            "id": "07c8d9e0-f1a2-4b3c-4d5e-6f7a8b9c0d1e",
+            "name": "Salt",
+            "type": "seasoning",
+            "unit": "grams",
+            "description": "Fine table salt, enhances flavor."
+        },
+        {
+            "id": "18d9e0f1-a2b3-4c4d-5e6f-7a8b9c0d1e2f",
+            "name": "Baking Powder",
+            "type": "leavening",
+            "unit": "grams",
+            "description": "Chemical leavening agent for quick breads and cakes."
+        },
+        {
+            "id": "21f0e1d2-c3b4-4a5f-6e7d-8c9b0a1d2e3f",
+            "name": "Baking Soda",
+            "type": "leavening",
+            "unit": "grams",
+            "description": "Sodium bicarbonate, a chemical leavening agent for baked goods."
+        },
+        {
+            "id": "29e0f1a2-b3c4-4d5e-6f7a-8b9c0d1e2f3a",
+            "name": "Vanilla Extract",
+            "type": "flavoring",
+            "unit": "milliliters",
+            "description": "Pure vanilla extract for flavor."
+        },
+        {
+            "id": "3af1a2b3-c4d5-4e6f-7a8b-9c0d1e2f3a4b",
+            "name": "Cocoa Powder",
+            "type": "dry",
+            "unit": "grams",
+            "description": "Unsweetened cocoa powder for chocolate flavor."
+        }
+    ]
+}

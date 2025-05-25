@@ -47,7 +47,7 @@ public class GameProjectionGrain : Grain,
         // Handle the GameEvent here
         switch (item)
         {
-            case GameStartedEvent started:
+            case GameStateInitializedEvent started:
                 Handle(started, token);
                 break;
             case GameUpdatedEvent updated:
@@ -60,7 +60,7 @@ public class GameProjectionGrain : Grain,
         return Task.CompletedTask;
     }
 
-    public Task Handle(GameStartedEvent item, StreamSequenceToken? token = null)
+    public Task Handle(GameStateInitializedEvent item, StreamSequenceToken? token = null)
     {
         // TODO: Handle the GameStartedEvent here.
         logger.LogInformation($"Game started at {item.StartTime}");

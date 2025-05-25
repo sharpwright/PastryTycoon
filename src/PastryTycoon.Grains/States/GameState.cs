@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using PastryTycoon.Common.Events;
 
 namespace PastryTycoon.Common.States;
@@ -7,15 +8,17 @@ public class GameState
 {
     [Id(0)] public Guid GameId { get; set; }
     [Id(1)] public Guid PlayerId { get; set; }
-    [Id(2)] public List<Guid> RecipeIds { get; set; } = new List<Guid>();
+    [Id(2)] public IImmutableList<Guid>? DiscoverableRecipeIds { get; set; }
     [Id(3)] public string GameName { get; set; } = string.Empty;
     [Id(4)] public DateTime StartTime { get; set; }
     [Id(5)] public DateTime LastUpdatedAtTime { get; set; }
 
     // Event sourcing: apply GameStartedEvent
-    public void Apply(GameStartedEvent evt)
+    public void Apply(GameStateInitializedEvent evt)
     {
         GameId = evt.GameId;
+        PlayerId = evt.PlayerId;
+        DiscoverableRecipeIds = evt.RecipeIds.ToImmutableList();
         GameName = evt.GameName;
         StartTime = evt.StartTime;
         LastUpdatedAtTime = evt.StartTime;

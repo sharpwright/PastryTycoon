@@ -3,11 +3,12 @@ using Orleans;
 namespace PastryTycoon.Common.Commands;
 
 [GenerateSerializer]
-public record StartGameCommand(
+public record InitializeGameStateCommand(
     [property: Id(0)] Guid GameId,
     [property: Id(1)] Guid PlayerId,
-    [property: Id(2)] string GameName,
-    [property: Id(3)] DateTime StartTimeUtc
+    [property: Id(2)] List<Guid> RecipeIds,
+    [property: Id(3)] string GameName,
+    [property: Id(4)] DateTime StartTimeUtc
 );
 
 [GenerateSerializer]

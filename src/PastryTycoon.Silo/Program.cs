@@ -7,12 +7,17 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Orleans.Configuration;
+using PastryTycoon.Data.Recipes;
+using PastryTycoon.Data.Ingredients;
+using PastryTycoon.Grains.Providers;
 
 
 await Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
-        
+        services.AddSingleton<IRecipeRepository, RecipeRepository>();
+        services.AddSingleton<IIngredientRepository, IngredientRepository>();
+        services.AddSingleton<IGuidProvider, GuidProvider>();
     })
     .UseOrleans(static siloBuilder =>
     {

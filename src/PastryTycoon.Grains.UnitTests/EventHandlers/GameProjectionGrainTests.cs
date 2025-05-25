@@ -57,7 +57,10 @@ namespace PastryTycoon.Grains.UnitTests.EventHandlers
         public async Task Handle_GameStartedEvent_LogsInformation()
         {
             // Arrange
-            var evt = new GameStartedEvent(Guid.NewGuid(), "TestGame", DateTime.UtcNow);
+            var gameId = Guid.NewGuid();
+            var playerId = Guid.NewGuid();
+            var recipeIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };            
+            var evt = new GameStateInitializedEvent(gameId, playerId, recipeIds, "TestGame", DateTime.UtcNow);
 
             // Act
             await grain.Handle(evt);

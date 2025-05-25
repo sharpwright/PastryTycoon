@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PastryTycoon.Common", "Past
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PastryTycoon.Grains.UnitTests", "PastryTycoon.Grains.UnitTests\PastryTycoon.Grains.UnitTests.csproj", "{6CF6BAE8-F034-4212-80F8-70FCF965A989}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PastryTycoon.Data", "PastryTycoon.Data\PastryTycoon.Data.csproj", "{C6A42A18-FE95-477E-A420-372DFC6B9CE5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PastryTycoon.Data.UnitTests", "PastryTycoon.Data.UnitTests\PastryTycoon.Data.UnitTests.csproj", "{B71DA776-ADC1-4794-84B0-90C98F81A0F8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +87,30 @@ Global
 		{6CF6BAE8-F034-4212-80F8-70FCF965A989}.Release|x64.Build.0 = Release|Any CPU
 		{6CF6BAE8-F034-4212-80F8-70FCF965A989}.Release|x86.ActiveCfg = Release|Any CPU
 		{6CF6BAE8-F034-4212-80F8-70FCF965A989}.Release|x86.Build.0 = Release|Any CPU
+		{C6A42A18-FE95-477E-A420-372DFC6B9CE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6A42A18-FE95-477E-A420-372DFC6B9CE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6A42A18-FE95-477E-A420-372DFC6B9CE5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C6A42A18-FE95-477E-A420-372DFC6B9CE5}.Debug|x64.Build.0 = Debug|Any CPU
+		{C6A42A18-FE95-477E-A420-372DFC6B9CE5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C6A42A18-FE95-477E-A420-372DFC6B9CE5}.Debug|x86.Build.0 = Debug|Any CPU
+		{C6A42A18-FE95-477E-A420-372DFC6B9CE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6A42A18-FE95-477E-A420-372DFC6B9CE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6A42A18-FE95-477E-A420-372DFC6B9CE5}.Release|x64.ActiveCfg = Release|Any CPU
+		{C6A42A18-FE95-477E-A420-372DFC6B9CE5}.Release|x64.Build.0 = Release|Any CPU
+		{C6A42A18-FE95-477E-A420-372DFC6B9CE5}.Release|x86.ActiveCfg = Release|Any CPU
+		{C6A42A18-FE95-477E-A420-372DFC6B9CE5}.Release|x86.Build.0 = Release|Any CPU
+		{B71DA776-ADC1-4794-84B0-90C98F81A0F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B71DA776-ADC1-4794-84B0-90C98F81A0F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B71DA776-ADC1-4794-84B0-90C98F81A0F8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B71DA776-ADC1-4794-84B0-90C98F81A0F8}.Debug|x64.Build.0 = Debug|Any CPU
+		{B71DA776-ADC1-4794-84B0-90C98F81A0F8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B71DA776-ADC1-4794-84B0-90C98F81A0F8}.Debug|x86.Build.0 = Debug|Any CPU
+		{B71DA776-ADC1-4794-84B0-90C98F81A0F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B71DA776-ADC1-4794-84B0-90C98F81A0F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B71DA776-ADC1-4794-84B0-90C98F81A0F8}.Release|x64.ActiveCfg = Release|Any CPU
+		{B71DA776-ADC1-4794-84B0-90C98F81A0F8}.Release|x64.Build.0 = Release|Any CPU
+		{B71DA776-ADC1-4794-84B0-90C98F81A0F8}.Release|x86.ActiveCfg = Release|Any CPU
+		{B71DA776-ADC1-4794-84B0-90C98F81A0F8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

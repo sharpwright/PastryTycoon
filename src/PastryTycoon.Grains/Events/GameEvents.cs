@@ -8,10 +8,12 @@ public record GameEvent(
 );
 
 [GenerateSerializer]
-public record GameStartedEvent(
+public record GameStateInitializedEvent(
     Guid GameId,
-    [property: Id(1)] string GameName,
-    [property: Id(2)] DateTime StartTime
+    [property: Id(1)] Guid PlayerId,
+    [property: Id(2)] IReadOnlyList<Guid> RecipeIds,
+    [property: Id(3)] string GameName,
+    [property: Id(4)] DateTime StartTime
 ) : GameEvent(
     GameId
 );

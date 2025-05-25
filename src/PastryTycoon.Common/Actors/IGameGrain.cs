@@ -6,7 +6,7 @@ namespace PastryTycoon.Common.Actors;
 
 public interface IGameGrain : IGrainWithGuidKey
 {
-    Task StartGame(StartGameCommand command);
+    Task InitializeGameState(InitializeGameStateCommand command);
     Task UpdateGame(UpdateGameCommand command);
     Task AddAvailableRecipeAsync(AddRecipeToGameCommand command);
 }

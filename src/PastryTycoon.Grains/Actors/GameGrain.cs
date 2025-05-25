@@ -23,14 +23,14 @@ public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
         await base.OnActivateAsync(cancellationToken);
     }
 
-    public async Task StartGame(StartGameCommand command)
+    public async Task InitializeGameState(InitializeGameStateCommand command)
     {
         if (!command.GameId.Equals(this.GetPrimaryKey()))
         {
             throw new ArgumentException("Command GameId does not match grain primary key.");
         }
 
-        var evt = new GameStartedEvent(command.GameId, command.GameName, command.StartTimeUtc);
+        var evt = new GameStateInitializedEvent(command.GameId, command.PlayerId, command.RecipeIds, command.GameName, command.StartTimeUtc);
         RaiseEvent(evt);
         await ConfirmEvents();
 
