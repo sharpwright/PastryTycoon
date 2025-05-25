@@ -1,5 +1,5 @@
 using Azure.Data.Tables;
-using BakerySim.Common.Orleans;
+using BakerySim.Common.Constants;
 using Orleans.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);

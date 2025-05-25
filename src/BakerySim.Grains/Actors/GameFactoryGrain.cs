@@ -1,5 +1,6 @@
 using System;
-using BakerySim.Grains.Commands;
+using BakerySim.Common.Actors;
+using BakerySim.Common.Commands;
 
 namespace BakerySim.Grains.Actors;
 
@@ -30,7 +31,7 @@ public class GameFactoryGrain : Grain, IGameFactoryGrain
     private class Recipe
     {
         public Guid RecipeId { get; set; }
-        public string Name { get; set; }
+        public required string Name { get; set; }
     }
 
     /// <summary>

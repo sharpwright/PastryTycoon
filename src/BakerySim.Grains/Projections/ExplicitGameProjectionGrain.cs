@@ -1,10 +1,10 @@
 using System;
-using BakerySim.Common.Orleans;
-using BakerySim.Grains.Events;
+using BakerySim.Common.Constants;
+using BakerySim.Common.Events;
 using Microsoft.Extensions.Logging;
 using Orleans.Streams;
 
-namespace BakerySim.Grains.Projections;
+namespace BakerySim.Common.Projections;
 
 /// <summary>
 /// GameProjectionGrain using an explicit stream subscription.

@@ -1,14 +1,14 @@
-using BakerySim.Common.Orleans;
+using BakerySim.Common.Constants;
 using Orleans.TestKit;
 using Xunit;
 using Moq;
-using BakerySim.Grains.Actors;
-using BakerySim.Grains.Commands;
-using BakerySim.Grains.Events;
+using BakerySim.Common.Actors;
+using BakerySim.Common.Commands;
+using BakerySim.Common.Events;
 using Orleans.TestingHost;
-using BakerySim.Grains.UnitTests.TestClusterHelpers;
+using BakerySim.Common.UnitTests.TestClusterHelpers;
 
-namespace BakerySim.Grains.UnitTests.Actors
+namespace BakerySim.Common.UnitTests.Actors
 {
     /// <summary>
     /// Tests for the GameGrain actor using Orleans Testinghost.
@@ -29,7 +29,8 @@ namespace BakerySim.Grains.UnitTests.Actors
         {
             // Arrange           
             var gameId = Guid.NewGuid();
-            var command = new StartGameCommand(gameId, "Test Game", DateTime.UtcNow);
+            var playerId = Guid.NewGuid();
+            var command = new StartGameCommand(gameId, playerId, "Test Game", DateTime.UtcNow);
             var grain = this.cluster.GrainFactory.GetGrain<IGameGrain>(gameId);
             var observer = this.cluster.GrainFactory.GetGrain<IStreamObserverGrain<GameEvent>>(gameId);
             await observer.SubscribeAsync(OrleansConstants.STREAM_NAMESPACE_GAME_EVENTS, OrleansConstants.AZURE_QUEUE_STREAM_PROVIDER);
@@ -44,7 +45,7 @@ namespace BakerySim.Grains.UnitTests.Actors
             Assert.Single(events, evt =>
                 evt is GameStartedEvent &&
                 evt.GameId == gameId &&
-                evt.GameName == "Test Game");
+                ((GameStartedEvent)evt).GameName == "Test Game");
         }
         
         /// <summary>

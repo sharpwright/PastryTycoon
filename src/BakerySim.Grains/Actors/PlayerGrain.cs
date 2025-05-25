@@ -1,11 +1,12 @@
 using System;
-using BakerySim.Common.Orleans;
-using BakerySim.Grains.Commands;
-using BakerySim.Grains.Events;
-using BakerySim.Grains.States;
+using BakerySim.Common.Constants;
+using BakerySim.Common.Commands;
+using BakerySim.Common.Events;
+using BakerySim.Common.States;
 using Orleans.EventSourcing;
 using Orleans.Providers;
 using Orleans.Streams;
+using BakerySim.Common.Actors;
 
 namespace BakerySim.Grains.Actors;
 

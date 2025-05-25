@@ -1,6 +1,6 @@
 using System;
 
-namespace BakerySim.Common.Orleans;
+namespace BakerySim.Common.Constants;
 
 public static class OrleansConstants
 {

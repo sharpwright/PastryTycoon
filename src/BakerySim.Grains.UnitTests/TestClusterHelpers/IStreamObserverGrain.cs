@@ -1,7 +1,7 @@
 using System;
-using BakerySim.Grains.Events;
+using BakerySim.Common.Events;
 
-namespace BakerySim.Grains.UnitTests.TestClusterHelpers;
+namespace BakerySim.Common.UnitTests.TestClusterHelpers;
 
 public interface IStreamObserverGrain<TEvent> : IGrainWithGuidKey
 {

@@ -1,7 +1,8 @@
 using System;
-using BakerySim.Grains.Commands;
+using BakerySim.Common.Commands;
+using Orleans;
 
-namespace BakerySim.Grains.Actors;
+namespace BakerySim.Common.Actors;
 
 public interface IGameGrain : IGrainWithGuidKey
 {

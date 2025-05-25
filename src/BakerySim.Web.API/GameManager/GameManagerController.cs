@@ -1,5 +1,5 @@
-using BakerySim.Grains.Actors;
-using BakerySim.Grains.Commands;
+using BakerySim.Common.Actors;
+using BakerySim.Common.Commands;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Orleans.Runtime.GrainDirectory;

@@ -1,6 +1,6 @@
 using System;
 
-namespace BakerySim.Grains.Events;
+namespace BakerySim.Common.Events;
 
 [GenerateSerializer]
 public record GameEvent(
@@ -9,7 +9,7 @@ public record GameEvent(
 
 [GenerateSerializer]
 public record GameStartedEvent(
-    [property: Id(0)] Guid GameId,
+    Guid GameId,
     [property: Id(1)] string GameName,
     [property: Id(2)] DateTime StartTime
 ) : GameEvent(
@@ -18,7 +18,7 @@ public record GameStartedEvent(
 
 [GenerateSerializer]
 public record GameUpdatedEvent(
-    [property: Id(0)] Guid GameId,
+    Guid GameId,
     [property: Id(1)] string GameName,
     [property: Id(2)] DateTime UpdateTime
 ) : GameEvent(
@@ -27,7 +27,7 @@ public record GameUpdatedEvent(
 
 [GenerateSerializer]
 public record RecipeAddedEvent(
-    [property: Id(0)] Guid GameId,
+    Guid GameId,
     [property: Id(2)] Guid RecipeId
 ) : GameEvent(
     GameId

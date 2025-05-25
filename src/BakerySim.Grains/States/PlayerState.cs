@@ -1,7 +1,7 @@
 using System;
-using BakerySim.Grains.Events;
+using BakerySim.Common.Events;
 
-namespace BakerySim.Grains.States;
+namespace BakerySim.Common.States;
 
 public class PlayerState
 {

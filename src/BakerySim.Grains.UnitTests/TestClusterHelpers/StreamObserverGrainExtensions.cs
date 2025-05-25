@@ -1,6 +1,6 @@
 using System;
 
-namespace BakerySim.Grains.UnitTests.TestClusterHelpers;
+namespace BakerySim.Common.UnitTests.TestClusterHelpers;
 
 public static class StreamObserverGrainExtensions
 {

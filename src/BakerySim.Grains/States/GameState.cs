@@ -1,6 +1,6 @@
-using BakerySim.Grains.Events;
+using BakerySim.Common.Events;
 
-namespace BakerySim.Grains.States;
+namespace BakerySim.Common.States;
 
 [GenerateSerializer]
 public class GameState

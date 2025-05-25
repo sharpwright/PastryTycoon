@@ -1,6 +1,6 @@
 using System;
 
-namespace BakerySim.Grains.Projections;
+namespace BakerySim.Common.Projections;
 
 public interface IProjection
 {

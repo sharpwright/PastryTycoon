@@ -1,6 +1,7 @@
 using System;
+using Orleans;
 
-namespace BakerySim.Grains.Actors;
+namespace BakerySim.Common.Actors;
 
 public interface IAchievementGrain : IGrainWithGuidKey
 {

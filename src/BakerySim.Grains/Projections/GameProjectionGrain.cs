@@ -1,11 +1,11 @@
 using System;
-using BakerySim.Common.Orleans;
-using BakerySim.Grains.Events;
+using BakerySim.Common.Constants;
+using BakerySim.Common.Events;
 using Microsoft.Extensions.Logging;
 using Orleans.Streams;
 using Orleans.Streams.Core;
 
-namespace BakerySim.Grains.Projections;
+namespace BakerySim.Common.Projections;
 
 /// <summary>
 /// Example of a grain using an implicit stream subscription.

@@ -1,17 +1,17 @@
 using System;
 using System.Threading.Tasks;
-using BakerySim.Grains.Events;
-using BakerySim.Grains.Projections;
+using BakerySim.Common.Events;
+using BakerySim.Common.Projections;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Orleans.Streams;
 using Xunit;
 using Orleans.TestKit;
-using BakerySim.Common.Orleans;
+using BakerySim.Common.Constants;
 using System.Reflection;
 using Orleans.Streams.Core; // Add this for TestKit
 
-namespace BakerySim.Grains.Tests.Projections
+namespace BakerySim.Common.Tests.Projections
 {
     public class GameProjectionGrainTests : TestKitBase
     {
@@ -66,9 +66,9 @@ namespace BakerySim.Grains.Tests.Projections
                 x => x.Log(
                     LogLevel.Information,
                     It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Game started at")),
+                    It.Is<It.IsAnyType>((v, t) => (v.ToString() ?? string.Empty).Contains("Game started at")),
                     null,
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
         }
 
@@ -86,9 +86,9 @@ namespace BakerySim.Grains.Tests.Projections
                 x => x.Log(
                     LogLevel.Information,
                     It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Game updated at")),
+                    It.Is<It.IsAnyType>((v, t) => (v.ToString() ?? string.Empty).Contains("Game updated at")),
                     null,
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
         }
 
@@ -106,9 +106,9 @@ namespace BakerySim.Grains.Tests.Projections
                 x => x.Log(
                     LogLevel.Error,
                     It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Error: Test error")),
+                    It.Is<It.IsAnyType>((v, t) => (v.ToString() ?? string.Empty).Contains("Error: Test error")),
                     ex,
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
         }
     }

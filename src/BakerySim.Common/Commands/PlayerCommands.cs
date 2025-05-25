@@ -1,4 +1,6 @@
-﻿namespace BakerySim.Grains.Commands;
+﻿using Orleans;
+
+namespace BakerySim.Common.Commands;
 
 [GenerateSerializer]
 public record DiscoverRecipeCommand(

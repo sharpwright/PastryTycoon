@@ -1,8 +1,8 @@
 using System;
-using BakerySim.Common.Orleans;
+using BakerySim.Common.Constants;
 using Orleans.TestingHost;
 
-namespace BakerySim.Grains.UnitTests.TestClusterHelpers;
+namespace BakerySim.Common.UnitTests.TestClusterHelpers;
 
 public class ClusterFixture : IDisposable
 {

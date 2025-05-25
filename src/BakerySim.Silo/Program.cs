@@ -1,6 +1,6 @@
 ﻿using Azure.Data.Tables;
 using Azure.Storage.Queues;
-using BakerySim.Common.Orleans;
+using BakerySim.Common.Constants;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

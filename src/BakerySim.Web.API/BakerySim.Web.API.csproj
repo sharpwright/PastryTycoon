@@ -15,7 +15,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BakerySim.Common\BakerySim.Common.csproj" />
-    <ProjectReference Include="..\BakerySim.Grains\BakerySim.Grains.csproj" />
   </ItemGroup>
 
 </Project>

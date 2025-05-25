@@ -1,6 +1,6 @@
 using System;
 
-namespace BakerySim.Grains.UnitTests.TestClusterHelpers;
+namespace BakerySim.Common.UnitTests.TestClusterHelpers;
 
 [CollectionDefinition(Name)]
 public sealed class ClusterCollection : ICollectionFixture<ClusterFixture>

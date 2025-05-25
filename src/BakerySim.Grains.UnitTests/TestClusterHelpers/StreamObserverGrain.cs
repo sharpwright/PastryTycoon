@@ -1,9 +1,9 @@
 using System;
-using BakerySim.Common.Orleans;
-using BakerySim.Grains.Events;
+using BakerySim.Common.Constants;
+using BakerySim.Common.Events;
 using Orleans.Streams;
 
-namespace BakerySim.Grains.UnitTests.TestClusterHelpers;
+namespace BakerySim.Common.UnitTests.TestClusterHelpers;
 
 public class StreamObserverGrain<TEvent> : Grain, IStreamObserverGrain<TEvent>, IAsyncObserver<TEvent>
 {
@@ -18,7 +18,7 @@ public class StreamObserverGrain<TEvent> : Grain, IStreamObserverGrain<TEvent>, 
 
     public Task<List<TEvent>> GetReceivedEventsAsync() => Task.FromResult(_received);
 
-    public Task OnNextAsync(TEvent item, StreamSequenceToken token = null)
+    public Task OnNextAsync(TEvent item, StreamSequenceToken? token = null)
     {
         _received.Add(item);
         return Task.CompletedTask;
