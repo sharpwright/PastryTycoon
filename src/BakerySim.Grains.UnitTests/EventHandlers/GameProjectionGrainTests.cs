@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using BakerySim.Common.Events;
-using BakerySim.Common.Projections;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Orleans.Streams;
@@ -9,7 +8,9 @@ using Xunit;
 using Orleans.TestKit;
 using BakerySim.Common.Constants;
 using System.Reflection;
-using Orleans.Streams.Core; // Add this for TestKit
+using Orleans.Streams.Core;
+using BakerySim.Common.EventHandlers;
+using BakerySim.Grains.EventHandlers;
 
 namespace BakerySim.Common.Tests.Projections
 {
