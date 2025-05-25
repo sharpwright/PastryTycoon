@@ -1,7 +1,7 @@
 using System;
 using Orleans;
 
-namespace BakerySim.Common.Projections;
+namespace BakerySim.Common.EventHandlers;
 
 public interface IGameProjectionGrain : IGrainWithGuidKey
 {

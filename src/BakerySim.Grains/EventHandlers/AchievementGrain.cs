@@ -4,8 +4,9 @@ using BakerySim.Common.Events;
 using Orleans.Streams;
 using Orleans.Streams.Core;
 using BakerySim.Common.Actors;
+using BakerySim.Common.EventHandlers;
 
-namespace BakerySim.Grains.Actors;
+namespace BakerySim.Grains.EventHandlers;
 
 [ImplicitStreamSubscription(OrleansConstants.STREAM_NAMESPACE_PLAYER_EVENTS)]
 public class AchievementGrain : Grain, IAchievementGrain,

@@ -2,7 +2,6 @@ using System;
 using BakerySim.Common.Constants;
 using BakerySim.Common.Commands;
 using BakerySim.Common.Events;
-using BakerySim.Common.Projections;
 using BakerySim.Common.States;
 using Orleans.EventSourcing;
 using Orleans.Providers;
