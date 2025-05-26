@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PastryTycoon.Common\PastryTycoon.Common.csproj" />
     <ProjectReference Include="..\PastryTycoon.Grains\PastryTycoon.Grains.csproj" />
   </ItemGroup>
 

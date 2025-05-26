@@ -1,4 +1,5 @@
 # Azurite local emulator files
+AzuriteConfig
 __blobstorage__
 __queuestorage__
 __azurite_db_blob__.json

@@ -1,6 +1,13 @@
 using System;
 using PastryTycoon.Common.Constants;
 using Orleans.TestingHost;
+using FluentValidation;
+using PastryTycoon.Common.Commands;
+using PastryTycoon.Grains.Validation;
+using Microsoft.Extensions.DependencyInjection;
+using PastryTycoon.Grains.States;
+using Moq;
+using Microsoft.Extensions.Configuration;
 
 namespace PastryTycoon.Grains.UnitTests.TestClusterHelpers;
 
@@ -25,8 +32,14 @@ file sealed class TestSiloConfigurations : ISiloConfigurator
         siloBuilder.AddMemoryGrainStorage(OrleansConstants.EVENT_SOURCING_LOG_STORAGE_GAME_EVENTS);
         siloBuilder.ConfigureServices(static services =>
         {
-            // TODO: Call required service registrations here.
-            // services.AddSingleton<T, Impl>(/* ... */);
+            // Mock the InitializeGameStateCommandValidator to always succeed.
+            var mockValidation = new Mock<InitializeGameStateCommandValidator>();
+            mockValidation
+                .Setup(v => v.ValidateCommandAsync(It.IsAny<InitializeGameStateCommand>(), It.IsAny<GameState>(), It.IsAny<Guid>()))
+                .Returns(Task.FromResult(true));
+
+            // Register the inline validator for the specific context type
+            services.AddSingleton<InitializeGameStateCommandValidator>(mockValidation.Object);
         });
     }
 }

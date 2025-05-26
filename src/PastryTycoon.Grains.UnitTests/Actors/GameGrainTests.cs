@@ -4,6 +4,10 @@ using PastryTycoon.Common.Commands;
 using Orleans.TestingHost;
 using PastryTycoon.Grains.UnitTests.TestClusterHelpers;
 using PastryTycoon.Grains.Events;
+using PastryTycoon.Grains.Validation;
+using Moq;
+using PastryTycoon.Grains.States;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace PastryTycoon.Grains.UnitTests.Actors
 {
@@ -67,21 +71,6 @@ namespace PastryTycoon.Grains.UnitTests.Actors
                 evt is GameStateInitializedEvent e &&
                 e.GameId == gameId &&
                 e.GameName == "Test Game");
-        }
-
-        [Fact]
-        public async Task InitializeGameState_Throws_When_GameId_Does_Not_Match()
-        {
-            // Arrange
-            var grainId = Guid.NewGuid();
-            var gameId = Guid.NewGuid();
-            var playerId = Guid.NewGuid();
-            var recipeIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
-            var command = new InitializeGameStateCommand(gameId, playerId, recipeIds, "Test Game", DateTime.UtcNow);
-            var grain = this.cluster.GrainFactory.GetGrain<IGameGrain>(grainId);
-
-            // Act & Assert
-            await Assert.ThrowsAsync<ArgumentException>(() => grain.InitializeGameStateAsync(command));
-        }        
+        }     
     }
 }

@@ -8,6 +8,8 @@ using PastryTycoon.Grains.States;
 using PastryTycoon.Grains.Events;
 using Orleans.EventSourcing;
 using PastryTycoon.Common.Dto;
+using PastryTycoon.Grains.Validation;
+using FluentValidation;
 
 namespace PastryTycoon.Grains.Actors;
 
@@ -16,7 +18,12 @@ namespace PastryTycoon.Grains.Actors;
 public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
 {
     private IAsyncStream<GameEvent>? gameEventStream;
+    private readonly InitializeGameStateCommandValidator initializeValidator;
 
+    public GameGrain(InitializeGameStateCommandValidator initializeValidator)
+    {
+        this.initializeValidator = initializeValidator;
+    }
     public override async Task OnActivateAsync(CancellationToken cancellationToken)
     {
         var streamProvider = this.GetStreamProvider(OrleansConstants.AZURE_QUEUE_STREAM_PROVIDER);
@@ -26,18 +33,18 @@ public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
 
     public async Task InitializeGameStateAsync(InitializeGameStateCommand command)
     {
-        if (!command.GameId.Equals(this.GetPrimaryKey()))
-        {
-            throw new ArgumentException("Command GameId does not match grain primary key.");
-        }
+        var isValid = await initializeValidator.ValidateCommandAsync(command, State, this.GetPrimaryKey());
 
-        var evt = new GameStateInitializedEvent(command.GameId, command.PlayerId, command.RecipeIds, command.GameName, command.StartTimeUtc);
-        RaiseEvent(evt);
-        await ConfirmEvents();
-
-        if (gameEventStream != null)
+        if (isValid)
         {
-            await gameEventStream.OnNextAsync(evt);
+            var evt = new GameStateInitializedEvent(command.GameId, command.PlayerId, command.RecipeIds, command.GameName, command.StartTimeUtc);
+            RaiseEvent(evt);
+            await ConfirmEvents();
+
+            if (gameEventStream != null)
+            {
+                await gameEventStream.OnNextAsync(evt);
+            }
         }
     }
 
@@ -58,14 +65,14 @@ public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
         }
     }
     
-    public async Task<GameStatisticsDto> GetGameStatisticsAsync(Guid gameId)
+    public Task<GameStatisticsDto> GetGameStatisticsAsync(Guid gameId)
     {
         if (!gameId.Equals(this.GetPrimaryKey()))
         {
             throw new ArgumentException("GameId does not match grain primary key.");
         }
 
-        return new GameStatisticsDto
+        return Task.FromResult(new GameStatisticsDto
         {
             GameId = State.GameId,
             PlayerId = State.PlayerId,
@@ -73,6 +80,6 @@ public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
             TotalRecipes = State.DiscoverableRecipeIds != null ? State.DiscoverableRecipeIds.Count : 0,
             StartTimeUtc = State.StartTimeUtc,
             LastUpdatedUtc = State.LastUpdatedAtTimeUtc
-        };
+        });
     }
 }
