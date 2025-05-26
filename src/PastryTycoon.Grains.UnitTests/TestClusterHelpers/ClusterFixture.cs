@@ -33,13 +33,13 @@ file sealed class TestSiloConfigurations : ISiloConfigurator
         siloBuilder.ConfigureServices(static services =>
         {
             // Mock the InitializeGameStateCommandValidator to always succeed.
+            // The validator has its own unit tests, so we can mock it here for simplicity.
             var mockValidation = new Mock<InitializeGameStateCommandValidator>();
             mockValidation
                 .Setup(v => v.ValidateCommandAsync(It.IsAny<InitializeGameStateCommand>(), It.IsAny<GameState>(), It.IsAny<Guid>()))
                 .Returns(Task.FromResult(true));
-
-            // Register the inline validator for the specific context type
-            services.AddSingleton<InitializeGameStateCommandValidator>(mockValidation.Object);
+            
+            services.AddSingleton(mockValidation.Object);
         });
     }
 }

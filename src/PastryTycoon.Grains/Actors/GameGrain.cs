@@ -33,19 +33,17 @@ public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
 
     public async Task InitializeGameStateAsync(InitializeGameStateCommand command)
     {
-        var isValid = await initializeValidator.ValidateCommandAsync(command, State, this.GetPrimaryKey());
+        // Validate the command.
+        await initializeValidator.ValidateCommandAsync(command, State, this.GetPrimaryKey());
 
-        if (isValid)
+        var evt = new GameStateInitializedEvent(command.GameId, command.PlayerId, command.RecipeIds, command.GameName, command.StartTimeUtc);
+        RaiseEvent(evt);
+        await ConfirmEvents();
+
+        if (gameEventStream != null)
         {
-            var evt = new GameStateInitializedEvent(command.GameId, command.PlayerId, command.RecipeIds, command.GameName, command.StartTimeUtc);
-            RaiseEvent(evt);
-            await ConfirmEvents();
-
-            if (gameEventStream != null)
-            {
-                await gameEventStream.OnNextAsync(evt);
-            }
-        }
+            await gameEventStream.OnNextAsync(evt);
+        }        
     }
 
     public async Task UpdateGameAsync(UpdateGameCommand command)

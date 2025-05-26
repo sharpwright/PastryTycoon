@@ -29,11 +29,11 @@ namespace PastryTycoon.Grains.UnitTests.Validation
                 StartTimeUtc = DateTime.UtcNow
             };
 
-            // Act
-            var result = await validator.ValidateCommandAsync(command, state, primaryKey);
-
-            // Assert
-            Assert.True(result);
+            // Act & Assert 
+            // Validation is successful when method completes without exception.
+            var exception = await Record.ExceptionAsync(() => validator.ValidateCommandAsync(command, state, primaryKey));
+            Assert.Null(exception);
+            
         }
 
         [Fact]

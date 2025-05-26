@@ -7,7 +7,16 @@ namespace PastryTycoon.Grains.Validation;
 
 public abstract class AbstractGrainValidator<TCommand, TState, TPrimaryKey> : AbstractValidator<GrainValidationContext<TCommand, TState, TPrimaryKey>>
 {
-    public virtual async Task<bool> ValidateCommandAsync(
+    /// <summary>
+    /// Validates the command against the grain state and primary key. Throws an <see cref="ArgumentExcepion"/> if validation fails.
+    /// </summary>
+    /// <param name="command"></param>
+    /// <param name="grainState"></param>
+    /// <param name="grainPrimaryKey"></param>
+    /// <throws cref="ArgumentException">
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    public virtual async Task ValidateCommandAsync(
             TCommand command,
             TState grainState,
             TPrimaryKey grainPrimaryKey)
@@ -24,7 +33,5 @@ public abstract class AbstractGrainValidator<TCommand, TState, TPrimaryKey> : Ab
             var errorMessages = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
             throw new ArgumentException(errorMessages);
         }
-                
-        return true;
     }
 }
