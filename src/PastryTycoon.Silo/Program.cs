@@ -12,6 +12,7 @@ using PastryTycoon.Data.Ingredients;
 using PastryTycoon.Grains.Providers;
 using PastryTycoon.Grains.Validation;
 using FluentValidation;
+using PastryTycoon.Grains.CommandHandlers;
 
 
 await Host.CreateDefaultBuilder(args)
@@ -21,6 +22,7 @@ await Host.CreateDefaultBuilder(args)
         services.AddSingleton<IIngredientRepository, IngredientRepository>();
         services.AddSingleton<IGuidProvider, GuidProvider>();
         services.AddSingleton<InitializeGameStateCommandValidator>();
+        services.AddSingleton<InitializeGameCommandHandler>();
     })
     .UseOrleans(static siloBuilder =>
     {

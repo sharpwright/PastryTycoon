@@ -12,6 +12,7 @@ public class GameState
     [Id(3)] public string GameName { get; set; } = string.Empty;
     [Id(4)] public DateTime StartTimeUtc { get; set; }
     [Id(5)] public DateTime LastUpdatedAtTimeUtc { get; set; }
+    [Id(6)] public bool IsInitialized { get; set; } = false;
 
     // Event sourcing: apply GameStartedEvent
     public void Apply(GameStateInitializedEvent evt)
@@ -22,6 +23,7 @@ public class GameState
         GameName = evt.GameName;
         StartTimeUtc = evt.StartTimeUtc;
         LastUpdatedAtTimeUtc = evt.StartTimeUtc;
+        IsInitialized = true;
     }
 
     // Event sourcing: apply GameUpdatedEvent

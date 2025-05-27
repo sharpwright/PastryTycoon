@@ -5,7 +5,7 @@ namespace PastryTycoon.Grains.Events;
 [GenerateSerializer]
 public record GameEvent(
     [property: Id(0)] Guid GameId
-);
+) : IEvent;
 
 [GenerateSerializer]
 public record GameStateInitializedEvent(
@@ -21,7 +21,7 @@ public record GameStateInitializedEvent(
 [GenerateSerializer]
 public record GameUpdatedEvent(
     Guid GameId,
-    [property: Id(1)] string GameName,
+    [property: Id(1)] string GameName,    
     [property: Id(2)] DateTime UpdateTimeUtc
 ) : GameEvent(
     GameId

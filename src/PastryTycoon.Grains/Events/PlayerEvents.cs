@@ -5,7 +5,7 @@ namespace PastryTycoon.Grains.Events;
 [GenerateSerializer]
 public record PlayerEvent(
     [property: Id(0)] Guid PlayerId
-);
+) : IEvent;
 
 [GenerateSerializer]
 public record RecipeDiscoveredEvent(

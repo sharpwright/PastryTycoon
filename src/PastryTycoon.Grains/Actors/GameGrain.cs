@@ -10,6 +10,7 @@ using Orleans.EventSourcing;
 using PastryTycoon.Common.Dto;
 using PastryTycoon.Grains.Validation;
 using FluentValidation;
+using PastryTycoon.Grains.CommandHandlers;
 
 namespace PastryTycoon.Grains.Actors;
 
@@ -18,11 +19,11 @@ namespace PastryTycoon.Grains.Actors;
 public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
 {
     private IAsyncStream<GameEvent>? gameEventStream;
-    private readonly InitializeGameStateCommandValidator initializeValidator;
+    private readonly InitializeGameCommandHandler initializeGameCommandHandler;
 
-    public GameGrain(InitializeGameStateCommandValidator initializeValidator)
+    public GameGrain(InitializeGameCommandHandler initializeGameStateCommand)
     {
-        this.initializeValidator = initializeValidator;
+        this.initializeGameCommandHandler = initializeGameStateCommand;
     }
     public override async Task OnActivateAsync(CancellationToken cancellationToken)
     {
@@ -34,9 +35,14 @@ public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
     public async Task InitializeGameStateAsync(InitializeGameStateCommand command)
     {
         // Validate the command.
-        await initializeValidator.ValidateCommandAsync(command, State, this.GetPrimaryKey());
+        var result = await initializeGameCommandHandler.HandleAsync(command, State, this.GetPrimaryKey());
 
-        var evt = new GameStateInitializedEvent(command.GameId, command.PlayerId, command.RecipeIds, command.GameName, command.StartTimeUtc);
+        if (!result.IsSuccess)
+        {
+            throw new InvalidOperationException($"Failed to initialize game state: {result.ErrorMessage}");
+        }
+
+        var evt = result.GetEvent<GameEvent>();
         RaiseEvent(evt);
         await ConfirmEvents();
 
