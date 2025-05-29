@@ -39,11 +39,11 @@ await Host.CreateDefaultBuilder(args)
 
         // CONFIGURE GRAIN STORAGE: add grain state persistence using Azure Table Storage.
         // UNCOMMENT: when you want a regular Grain to use Table Storage for state persistence.
-        siloBuilder.AddAzureTableGrainStorage(OrleansConstants.GRAINS_STATE_ACHIEVEMENTS, options =>
+        siloBuilder.AddAzureTableGrainStorage(OrleansConstants.GRAIN_STATE_ACHIEVEMENTS, options =>
         {
             options.TableServiceClient = new TableServiceClient(OrleansConstants.AZURE_STORAGE_CONNECTION_STRING);
             options.UseStringFormat = false;
-            options.TableName = OrleansConstants.GRAINS_STATE_ACHIEVEMENTS;
+            options.TableName = OrleansConstants.GRAIN_STATE_ACHIEVEMENTS;
         });
 
         // CONFIGURE STREAMING API: add streaming using Azure Queue Storage.

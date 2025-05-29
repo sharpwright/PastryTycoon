@@ -1,4 +1,5 @@
 using System;
+using System.Linq.Expressions;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -9,7 +10,6 @@ using PastryTycoon.Core.Abstractions.Achievements;
 using PastryTycoon.Core.Abstractions.Constants;
 using PastryTycoon.Core.Abstractions.Player;
 using PastryTycoon.Core.Grains.Achievements;
-using PastryTycoon.Core.Grains.Achievements.UnlockHandlers;
 using PastryTycoon.Core.Grains.Player;
 
 namespace PastryTycoon.Core.Grains.UnitTests.Achievements;
@@ -18,9 +18,9 @@ public class AchievementsGrainTests : TestKitBase
 {
     private readonly Mock<ILogger<IAchievementsGrain>> loggerMock;
 
-    public AchievementsGrainTests() 
+    public AchievementsGrainTests()
     {
-        loggerMock = new Mock<ILogger<IAchievementsGrain>>();          
+        loggerMock = new Mock<ILogger<IAchievementsGrain>>();
     }
 
     [Fact]
@@ -51,37 +51,40 @@ public class AchievementsGrainTests : TestKitBase
             "Should implement IStreamSubscriptionObserver");
     }
 
-    [Fact]
-    public async Task Handle_RecipeDiscoveredEvent_UnlocksAchievement()
+    [Theory]
+    [MemberData(nameof(AchievementsTestData.UnlockAchievementIdForGivenEventAndState), MemberType = typeof(AchievementsTestData))]
+    public async Task OnNextAsync_ShouldUpdateState_AndShouldUnlockAchievementIdForGivenEventAndState(
+        PlayerEvent playerEvent,
+        AchievementsState grainState,
+        string expectedAchievementId,
+        Expression<Func<AchievementsState, bool>> stateValidationExpression)
     {
         // Arrange
-        var playerId = Guid.NewGuid();
-        var recipeId = Guid.NewGuid();
-        var evt = new RecipeDiscoveredEvent(playerId, recipeId, DateTime.UtcNow);
-        var state = new AchievementsState
-        {
-            RecipesDiscovered = 0,
-            RareIngredientsUsed = new()
-        };
-
-        Silo.AddService(loggerMock.Object);
-        Silo.AddPersistentState(OrleansConstants.GRAINS_STATE_ACHIEVEMENTS, OrleansConstants.GRAINS_STATE_ACHIEVEMENTS, state);
-
         var player = new Mock<IPlayerGrain>();
         Silo.AddProbe(identity => player);
-
-        var grain = await Silo.CreateGrainAsync<AchievementsGrain>(playerId);
+        Silo.AddService(loggerMock.Object);
+        Silo.AddPersistentState(OrleansConstants.GRAIN_STATE_ACHIEVEMENTS, OrleansConstants.GRAIN_STATE_ACHIEVEMENTS, grainState);
+        var grain = await Silo.CreateGrainAsync<AchievementsGrain>(playerEvent.PlayerId);
 
         // Act
-        await grain.OnNextAsync(evt);
+        await grain.OnNextAsync(playerEvent);
 
-        // Assert            
-        Assert.Equal(1, state.RecipesDiscovered);
+        // Assert  
+        Assert.True(stateValidationExpression.Compile().Invoke(grainState),
+            $"""
+            State mismatch detected!
+            Current State: {grainState}
+            Expected New State Condition: {stateValidationExpression.Body}
+            Check if the event updates the state correctly.
+            """);
 
         // Verify behaviour
         player.Verify(
-            x => x.UnlockAchievementAsync(AchievementConstants.FIRST_RECIPE_DISCOVERED, It.IsAny<DateTime>()),
+            x => x.UnlockAchievementAsync(expectedAchievementId, It.IsAny<DateTime>()),
             Times.Once,
-            "Player grain should be called to unlock the achievement.");
+            $"""
+            Achievement unlock verification failed!
+            Expected player grain to be called to unlock the achievement '{expectedAchievementId}'.
+            """);
     }
 }

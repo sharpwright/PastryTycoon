@@ -25,7 +25,7 @@ public class AchievementsGrain : Grain, IAchievementsGrain,
     };
 
     public AchievementsGrain(ILogger<IAchievementsGrain> logger,
-        [PersistentState(OrleansConstants.GRAINS_STATE_ACHIEVEMENTS, OrleansConstants.GRAINS_STATE_ACHIEVEMENTS)] IPersistentState<AchievementsState> state)
+        [PersistentState(OrleansConstants.GRAIN_STATE_ACHIEVEMENTS, OrleansConstants.GRAIN_STATE_ACHIEVEMENTS)] IPersistentState<AchievementsState> state)
     {
         this.logger = logger;
         this.state = state;
@@ -59,7 +59,7 @@ public class AchievementsGrain : Grain, IAchievementsGrain,
             try
             {
                 var result = await handler.CheckUnlockConditionAsync(item, this.state.State);
-                if (result.IsUnlocked)
+                if (result.IsUnlocked && result.AchievementId != null)
                 {
                     // Call player grain to add unlocked achievement to the player state.
                     var playerGrain = GrainFactory.GetGrain<IPlayerGrain>(item.PlayerId);
@@ -79,7 +79,7 @@ public class AchievementsGrain : Grain, IAchievementsGrain,
 
     public async Task OnSubscribed(IStreamSubscriptionHandleFactory handleFactory)
     {
-        // Plug our IGameStartedEventObserver to the stream
+        // Plug our observer to the stream
         var handle = handleFactory.Create<PlayerEvent>();
         await handle.ResumeAsync(this);
     }
