@@ -19,8 +19,4 @@
     <ProjectReference Include="..\PastryTycoon.Data\PastryTycoon.Data.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Validation\" />
-  </ItemGroup>
-
 </Project>
