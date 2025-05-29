@@ -1,7 +1,7 @@
 using System;
 using Orleans;
 
-namespace PastryTycoon.Core.Abstractions.EventHandlers;
+namespace PastryTycoon.Core.Abstractions.Achievements;
 
 public interface IAchievementGrain : IGrainWithGuidKey
 {

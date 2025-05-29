@@ -7,8 +7,8 @@ using Orleans.TestKit;
 using PastryTycoon.Core.Abstractions.Constants;
 using System.Reflection;
 using Orleans.Streams.Core;
-using PastryTycoon.Core.Abstractions.EventHandlers;
 using PastryTycoon.Core.Grains.Game;
+using PastryTycoon.Core.Abstractions.Game;
 
 namespace PastryTycoon.Core.Grains.UnitTests.Game
 {

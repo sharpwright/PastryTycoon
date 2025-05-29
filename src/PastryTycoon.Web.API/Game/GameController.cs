@@ -1,15 +1,15 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Orleans.Runtime.GrainDirectory;
 using PastryTycoon.Core.Abstractions.Game;
 
-namespace PastryTycoon.Web.API.GameManager
+namespace PastryTycoon.Web.API.Game
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GameManagerController : ControllerBase
+    public class GameController : ControllerBase
     {
-        public GameManagerController(IClusterClient clusterClient)
+        public GameController(IClusterClient clusterClient)
         {
             ClusterClient = clusterClient;
         }
@@ -17,13 +17,14 @@ namespace PastryTycoon.Web.API.GameManager
         public IClusterClient ClusterClient { get; }
 
         [HttpGet("{gameId}")]
-        public IActionResult Get(Guid gameId)
+        public async Task<IActionResult> Get(Guid gameId)
         {            
             var gameGrain = ClusterClient.GetGrain<IGameGrain>(gameId);
-            return Ok();
+            var stats = await gameGrain.GetGameStatisticsAsync(gameId);
+            return Ok(stats);
         }
 
-        [HttpPut("/start")]
+        [HttpPost("initialize")]
         public async Task<IActionResult> StartGame([FromBody] StartGameRequest request)
         {
             if (request == null)
@@ -42,7 +43,7 @@ namespace PastryTycoon.Web.API.GameManager
             return Ok(newGameId);
         }
 
-        [HttpPost("/update")]
+        [HttpPost("update")]
         public async Task<IActionResult> UpdateGame([FromBody] UpdateGameRequest request)
         {
             if (request == null || request.GameId == Guid.Empty)

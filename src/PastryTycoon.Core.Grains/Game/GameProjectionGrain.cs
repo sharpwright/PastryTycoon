@@ -1,9 +1,9 @@
 using System;
 using PastryTycoon.Core.Abstractions.Constants;
-using PastryTycoon.Core.Abstractions.EventHandlers;
 using Microsoft.Extensions.Logging;
 using Orleans.Streams;
 using Orleans.Streams.Core;
+using PastryTycoon.Core.Abstractions.Game;
 
 namespace PastryTycoon.Core.Grains.Game;
 
