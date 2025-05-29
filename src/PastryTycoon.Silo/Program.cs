@@ -1,6 +1,6 @@
 ﻿using Azure.Data.Tables;
 using Azure.Storage.Queues;
-using PastryTycoon.Common.Constants;
+using PastryTycoon.Core.Abstractions.Constants;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -9,9 +9,9 @@ using Microsoft.Extensions.Options;
 using Orleans.Configuration;
 using PastryTycoon.Data.Recipes;
 using PastryTycoon.Data.Ingredients;
-using PastryTycoon.Grains.Providers;
-using PastryTycoon.Grains.Validation;
 using FluentValidation;
+using PastryTycoon.Core.Grains.Game.Validators;
+using PastryTycoon.Core.Grains.Common;
 
 
 await Host.CreateDefaultBuilder(args)

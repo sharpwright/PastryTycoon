@@ -1,5 +1,5 @@
 using Azure.Data.Tables;
-using PastryTycoon.Common.Constants;
+using PastryTycoon.Core.Abstractions.Constants;
 using Orleans.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
