@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Orleans.Streams;
-using Orleans.TestKit;
 using PastryTycoon.Core.Abstractions.Constants;
 using System.Reflection;
 using Orleans.Streams.Core;
@@ -12,7 +11,7 @@ using PastryTycoon.Core.Abstractions.Game;
 
 namespace PastryTycoon.Core.Grains.UnitTests.Game
 {
-    public class GameProjectionGrainTests : TestKitBase
+    public class GameProjectionGrainTests
     {
         private readonly Mock<ILogger<IGameProjectionGrain>> loggerMock;
         private readonly GameProjectionGrain grain;
@@ -61,7 +60,7 @@ namespace PastryTycoon.Core.Grains.UnitTests.Game
             var evt = new GameStateInitializedEvent(gameId, playerId, recipeIds, "TestGame", DateTime.UtcNow);
 
             // Act
-            await grain.Handle(evt);
+            await grain.HandleGameInitiliazedEventAsync(evt);
 
             // Assert
             loggerMock.Verify(
@@ -81,7 +80,7 @@ namespace PastryTycoon.Core.Grains.UnitTests.Game
             var evt = new GameUpdatedEvent(Guid.NewGuid(), "TestGame", DateTime.UtcNow);
 
             // Act
-            await grain.Handle(evt);
+            await grain.HandleGameUpdatedEventAsync(evt);
 
             // Assert
             loggerMock.Verify(

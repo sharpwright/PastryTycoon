@@ -41,17 +41,17 @@ private IAsyncStream<PlayerEvent>? playerEventStream;
         }        
     }
 
-    public async Task UnlockAchievementAsync(string achievement, DateTime unlockedAtUtc)
+    public virtual async Task UnlockAchievementAsync(string achievementId, DateTime unlockedAtUtc)
     {
-        if (string.IsNullOrEmpty(achievement))
+        if (string.IsNullOrEmpty(achievementId))
         {
-            throw new ArgumentException("Achievement cannot be null or empty.", nameof(achievement));
+            throw new ArgumentException("Achievement cannot be null or empty.", nameof(achievementId));
         }
 
-        if (!State.Achievements.ContainsKey(achievement))
+        if (!State.Achievements.ContainsKey(achievementId))
         {
-            // If the achievement is not already unlocked, apply the achievement unlock.            
-            var evt = new AchievementUnlockedEvent(State.PlayerId, achievement, unlockedAtUtc);
+            // Update player state to include the new achievement
+            var evt = new AchievementUnlockedEvent(State.PlayerId, achievementId, unlockedAtUtc);
             RaiseEvent(evt);
             await ConfirmEvents();
         }

@@ -39,11 +39,12 @@ await Host.CreateDefaultBuilder(args)
 
         // CONFIGURE GRAIN STORAGE: add grain state persistence using Azure Table Storage.
         // UNCOMMENT: when you want a regular Grain to use Table Storage for state persistence.
-        // siloBuilder.AddAzureTableGrainStorage(OrleansConstants.AZURE_TABLE_GRAIN_STORAGE, options =>
-        // {
-        //     options.TableServiceClient = new TableServiceClient(OrleansConstants.STORAGE_CONNECTION_STRING);
-        //     options.UseStringFormat = false;
-        // });
+        siloBuilder.AddAzureTableGrainStorage(OrleansConstants.GRAINS_STATE_ACHIEVEMENTS, options =>
+        {
+            options.TableServiceClient = new TableServiceClient(OrleansConstants.AZURE_STORAGE_CONNECTION_STRING);
+            options.UseStringFormat = false;
+            options.TableName = OrleansConstants.GRAINS_STATE_ACHIEVEMENTS;
+        });
 
         // CONFIGURE STREAMING API: add streaming using Azure Queue Storage.
         siloBuilder.AddAzureQueueStreams(OrleansConstants.AZURE_QUEUE_STREAM_PROVIDER, optionsBuilder =>
@@ -64,13 +65,13 @@ await Host.CreateDefaultBuilder(args)
         });
 
         // CONFIGURE EVENT SOURCING: add consistency provider to store all events in a log.
-        siloBuilder.AddLogStorageBasedLogConsistencyProvider("EventLog");
+        siloBuilder.AddLogStorageBasedLogConsistencyProvider(OrleansConstants.EVENT_SOURCING_LOG_PROVIDER);
 
         // CONFIGURE EVENT SOURCING: add GameEvent log storage using Azure Table Storage. 
-        siloBuilder.AddAzureTableGrainStorage("GameEventLog", options =>
+        siloBuilder.AddAzureTableGrainStorage(OrleansConstants.EVENT_SOURCING_LOG_STORAGE_GAME_EVENTS, options =>
         {            
             options.TableServiceClient = new TableServiceClient(OrleansConstants.AZURE_STORAGE_CONNECTION_STRING);
-            options.TableName = "GameEventLog";
+            options.TableName = OrleansConstants.EVENT_SOURCING_LOG_STORAGE_GAME_EVENTS;
             options.UseStringFormat = true;
         });
 

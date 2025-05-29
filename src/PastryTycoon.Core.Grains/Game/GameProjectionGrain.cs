@@ -41,32 +41,31 @@ public class GameProjectionGrain : Grain,
         await handle.ResumeAsync(this);
     }
 
-    public Task OnNextAsync(GameEvent item, StreamSequenceToken? token = null)
+    public async Task OnNextAsync(GameEvent item, StreamSequenceToken? token = null)
     {
         // Handle the GameEvent here
         switch (item)
         {
             case GameStateInitializedEvent started:
-                Handle(started, token);
+                await HandleGameInitiliazedEventAsync(started, token);
                 break;
             case GameUpdatedEvent updated:
-                Handle(updated, token);
+                await HandleGameUpdatedEventAsync(updated, token);
                 break;
             default:
-                logger.LogWarning("Unknown event type received.");
+                logger.LogWarning("Unhandled GameEvent type: {EventType}", item.GetType().Name);
                 break;
         }
-        return Task.CompletedTask;
     }
 
-    public Task Handle(GameStateInitializedEvent item, StreamSequenceToken? token = null)
+    public Task HandleGameInitiliazedEventAsync(GameStateInitializedEvent item, StreamSequenceToken? token = null)
     {
         // TODO: Handle the GameStartedEvent here.
         logger.LogInformation($"Game started at {item.StartTimeUtc}");
         return Task.CompletedTask;
     }
 
-    public Task Handle(GameUpdatedEvent item, StreamSequenceToken? token = null)
+    public Task HandleGameUpdatedEventAsync(GameUpdatedEvent item, StreamSequenceToken? token = null)
     {
         // TODO: Handle the GameUpdatedEvent here
         logger.LogInformation($"Game updated at {item.UpdateTimeUtc}");

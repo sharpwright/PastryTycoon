@@ -3,7 +3,7 @@ using Orleans;
 
 namespace PastryTycoon.Core.Abstractions.Achievements;
 
-public interface IAchievementGrain : IGrainWithGuidKey
+public interface IAchievementsGrain : IGrainWithGuidKey
 {
 
 }
