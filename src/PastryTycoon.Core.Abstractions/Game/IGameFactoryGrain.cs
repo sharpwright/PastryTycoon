@@ -8,8 +8,7 @@ public interface IGameFactoryGrain : IGrainWithGuidKey
     /// <summary>
     /// Creates a new game for the specified player with the given game name.
     /// </summary>
-    /// <param name="playerId"></param>
-    /// <param name="gameName"></param>
+/// <param name="command">Command containing player ID, player name, and difficulty level.</param>
     /// <returns></returns>
-    Task<Guid> CreateNewGameAsync(Guid playerId, string gameName);
+    Task<Guid> CreateNewGameAsync(CreateNewGameCommand command);
 }

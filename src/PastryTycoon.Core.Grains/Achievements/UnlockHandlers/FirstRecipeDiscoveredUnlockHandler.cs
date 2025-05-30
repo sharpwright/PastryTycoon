@@ -8,7 +8,7 @@ public class FirstRecipeDiscoveredUnlockHandler : IUnlockHandler
 {
     public Task<UnlockResult> CheckUnlockConditionAsync(PlayerEvent playerEvent, AchievementsState state)
     {
-        if (playerEvent is RecipeDiscoveredEvent evt)
+        if (playerEvent is PlayerDiscoveredRecipeEvent evt)
         {
             if (state.RecipesDiscovered == 1) 
             {

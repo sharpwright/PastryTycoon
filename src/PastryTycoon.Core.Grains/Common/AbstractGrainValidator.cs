@@ -15,7 +15,7 @@ public abstract class AbstractGrainValidator<TCommand, TState, TPrimaryKey> : Ab
     /// <throws cref="ArgumentException">
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
-    public virtual async Task ValidateCommandAsync(
+    public virtual async Task ValidateCommandAndThrowsAsync(
             TCommand command,
             TState grainState,
             TPrimaryKey grainPrimaryKey)
@@ -29,8 +29,8 @@ public abstract class AbstractGrainValidator<TCommand, TState, TPrimaryKey> : Ab
         var validationResult = await ValidateAsync(context);
         if (!validationResult.IsValid)
         {
-            var errorMessages = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
-            throw new ArgumentException(errorMessages);
+            var errorMessages = string.Join("; ", validationResult.Errors.Select(e => $"'{e.PropertyName}': '{e.ErrorMessage}'"));
+            throw new ArgumentException(errorMessages, nameof(command));
         }
     }
 }

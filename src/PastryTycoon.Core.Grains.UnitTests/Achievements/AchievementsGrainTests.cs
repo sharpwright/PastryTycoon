@@ -80,11 +80,14 @@ public class AchievementsGrainTests : TestKitBase
 
         // Verify behaviour
         player.Verify(
-            x => x.UnlockAchievementAsync(expectedAchievementId, It.IsAny<DateTime>()),
+            x => x.UnlockAchievementAsync(It.Is<UnlockAchievementCommand>(cmd => 
+                cmd.PlayerId == playerEvent.PlayerId &&
+                cmd.AchievementId == expectedAchievementId &&
+                cmd.UnlockedAtUtc != default)),        
             Times.Once,
             $"""
             Achievement unlock verification failed!
-            Expected player grain to be called to unlock the achievement '{expectedAchievementId}'.
+            Expected player grain (playerId = '{playerEvent.PlayerId}') to be called to unlock the achievement '{expectedAchievementId}'.
             """);
     }
 }

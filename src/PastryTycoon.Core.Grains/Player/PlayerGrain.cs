@@ -4,6 +4,8 @@ using Orleans.EventSourcing;
 using Orleans.Providers;
 using Orleans.Streams;
 using PastryTycoon.Core.Abstractions.Player;
+using PastryTycoon.Data.Recipes;
+using PastryTycoon.Core.Grains.Player.Validators;
 
 namespace PastryTycoon.Core.Grains.Player;
 
@@ -11,7 +13,7 @@ namespace PastryTycoon.Core.Grains.Player;
 [StorageProvider(ProviderName = OrleansConstants.EVENT_SOURCING_LOG_STORAGE_PLAYER_EVENTS)]
 public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrain
 {
-private IAsyncStream<PlayerEvent>? playerEventStream;
+    private IAsyncStream<PlayerEvent>? playerEventStream;
 
     public override async Task OnActivateAsync(CancellationToken cancellationToken)
     {
@@ -20,40 +22,73 @@ private IAsyncStream<PlayerEvent>? playerEventStream;
         await base.OnActivateAsync(cancellationToken);
     }
 
-    public async Task DiscoverRecipeAsync(DiscoverRecipeCommand command)
+    public async Task InitializeAsync(InitializePlayerCommand command)
     {
-        if (command == null)
-        {
-            throw new ArgumentNullException(nameof(command), "DiscoverRecipeCommand cannot be null.");
-        }
+        var validator = new InitializePlayerCommandValidator();
+        await validator.ValidateCommandAndThrowsAsync(command, State, this.GetPrimaryKey());
 
-        if (!State.KnownRecipeIds.ContainsKey(command.RecipeId))
+        var evt = new PlayerInitializedEvent
         {
-            // If the recipe is not already known, apply the discovery.
-            var evt = new RecipeDiscoveredEvent(command.PlayerId, command.RecipeId, command.DiscoveryTimeUtc);
-            RaiseEvent(evt);
-            await ConfirmEvents();
+            PlayerId = this.GetPrimaryKey(),
+            PlayerName = command.PlayerName,
+            GameId = command.GameId,
+            CreatedAtUtc = DateTime.UtcNow
+        };
 
-            if (playerEventStream != null)
-            {
-                await playerEventStream.OnNextAsync(evt);
-            }
-        }        
+        RaiseEvent(evt);
+        await ConfirmEvents();
     }
 
-    public virtual async Task UnlockAchievementAsync(string achievementId, DateTime unlockedAtUtc)
+    public async Task DiscoverRecipeAsync(DiscoverRecipeCommand command)
     {
-        if (string.IsNullOrEmpty(achievementId))
-        {
-            throw new ArgumentException("Achievement cannot be null or empty.", nameof(achievementId));
-        }
+        var validator = new DiscoverRecipeCommandValidator();
+        await validator.ValidateCommandAndThrowsAsync(command, State, this.GetPrimaryKey());
 
-        if (!State.Achievements.ContainsKey(achievementId))
+        // If the recipe is not already known, apply the discovery.
+        var evt = new PlayerDiscoveredRecipeEvent
         {
-            // Update player state to include the new achievement
-            var evt = new AchievementUnlockedEvent(State.PlayerId, achievementId, unlockedAtUtc);
-            RaiseEvent(evt);
-            await ConfirmEvents();
+            PlayerId = command.PlayerId,
+            RecipeId = command.RecipeId,
+            DiscoveryTimeUtc = command.DiscoveryTimeUtc
+        };
+        RaiseEvent(evt);
+        await ConfirmEvents();
+
+        if (playerEventStream != null)
+        {
+            await playerEventStream.OnNextAsync(evt);
         }
+    }    
+
+    public virtual async Task UnlockAchievementAsync(UnlockAchievementCommand command)
+    {
+        var validator = new UnlockAchievementCommandValidator();
+        await validator.ValidateCommandAndThrowsAsync(command, State, this.GetPrimaryKey());
+
+        var achievementId = command.AchievementId;
+        var unlockedAtUtc = command.UnlockedAtUtc;
+
+        // Update player state to include the new achievement
+        var evt = new PlayerUnlockedAchievementEvent
+        {
+            PlayerId = command.PlayerId,
+            AchievementId = achievementId,
+            UnlockedAtUtc = unlockedAtUtc
+        };
+        RaiseEvent(evt);
+        await ConfirmEvents();
+    }
+
+    public Task<PlayerStatisticsDto> GetPlayerStatisticsAsync()
+    {
+        return Task.FromResult(new PlayerStatisticsDto
+        {
+            PlayerId = this.GetPrimaryKey(),
+            PlayerName = State.PlayerName,
+            TotalRecipesDiscovered = State.DiscoveredRecipeIds.Count,
+            TotalAchievementsUnlocked = State.UnlockedAchievements.Count,
+            CreatedAtUtc = State.CreatedAtUtc,
+            LastActivityAtUtc = State.LastActivityAtUtc
+        });
     }
 }

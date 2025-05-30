@@ -57,7 +57,7 @@ namespace PastryTycoon.Core.Grains.UnitTests.Game
             var gameId = Guid.NewGuid();
             var playerId = Guid.NewGuid();
             var recipeIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };            
-            var evt = new GameStateInitializedEvent(gameId, playerId, recipeIds, "TestGame", DateTime.UtcNow);
+            var evt = new GameStateInitializedEvent(gameId, playerId, recipeIds, DateTime.UtcNow);
 
             // Act
             await grain.HandleGameInitiliazedEventAsync(evt);

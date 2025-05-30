@@ -5,6 +5,8 @@ namespace PastryTycoon.Core.Abstractions.Player;
 
 public interface IPlayerGrain : IGrainWithGuidKey
 {
+    public Task InitializeAsync(InitializePlayerCommand command);
     public Task DiscoverRecipeAsync(DiscoverRecipeCommand command);
-    public Task UnlockAchievementAsync(string achievement, DateTime unlockedAtUtc);
+    public Task UnlockAchievementAsync(UnlockAchievementCommand command);
+    public Task<PlayerStatisticsDto> GetPlayerStatisticsAsync();
 }

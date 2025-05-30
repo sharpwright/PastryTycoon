@@ -37,7 +37,7 @@ public class AchievementsGrain : Grain, IAchievementsGrain,
 
         switch (item)
         {
-            case RecipeDiscoveredEvent e:
+            case PlayerDiscoveredRecipeEvent e:
                 this.state.State.RecipesDiscovered++;
                 break;
             default:
@@ -63,7 +63,12 @@ public class AchievementsGrain : Grain, IAchievementsGrain,
                 {
                     // Call player grain to add unlocked achievement to the player state.
                     var playerGrain = GrainFactory.GetGrain<IPlayerGrain>(item.PlayerId);
-                    await playerGrain.UnlockAchievementAsync(result.AchievementId, DateTime.UtcNow);
+                    var command = new UnlockAchievementCommand(
+                        PlayerId: item.PlayerId,
+                        AchievementId: result.AchievementId,
+                        UnlockedAtUtc: DateTime.UtcNow
+                    );
+                    await playerGrain.UnlockAchievementAsync(command);
                     this.logger.LogInformation("Achievement unlocked: {AchievementId}", result.AchievementId);                    
                 }
             }

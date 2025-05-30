@@ -16,7 +16,7 @@ namespace PastryTycoon.Core.Grains.UnitTests.Game.Validators
             var gameId = primaryKey;
             var playerId = Guid.NewGuid();
             var recipeIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
-            var command = new InitializeGameStateCommand(gameId, playerId, recipeIds, "Test Game", DateTime.UtcNow);
+            var command = new InitializeGameStateCommand(gameId, playerId, recipeIds, DateTime.UtcNow);
             var validator = new InitializeGameStateCommandValidator();
 
             var state = new GameState
@@ -24,13 +24,12 @@ namespace PastryTycoon.Core.Grains.UnitTests.Game.Validators
                 GameId = gameId,
                 PlayerId = playerId,
                 DiscoverableRecipeIds = recipeIds.ToImmutableList(),
-                GameName = "Test Game",
                 StartTimeUtc = DateTime.UtcNow
             };
 
             // Act & Assert 
             // Validation is successful when method completes without exception.
-            var exception = await Record.ExceptionAsync(() => validator.ValidateCommandAsync(command, state, primaryKey));
+            var exception = await Record.ExceptionAsync(() => validator.ValidateCommandAndThrowsAsync(command, state, primaryKey));
             Assert.Null(exception);
             
         }
@@ -43,7 +42,7 @@ namespace PastryTycoon.Core.Grains.UnitTests.Game.Validators
             var gameId = Guid.NewGuid();
             var playerId = Guid.NewGuid();
             var recipeIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
-            var command = new InitializeGameStateCommand(gameId, playerId, recipeIds, "Test Game", DateTime.UtcNow);
+            var command = new InitializeGameStateCommand(gameId, playerId, recipeIds, DateTime.UtcNow);
             var validator = new InitializeGameStateCommandValidator();
 
             var state = new GameState
@@ -51,13 +50,12 @@ namespace PastryTycoon.Core.Grains.UnitTests.Game.Validators
                 GameId = gameId,
                 PlayerId = playerId,
                 DiscoverableRecipeIds = recipeIds.ToImmutableList(),
-                GameName = "Test Game",
                 StartTimeUtc = DateTime.UtcNow
             };
 
             // Act & Assert
             var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
-                validator.ValidateCommandAsync(command, state, primaryKey));
+                validator.ValidateCommandAndThrowsAsync(command, state, primaryKey));
 
             Assert.Contains("GameId must match grain primary key", exception.Message);
         }

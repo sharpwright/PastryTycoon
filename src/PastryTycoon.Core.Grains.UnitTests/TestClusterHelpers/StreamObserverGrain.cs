@@ -1,4 +1,5 @@
 using System;
+using System.Reflection.Metadata.Ecma335;
 using Orleans.Streams;
 
 namespace PastryTycoon.Core.Grains.UnitTests.TestClusterHelpers;
@@ -15,6 +16,8 @@ public class StreamObserverGrain<TEvent> : Grain, IStreamObserverGrain<TEvent>, 
     }
 
     public Task<List<TEvent>> GetReceivedEventsAsync() => Task.FromResult(_received);
+
+    public Task ClearReceivedEventsAsync() { _received.Clear(); return Task.CompletedTask; }
 
     public Task OnNextAsync(TEvent item, StreamSequenceToken? token = null)
     {

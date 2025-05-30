@@ -31,7 +31,7 @@ namespace PastryTycoon.Core.Grains.UnitTests.Game;
 /// </remarks>
 /// <returns></returns>
 [Collection(ClusterCollection.Name)]
-public class GameGrainSequenceTests(ClusterFixture fixture)
+public class GameGrainIntegrationTests(ClusterFixture fixture)
 {
     private readonly TestCluster cluster = fixture.Cluster;
 
@@ -42,18 +42,22 @@ public class GameGrainSequenceTests(ClusterFixture fixture)
         var gameId = Guid.NewGuid();
         var playerId = Guid.NewGuid();
         var recipeIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
-        var initializeGameStateCommand = new InitializeGameStateCommand(gameId, playerId, recipeIds, "Test Game", DateTime.UtcNow);
-        var updateGameCommand = new UpdateGameCommand(gameId, "Updated Game", DateTime.UtcNow.AddMinutes(10));
+        var initializeGameStateCommand = new InitializeGameStateCommand(gameId, playerId, recipeIds, DateTime.UtcNow);
+        var updateGameCommand = new UpdateGameCommand(gameId, "Updated Game", DateTime.UtcNow.AddMilliseconds(1));
         var gameGrain = cluster.GrainFactory.GetGrain<IGameGrain>(gameId);
 
         // Act
         await gameGrain.InitializeGameStateAsync(initializeGameStateCommand);
-        await gameGrain.UpdateGameAsync(updateGameCommand);
         var gameStatistics = await gameGrain.GetGameStatisticsAsync(gameId);
+        var lastUpdated = gameStatistics.LastUpdatedUtc;
+
+        await gameGrain.UpdateGameAsync(updateGameCommand);
+        gameStatistics = await gameGrain.GetGameStatisticsAsync(gameId);
 
         // Assert
         Assert.Equal(gameId, gameStatistics.GameId);
         Assert.Equal(playerId, gameStatistics.PlayerId);
-        Assert.Equal("Updated Game", gameStatistics.GameName);
+        Assert.True(lastUpdated < gameStatistics.LastUpdatedUtc, 
+            "Last updated time should be updated after the UpdateGame command.");
     }
 }

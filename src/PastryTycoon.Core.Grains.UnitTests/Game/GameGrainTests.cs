@@ -28,7 +28,7 @@ namespace PastryTycoon.Core.Grains.UnitTests.Game
             var playerId = Guid.NewGuid();
             var recipeIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
             var startTimeUtc = DateTime.UtcNow;
-            var command = new InitializeGameStateCommand(gameId, playerId, recipeIds, "Test Game", startTimeUtc);
+            var command = new InitializeGameStateCommand(gameId, playerId, recipeIds, startTimeUtc);
             var grain = cluster.GrainFactory.GetGrain<IGameGrain>(gameId);
 
             // Act
@@ -39,7 +39,6 @@ namespace PastryTycoon.Core.Grains.UnitTests.Game
             Assert.Equal(gameId, gameStatistics.GameId);
             Assert.Equal(playerId, gameStatistics.PlayerId);
             Assert.Equal(recipeIds.Count, gameStatistics.TotalRecipes);
-            Assert.Equal("Test Game", gameStatistics.GameName);
             Assert.Equal(startTimeUtc, gameStatistics.StartTimeUtc);
         }
 
@@ -50,7 +49,7 @@ namespace PastryTycoon.Core.Grains.UnitTests.Game
             var gameId = Guid.NewGuid();
             var playerId = Guid.NewGuid();
             var recipeIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
-            var command = new InitializeGameStateCommand(gameId, playerId, recipeIds, "Test Game", DateTime.UtcNow);
+            var command = new InitializeGameStateCommand(gameId, playerId, recipeIds, DateTime.UtcNow);
             var grain = cluster.GrainFactory.GetGrain<IGameGrain>(gameId);
             var observer = cluster.GrainFactory.GetGrain<IStreamObserverGrain<GameEvent>>(gameId);
             await observer.SubscribeAsync(OrleansConstants.STREAM_NAMESPACE_GAME_EVENTS, OrleansConstants.AZURE_QUEUE_STREAM_PROVIDER);
@@ -64,8 +63,7 @@ namespace PastryTycoon.Core.Grains.UnitTests.Game
             Assert.True(received, "No events received within timeout.");
             Assert.Single(events, evt =>
                 evt is GameStateInitializedEvent e &&
-                e.GameId == gameId &&
-                e.GameName == "Test Game");
+                e.GameId == gameId);
         }     
     }
 }

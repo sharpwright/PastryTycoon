@@ -25,7 +25,7 @@ public class FirstRecipeDiscoveredUnlockHandlerTests
         {
             RecipesDiscovered = 1 // Start with no recipes discovered
         };
-        var evt = new RecipeDiscoveredEvent(playerId, recipeId, DateTime.UtcNow);
+        var evt = new PlayerDiscoveredRecipeEvent { PlayerId = playerId, RecipeId = recipeId, DiscoveryTimeUtc = DateTime.UtcNow };
 
         // Act
         var result = await handler.CheckUnlockConditionAsync(evt, state);
@@ -45,8 +45,8 @@ public class FirstRecipeDiscoveredUnlockHandlerTests
         {
             RecipesDiscovered = 2 // More than one recipe discovered
         };
-        var evt = new RecipeDiscoveredEvent(playerId, recipeId, DateTime.UtcNow);
-
+        var evt = new PlayerDiscoveredRecipeEvent { PlayerId = playerId, RecipeId = recipeId, DiscoveryTimeUtc = DateTime.UtcNow };
+        
         // Act
         var result = await handler.CheckUnlockConditionAsync(evt, state);
 

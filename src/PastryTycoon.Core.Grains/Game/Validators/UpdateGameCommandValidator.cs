@@ -5,9 +5,9 @@ using PastryTycoon.Core.Grains.Common;
 
 namespace PastryTycoon.Core.Grains.Game.Validators;
 
-public class InitializeGameStateCommandValidator : AbstractGrainValidator<InitializeGameStateCommand, GameState, Guid>
+public class UpdateGameCommandValidator : AbstractGrainValidator<UpdateGameCommand, GameState, Guid>
 {
-    public InitializeGameStateCommandValidator()
+    public UpdateGameCommandValidator()
     {
         RuleFor(x => x.Command.GameId)
             .NotEmpty()
@@ -15,17 +15,14 @@ public class InitializeGameStateCommandValidator : AbstractGrainValidator<Initia
             .Must((context, gameId) => gameId == context.GrainPrimaryKey)
             .WithMessage("GameId must match grain primary key");
 
-        RuleFor(x => x.Command.PlayerId)
+        RuleFor(x => x.Command.GameName)
             .NotEmpty()
-            .WithMessage("PlayerId is required");
+            .WithMessage("GameName is required");
 
-        RuleFor(x => x.Command.RecipeIds)
-            .NotNull()
-            .WithMessage("RecipeIds cannot be null");
-
-        RuleFor(x => x.Command.StartTimeUtc)
+        RuleFor(x => x.Command.UpdateTimeUtc)
             .NotEmpty()
-            .WithMessage("StartTimeUtc is required");
+            .WithMessage("UpdateTimeUtc is required")
+            .Must(updateTime => updateTime <= DateTime.UtcNow)
+            .WithMessage("UpdateTimeUtc must be in the past or present");
     }
-
 }

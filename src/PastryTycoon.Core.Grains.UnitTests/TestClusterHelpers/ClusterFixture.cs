@@ -30,13 +30,14 @@ file sealed class TestSiloConfigurations : ISiloConfigurator
         siloBuilder.AddMemoryGrainStorage(OrleansConstants.STREAM_PUBSUB_STORE);
         siloBuilder.AddLogStorageBasedLogConsistencyProvider(OrleansConstants.EVENT_SOURCING_LOG_PROVIDER);
         siloBuilder.AddMemoryGrainStorage(OrleansConstants.EVENT_SOURCING_LOG_STORAGE_GAME_EVENTS);
+        siloBuilder.AddMemoryGrainStorage(OrleansConstants.EVENT_SOURCING_LOG_STORAGE_PLAYER_EVENTS);
         siloBuilder.ConfigureServices(static services =>
         {
             // Mock the InitializeGameStateCommandValidator to always succeed.
             // The validator has its own unit tests, so we can mock it here for simplicity.
             var mockValidation = new Mock<InitializeGameStateCommandValidator>();
             mockValidation
-                .Setup(v => v.ValidateCommandAsync(It.IsAny<InitializeGameStateCommand>(), It.IsAny<GameState>(), It.IsAny<Guid>()))
+                .Setup(v => v.ValidateCommandAndThrowsAsync(It.IsAny<InitializeGameStateCommand>(), It.IsAny<GameState>(), It.IsAny<Guid>()))
                 .Returns(Task.FromResult(true));
             
             services.AddSingleton(mockValidation.Object);

@@ -14,11 +14,9 @@ namespace PastryTycoon.Core.Grains.Game;
 public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
 {
     private IAsyncStream<GameEvent>? gameEventStream;
-    private readonly InitializeGameStateCommandValidator initializeValidator;
 
-    public GameGrain(InitializeGameStateCommandValidator initializeValidator)
+    public GameGrain()
     {
-        this.initializeValidator = initializeValidator;
     }
     public override async Task OnActivateAsync(CancellationToken cancellationToken)
     {
@@ -30,9 +28,14 @@ public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
     public async Task InitializeGameStateAsync(InitializeGameStateCommand command)
     {
         // Validate the command.
-        await initializeValidator.ValidateCommandAsync(command, State, this.GetPrimaryKey());
+        var initializeValidator = new InitializeGameStateCommandValidator();
+        await initializeValidator.ValidateCommandAndThrowsAsync(command, State, this.GetPrimaryKey());
 
-        var evt = new GameStateInitializedEvent(command.GameId, command.PlayerId, command.RecipeIds, command.GameName, command.StartTimeUtc);
+        var evt = new GameStateInitializedEvent(
+            command.GameId,
+            command.PlayerId,
+            command.RecipeIds,
+            command.StartTimeUtc);
         RaiseEvent(evt);
         await ConfirmEvents();
 
@@ -44,10 +47,8 @@ public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
 
     public async Task UpdateGameAsync(UpdateGameCommand command)
     {
-        if (!command.GameId.Equals(this.GetPrimaryKey()))
-        {
-            throw new ArgumentException("Command GameId does not match grain primary key.");
-        }
+        var validator = new UpdateGameCommandValidator();
+        await validator.ValidateCommandAndThrowsAsync(command, State, this.GetPrimaryKey());
 
         var evt = new GameUpdatedEvent(command.GameId, command.GameName, command.UpdateTimeUtc);
         RaiseEvent(evt);
@@ -70,7 +71,6 @@ public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
         {
             GameId = State.GameId,
             PlayerId = State.PlayerId,
-            GameName = State.GameName,
             TotalRecipes = State.DiscoverableRecipeIds != null ? State.DiscoverableRecipeIds.Count : 0,
             StartTimeUtc = State.StartTimeUtc,
             LastUpdatedUtc = State.LastUpdatedAtTimeUtc

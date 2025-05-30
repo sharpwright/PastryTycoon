@@ -3,24 +3,29 @@ using System;
 namespace PastryTycoon.Core.Grains.Player;
 
 [GenerateSerializer]
-public record PlayerEvent(
-    [property: Id(0)] Guid PlayerId
-);
+public record PlayerEvent
+{
+    [property: Id(0)] public Guid PlayerId { get; init; } = Guid.Empty;
+};
 
 [GenerateSerializer]
-public record RecipeDiscoveredEvent(
-    Guid PlayerId,
-    [property: Id(1)] Guid RecipeId,
-    [property: Id(2)] DateTime DiscoveryTimeUtc
-) : PlayerEvent(
-    PlayerId
-);
+public record PlayerInitializedEvent : PlayerEvent
+{
+    [property: Id(1)] public string PlayerName { get; init; } = string.Empty;
+    [property: Id(2)] public Guid GameId { get; init; } = Guid.Empty;
+    [property: Id(3)] public DateTime CreatedAtUtc { get; init; } = DateTime.UtcNow;
+ };
 
 [GenerateSerializer]
-public record AchievementUnlockedEvent(
-    Guid PlayerId,
-    [property: Id(1)] string Achievement,
-    [property: Id(2)] DateTime UnlockedAtUtc
-) : PlayerEvent(
-    PlayerId
-);
+public record PlayerDiscoveredRecipeEvent : PlayerEvent
+{
+    [property: Id(1)] public Guid RecipeId { get; init; } = Guid.Empty;
+    [property: Id(2)] public DateTime DiscoveryTimeUtc { get; init; } = DateTime.UtcNow;
+};
+
+[GenerateSerializer]
+public record PlayerUnlockedAchievementEvent : PlayerEvent
+{
+    [property: Id(1)] public string AchievementId { get; init; } = string.Empty;
+    [property: Id(2)] public DateTime UnlockedAtUtc { get; init; } = DateTime.UtcNow;
+};

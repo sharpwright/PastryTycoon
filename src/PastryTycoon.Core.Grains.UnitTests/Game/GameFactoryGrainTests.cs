@@ -18,21 +18,17 @@ public class GameFactoryGrainTests : TestKitBase
     private readonly Mock<ILogger<GameFactoryGrain>> loggerMock = new();
     private readonly Mock<IGuidProvider> guidProviderMock = new();
 
-    private readonly Guid gameId;
-    private readonly Guid playerId;
-    private readonly string gameName;
-    private readonly List<Recipe> recipes;
+    private readonly Guid gameId = Guid.NewGuid();
+    private readonly Guid playerId = Guid.NewGuid();
+    private readonly string playerName = "Test Player";
+    private readonly List<Recipe> recipes = new()
+    {
+        new Recipe(Guid.NewGuid(), "Chocolate Cake", new List<RecipeIngredient>()),
+        new Recipe(Guid.NewGuid(), "Apple Pie", new List<RecipeIngredient>())
+    };
 
     public GameFactoryGrainTests()
-    {
-        gameId = Guid.NewGuid();
-        playerId = Guid.NewGuid();
-        gameName = "Test Game";
-        recipes = new List<Recipe>
-        {
-            new Recipe(Guid.NewGuid(), "Chocolate Cake", new List<RecipeIngredient>()),
-            new Recipe(Guid.NewGuid(), "Apple Pie", new List<RecipeIngredient>())
-        };
+    {        
     }
 
     [Fact]
@@ -55,7 +51,8 @@ public class GameFactoryGrainTests : TestKitBase
 
         // Act
         var grain = await Silo.CreateGrainAsync<GameFactoryGrain>(Guid.Empty);
-        var actualGameId = await grain.CreateNewGameAsync(playerId, gameName);
+        var createNewGameCommand = new CreateNewGameCommand(playerId, playerName, DifficultyLevel.Easy);
+        var actualGameId = await grain.CreateNewGameAsync(createNewGameCommand);
 
         // Assert
         Assert.Equal(gameId, actualGameId);
@@ -63,7 +60,6 @@ public class GameFactoryGrainTests : TestKitBase
             g => g.InitializeGameStateAsync(It.Is<InitializeGameStateCommand>(cmd =>
                 cmd.GameId == actualGameId &&
                 cmd.PlayerId == playerId &&
-                cmd.GameName == gameName &&
                 cmd.RecipeIds.SequenceEqual(recipes.Select(r => r.Id))
             )),
             Times.Once

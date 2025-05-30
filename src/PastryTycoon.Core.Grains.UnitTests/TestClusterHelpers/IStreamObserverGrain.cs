@@ -6,4 +6,5 @@ public interface IStreamObserverGrain<TEvent> : IGrainWithGuidKey
 {
     Task SubscribeAsync(string streamNamespace, string providerName);
     Task<List<TEvent>> GetReceivedEventsAsync();
+    Task ClearReceivedEventsAsync();
 }

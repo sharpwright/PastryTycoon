@@ -12,7 +12,6 @@ public record GameStateInitializedEvent(
     Guid GameId,
     [property: Id(1)] Guid PlayerId,
     [property: Id(2)] IReadOnlyList<Guid> RecipeIds,
-    [property: Id(3)] string GameName,
     [property: Id(4)] DateTime StartTimeUtc
 ) : GameEvent(
     GameId

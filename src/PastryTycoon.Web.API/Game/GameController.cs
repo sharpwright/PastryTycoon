@@ -32,13 +32,15 @@ namespace PastryTycoon.Web.API.Game
                 return BadRequest("Invalid request");
             }
 
-            // TODO: Get playerId from access token (or similar). 
+            // TODO: Get a unique identifier for player (from authentication or session)
             // For now, we will use a hardcoded playerId for testing.
             var playerId = Guid.Parse("ac6db42a-c53d-49c6-ab54-53a29d2dc13a");
+            var command = new CreateNewGameCommand(playerId, request.playerName,
+                Enum.Parse<Core.Abstractions.Game.DifficultyLevel>(request.difficultyLevel.ToString()));
 
             // Create a new game ID and start the game
             var gameFactoryGrain = ClusterClient.GetGrain<IGameFactoryGrain>(Guid.Empty);
-            var newGameId = await gameFactoryGrain.CreateNewGameAsync(playerId, request.GameName);
+            var newGameId = await gameFactoryGrain.CreateNewGameAsync(command);
 
             return Ok(newGameId);
         }
