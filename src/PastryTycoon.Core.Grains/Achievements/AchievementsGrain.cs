@@ -10,6 +10,9 @@ using PastryTycoon.Core.Grains.Achievements.UnlockHandlers;
 
 namespace PastryTycoon.Core.Grains.Achievements;
 
+/// <summary>
+/// Grain that manages player achievements by observing player events.
+/// </summary>
 [ImplicitStreamSubscription(OrleansConstants.STREAM_NAMESPACE_PLAYER_EVENTS)]
 public class AchievementsGrain : Grain, IAchievementsGrain,
     IAsyncObserver<PlayerEvent>,
@@ -24,6 +27,11 @@ public class AchievementsGrain : Grain, IAchievementsGrain,
         // Add other unlock handlers here as needed
     };
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AchievementsGrain"/> class.
+    /// </summary>
+    /// <param name="logger"></param>
+    /// <param name="state"></param>
     public AchievementsGrain(ILogger<IAchievementsGrain> logger,
         [PersistentState(OrleansConstants.GRAIN_STATE_ACHIEVEMENTS, OrleansConstants.GRAIN_STATE_ACHIEVEMENTS)] IPersistentState<AchievementsState> state)
     {
@@ -31,6 +39,12 @@ public class AchievementsGrain : Grain, IAchievementsGrain,
         this.state = state;
     }
 
+    /// <summary>
+    /// Handles the next player event by updating the achievements state and checking for unlock conditions.
+    /// </summary>
+    /// <param name="item">The player event to process.</param>
+    /// <param name="token">The sequence token for the event, if applicable.</param>
+    /// <returns></returns>
     public async Task OnNextAsync(PlayerEvent item, StreamSequenceToken? token = null)
     {
         this.logger.LogInformation("AchievementsGrain received event: {EventType}", item.GetType().Name);
@@ -49,9 +63,14 @@ public class AchievementsGrain : Grain, IAchievementsGrain,
         await this.state.WriteStateAsync();
 
         // Handle the event to check for achievements
-        await this.HandleEvent(item);        
+        await this.HandleEvent(item);
     }
 
+    /// <summary>
+    /// Handles the player event to check for achievement unlock conditions.
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns></returns>
     private async Task HandleEvent(PlayerEvent item)
     {
         foreach (var handler in this.unlockHandlers)
@@ -69,7 +88,7 @@ public class AchievementsGrain : Grain, IAchievementsGrain,
                         UnlockedAtUtc: DateTime.UtcNow
                     );
                     await playerGrain.UnlockAchievementAsync(command);
-                    this.logger.LogInformation("Achievement unlocked: {AchievementId}", result.AchievementId);                    
+                    this.logger.LogInformation("Achievement unlocked: {AchievementId}", result.AchievementId);
                 }
             }
             catch (Exception ex)
@@ -79,9 +98,24 @@ public class AchievementsGrain : Grain, IAchievementsGrain,
         }
     }
 
+    /// <summary>
+    /// Called when the observer is completed.
+    /// </summary>
+    /// <returns></returns>
     public Task OnCompletedAsync() => Task.CompletedTask;
+
+    /// <summary>
+    /// Called when the observer encounters an error.
+    /// </summary>
+    /// <param name="ex"></param>
+    /// <returns></returns>
     public Task OnErrorAsync(Exception ex) => Task.CompletedTask;
 
+    /// <summary>
+    /// Called when the observer is subscribed to a stream.
+    /// </summary>
+    /// <param name="handleFactory"></param>
+    /// <returns></returns>
     public async Task OnSubscribed(IStreamSubscriptionHandleFactory handleFactory)
     {
         // Plug our observer to the stream

@@ -5,6 +5,9 @@ using PastryTycoon.Core.Grains.Common;
 
 namespace PastryTycoon.Core.Grains.Player.Validators;
 
+/// <summary>
+/// Validator for the DiscoverRecipeCommand.
+/// </summary>
 public class DiscoverRecipeCommandValidator : AbstractGrainValidator<DiscoverRecipeCommand, PlayerState, Guid>
 {
     public DiscoverRecipeCommandValidator()
@@ -26,6 +29,6 @@ public class DiscoverRecipeCommandValidator : AbstractGrainValidator<DiscoverRec
             .WithMessage("DiscoveryTimeUtc is required")
             .Must(discoveryTime => discoveryTime <= DateTime.UtcNow)
             .WithMessage("DiscoveryTimeUtc must be in the past or present");
-        
+
     }
 }

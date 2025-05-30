@@ -3,6 +3,16 @@ using Orleans;
 
 namespace PastryTycoon.Core.Abstractions.Player;
 
+/// <summary>
+/// Data Transfer Object (DTO) for Player Statistics.
+/// </summary>
+/// <param name="PlayerId">The unique identifier of the player.</param>
+/// <param name="PlayerName">The name of the player.</param>
+/// <param name="TotalAchievementsUnlocked">The total number of achievements unlocked by the player.</param>
+/// <param name="TotalRecipesCrafted">The total number of recipes crafted by the player.</param>
+/// <param name="TotalRecipesDiscovered">The total number of recipes discovered by the player.</param>
+/// <param name="CreatedAtUtc">The UTC timestamp when the player was created.</param>
+/// <param name="LastActivityAtUtc">The UTC timestamp of the player's last activity.</param>
 [GenerateSerializer]
 public record PlayerStatisticsDto(
     [property: Id(0)] Guid PlayerId,

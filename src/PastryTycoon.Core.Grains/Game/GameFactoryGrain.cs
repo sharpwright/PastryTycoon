@@ -30,6 +30,11 @@ public class GameFactoryGrain : Grain, IGameFactoryGrain
         this.guidProvider = guidProvider;
     }
 
+    /// <summary>
+    /// Creates a new game and initializes the game and player grains based on the provided command.
+    /// </summary>
+    /// <param name="createNewGameCommand">The command containing the details for creating a new game.</param>
+    /// <returns></returns>
     public async Task<Guid> CreateNewGameAsync(CreateNewGameCommand createNewGameCommand)
     {
         var validator = new CreateNewGameCommandValidator();

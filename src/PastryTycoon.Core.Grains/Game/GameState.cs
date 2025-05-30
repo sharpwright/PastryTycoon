@@ -2,6 +2,9 @@ using System.Collections.Immutable;
 
 namespace PastryTycoon.Core.Grains.Game;
 
+/// <summary>
+/// Represents the state of a game in the Pastry Tycoon application.
+/// </summary>
 [GenerateSerializer]
 public class GameState
 {
@@ -11,8 +14,11 @@ public class GameState
     [Id(3)] public DateTime StartTimeUtc { get; set; }
     [Id(4)] public DateTime LastUpdatedAtTimeUtc { get; set; }
     [Id(5)] public bool IsInitialized { get; set; } = false;
-
-    // Event sourcing: apply GameStartedEvent
+    
+    /// <summary>
+    /// Applies the GameStateInitializedEvent to initialize the game state.
+    /// </summary>
+    /// <param name="evt">The event containing the initialization details.</param>
     public void Apply(GameStateInitializedEvent evt)
     {
         GameId = evt.GameId;
@@ -23,7 +29,10 @@ public class GameState
         IsInitialized = true;
     }
 
-    // Event sourcing: apply GameUpdatedEvent
+    /// <summary>
+    /// Applies the RecipeAddedEvent to add a new recipe to the game state.
+    /// </summary>
+    /// <param name="evt">The event containing the recipe details.</param>
     public void Apply(GameUpdatedEvent evt)
     {
         LastUpdatedAtTimeUtc = evt.UpdateTimeUtc;

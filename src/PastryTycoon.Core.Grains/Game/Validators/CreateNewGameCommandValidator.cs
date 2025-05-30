@@ -5,6 +5,9 @@ using PastryTycoon.Core.Grains.Common;
 
 namespace PastryTycoon.Core.Grains.Game.Validators;
 
+/// <summary>
+/// Validator for the CreateNewGameCommand.
+/// </summary>
 public class CreateNewGameCommandValidator : AbstractGrainValidator<CreateNewGameCommand, object, Guid>
 {
     public CreateNewGameCommandValidator()
