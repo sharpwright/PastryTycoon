@@ -86,15 +86,14 @@ public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrai
         {
             throw new InvalidOperationException("Player is not initialized.");
         }
-        
-        return Task.FromResult(new PlayerStatisticsDto
-        {
-            PlayerId = this.GetPrimaryKey(),
-            PlayerName = State.PlayerName,
-            TotalRecipesDiscovered = State.DiscoveredRecipeIds.Count,
-            TotalAchievementsUnlocked = State.UnlockedAchievements.Count,
-            CreatedAtUtc = State.CreatedAtUtc,
-            LastActivityAtUtc = State.LastActivityAtUtc
-        });
+
+        return Task.FromResult(new PlayerStatisticsDto(
+            this.GetPrimaryKey(),
+            State.PlayerName,
+            State.UnlockedAchievements.Count,
+            State.CraftedRecipeIds.Count,
+            State.DiscoveredRecipeIds.Count,            
+            State.CreatedAtUtc,
+            State.LastActivityAtUtc));
     }
 }

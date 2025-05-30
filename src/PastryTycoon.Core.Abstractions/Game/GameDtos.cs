@@ -4,11 +4,9 @@ using Orleans;
 namespace PastryTycoon.Core.Abstractions.Game;
 
 [GenerateSerializer]
-public record GameStatisticsDto
-{
-    [Id(0)] public Guid GameId { get; init; }
-    [Id(1)] public Guid PlayerId { get; init; }
-    [Id(2)] public int TotalRecipes { get; init; }
-    [Id(3)] public DateTime StartTimeUtc { get; init; }
-    [Id(4)] public DateTime LastUpdatedUtc { get; init; }
-}
+public record GameStatisticsDto(
+    [property: Id(0)] Guid GameId,
+    [property: Id(1)] Guid PlayerId,
+    [property: Id(2)] int TotalRecipes,
+    [property: Id(3)] DateTime StartTimeUtc,
+    [property: Id(4)] DateTime LastUpdatedUtc);

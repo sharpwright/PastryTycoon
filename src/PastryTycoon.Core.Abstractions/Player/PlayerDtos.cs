@@ -4,13 +4,11 @@ using Orleans;
 namespace PastryTycoon.Core.Abstractions.Player;
 
 [GenerateSerializer]
-public record PlayerStatisticsDto
-{
-    [Id(0)] public Guid PlayerId { get; init; }
-    [Id(1)] public string? PlayerName { get; init; }
-    [Id(3)] public int TotalAchievementsUnlocked { get; init; }
-    [Id(5)] public int TotalRecipesCrafted { get; init; }
-    [Id(6)] public int TotalRecipesDiscovered { get; init; }    
-    [Id(7)] public DateTime LastActivityAtUtc { get; init; }
-    [Id(8)] public DateTime CreatedAtUtc { get; init; }
-}
+public record PlayerStatisticsDto(
+    [property: Id(0)] Guid PlayerId,
+    [property: Id(1)] string? PlayerName,
+    [property: Id(3)] int TotalAchievementsUnlocked,
+    [property: Id(5)] int TotalRecipesCrafted,
+    [property: Id(6)] int TotalRecipesDiscovered,
+    [property: Id(7)] DateTime CreatedAtUtc,
+    [property: Id(8)] DateTime LastActivityAtUtc);

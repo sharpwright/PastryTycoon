@@ -68,13 +68,11 @@ public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
             throw new InvalidOperationException("Game state is not initialized. Please initialize the game first.");
         }
 
-        return Task.FromResult(new GameStatisticsDto
-        {
-            GameId = State.GameId,
-            PlayerId = State.PlayerId,
-            TotalRecipes = State.DiscoverableRecipeIds != null ? State.DiscoverableRecipeIds.Count : 0,
-            StartTimeUtc = State.StartTimeUtc,
-            LastUpdatedUtc = State.LastUpdatedAtTimeUtc
-        });
+        return Task.FromResult(new GameStatisticsDto(
+            State.GameId,
+            State.PlayerId,
+            State.DiscoverableRecipeIds != null ? State.DiscoverableRecipeIds.Count : 0,
+            State.StartTimeUtc,
+            State.LastUpdatedAtTimeUtc));
     }
 }
