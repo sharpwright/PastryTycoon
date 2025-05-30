@@ -27,6 +27,11 @@ public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrai
         var validator = new InitializePlayerCommandValidator();
         await validator.ValidateCommandAndThrowsAsync(command, State, this.GetPrimaryKey());
 
+        if (State.IsInitialized)
+        {
+            throw new InvalidOperationException("Player is already initialized.");
+        }
+
         var evt = new PlayerInitializedEvent
         {
             PlayerId = this.GetPrimaryKey(),
@@ -81,6 +86,11 @@ public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrai
 
     public Task<PlayerStatisticsDto> GetPlayerStatisticsAsync()
     {
+        if (!State.IsInitialized)
+        {
+            throw new InvalidOperationException("Player is not initialized.");
+        }
+        
         return Task.FromResult(new PlayerStatisticsDto
         {
             PlayerId = this.GetPrimaryKey(),

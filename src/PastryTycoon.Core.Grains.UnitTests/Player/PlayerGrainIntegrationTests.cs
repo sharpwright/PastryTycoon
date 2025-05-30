@@ -52,23 +52,108 @@ public class PlayerGrainIntegrationTests(ClusterFixture fixture)
         var exception = await Assert.ThrowsAsync<ArgumentException>(() => grain.DiscoverRecipeAsync(command));
     }
 
-    // [Fact]
-    // public async Task UnlockAchievementAsync_Should_Unlock_New_Achievement()
-    // {
-    //     // Arrange
-    //     var playerId = Guid.NewGuid();
-    //     var achievementId = "FirstBake";
-    //     var unlockedAtUtc = DateTime.UtcNow;
-    //     var grain = cluster.GrainFactory.GetGrain<IPlayerGrain>(playerId);
+    [Fact]
+    public async Task InitializeAsync_Should_Initialize_Player()
+    {
+        // Arrange
+        var playerId = Guid.NewGuid();
+        var command = new InitializePlayerCommand("TestPlayer", Guid.NewGuid());
+        var grain = cluster.GrainFactory.GetGrain<IPlayerGrain>(playerId);
 
-    //     // Act
-    //     await grain.UnlockAchievementAsync(achievementId, unlockedAtUtc);
+        // Act
+        await grain.InitializeAsync(command);
+        var playerStatistics = await grain.GetPlayerStatisticsAsync();
 
-    //     // Assert
-    //     Assert.True(received, "No events received within timeout.");
-    //     Assert.Single(events, evt =>
-    //         evt is AchievementUnlockedEvent e &&
-    //         e.AchievementId == achievementId &&
-    //         e.UnlockedAtUtc == unlockedAtUtc);
-    // }
+        // Assert
+        Assert.NotNull(playerStatistics);
+        Assert.Equal(command.PlayerName, playerStatistics.PlayerName);
+        Assert.Equal(playerId, playerStatistics.PlayerId);
+        Assert.Equal(0, playerStatistics.TotalAchievementsUnlocked);
+        Assert.Equal(0, playerStatistics.TotalRecipesCrafted);
+        Assert.Equal(0, playerStatistics.TotalRecipesDiscovered);
+        Assert.True(playerStatistics.CreatedAtUtc <= DateTime.UtcNow, "CreatedAtUtc should be less than or equal to current time.");
+    }
+
+    [Fact]
+    public async Task InitializeAsync_Should_Throw_When_Player_Already_Initialized()
+    {
+        // Arrange
+        var playerId = Guid.NewGuid();
+        var command = new InitializePlayerCommand("TestPlayer", Guid.NewGuid());
+        var grain = cluster.GrainFactory.GetGrain<IPlayerGrain>(playerId);
+        await grain.InitializeAsync(command);
+
+        // Act & Assert: Verify second initialization throws an exception
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => grain.InitializeAsync(command));
+        Assert.Equal("Player is already initialized.", exception.Message);
+    }
+
+    [Fact]
+    public async Task UnlockAchievementAsync_Should_Unlock_Achievement()
+    {
+        // Arrange
+        var playerId = Guid.NewGuid();
+        var achievementId = "FirstBake";
+        var unlockedAtUtc = DateTime.UtcNow;
+        var initializeCommand = new InitializePlayerCommand("TestPlayer", Guid.NewGuid());
+        var updateCommand = new UnlockAchievementCommand(playerId, achievementId, unlockedAtUtc);
+        var grain = cluster.GrainFactory.GetGrain<IPlayerGrain>(playerId);
+
+        // Act
+        await grain.InitializeAsync(initializeCommand);
+        await grain.UnlockAchievementAsync(updateCommand);
+        var playerStatistics = await grain.GetPlayerStatisticsAsync();
+
+        // Assert
+        Assert.NotNull(playerStatistics);
+        Assert.Equal(1, playerStatistics.TotalAchievementsUnlocked);
+    }
+
+    [Fact]
+    public async Task UnlockAchievementAsync_Should_Throw_When_Achievement_Already_Unlocked()
+    {
+        // Arrange
+        var playerId = Guid.NewGuid();
+        var achievementId = "FirstBake";
+        var unlockedAtUtc = DateTime.UtcNow;
+        var command = new UnlockAchievementCommand(playerId, achievementId, unlockedAtUtc);
+        var grain = cluster.GrainFactory.GetGrain<IPlayerGrain>(playerId);
+        await grain.UnlockAchievementAsync(command);
+
+        // Act & Assert: Verify second unlock throws an exception
+        var exception = await Assert.ThrowsAsync<ArgumentException>(() => grain.UnlockAchievementAsync(command));
+    }
+
+    [Fact]
+    public async Task GetPlayerStatisticsAsync_Should_Return_Initialized_Statistics()
+    {
+        // Arrange
+        var playerId = Guid.NewGuid();
+        var grain = cluster.GrainFactory.GetGrain<IPlayerGrain>(playerId);
+        var command = new InitializePlayerCommand("TestPlayer", Guid.NewGuid());
+        await grain.InitializeAsync(command);
+
+        // Act
+        var playerStatistics = await grain.GetPlayerStatisticsAsync();
+
+        // Assert
+        Assert.NotNull(playerStatistics);
+        Assert.Equal(command.PlayerName, playerStatistics.PlayerName);
+        Assert.Equal(playerId, playerStatistics.PlayerId);
+        Assert.Equal(0, playerStatistics.TotalAchievementsUnlocked);
+        Assert.Equal(0, playerStatistics.TotalRecipesCrafted);
+        Assert.Equal(0, playerStatistics.TotalRecipesDiscovered);
+    }
+
+    [Fact]
+    public async Task GetPlayerStatisticsAsync_Should_Throw_When_Player_Not_Initialized()
+    {
+        // Arrange
+        var playerId = Guid.NewGuid();
+        var grain = cluster.GrainFactory.GetGrain<IPlayerGrain>(playerId);
+
+        // Act & Assert: Verify getting statistics throws an exception
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => grain.GetPlayerStatisticsAsync());
+        Assert.Equal("Player is not initialized.", exception.Message);
+    }    
 }

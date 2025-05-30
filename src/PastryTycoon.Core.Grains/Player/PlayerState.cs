@@ -16,7 +16,17 @@ public class PlayerState
     [Id(8)] public decimal Balance { get; set; } = 0.0m;
     [Id(9)] public bool IsInitialized { get; set; } = false;
 
-    // Event sourcing: apply RecipeDiscoveredEvent
+    
+    public void Apply(PlayerInitializedEvent evt)
+    {
+        PlayerId = evt.PlayerId;
+        PlayerName = evt.PlayerName;
+        GameId = evt.GameId;
+        CreatedAtUtc = evt.CreatedAtUtc;
+        LastActivityAtUtc = DateTime.UtcNow;
+        IsInitialized = true;
+    }
+
     public void Apply(PlayerDiscoveredRecipeEvent evt)
     {
         DiscoveredRecipeIds[evt.RecipeId] = evt.DiscoveryTimeUtc;
