@@ -77,7 +77,7 @@ namespace PastryTycoon.Core.Grains.UnitTests.Game
         public async Task HandleGameUpdatedEvent_ShouldLogInformation()
         {
             // Arrange
-            var evt = new GameUpdatedEvent(Guid.NewGuid(), "TestGame", DateTime.UtcNow);
+            var evt = new GameUpdatedEvent(GameId: Guid.NewGuid(), UpdateTimeUtc: DateTime.UtcNow);
 
             // Act
             await grain.HandleGameUpdatedEventAsync(evt);

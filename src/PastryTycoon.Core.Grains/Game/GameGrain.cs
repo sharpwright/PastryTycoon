@@ -36,6 +36,7 @@ public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
             command.PlayerId,
             command.RecipeIds,
             command.StartTimeUtc);
+            
         RaiseEvent(evt);
         await ConfirmEvents();
 
@@ -50,7 +51,7 @@ public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
         var validator = new UpdateGameCommandValidator();
         await validator.ValidateCommandAndThrowsAsync(command, State, this.GetPrimaryKey());
 
-        var evt = new GameUpdatedEvent(command.GameId, command.GameName, command.UpdateTimeUtc);
+        var evt = new GameUpdatedEvent(command.GameId,command.UpdateTimeUtc);
         RaiseEvent(evt);
         await ConfirmEvents();
 

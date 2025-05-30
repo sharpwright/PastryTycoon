@@ -32,13 +32,11 @@ public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrai
             throw new InvalidOperationException("Player is already initialized.");
         }
 
-        var evt = new PlayerInitializedEvent
-        {
-            PlayerId = this.GetPrimaryKey(),
-            PlayerName = command.PlayerName,
-            GameId = command.GameId,
-            CreatedAtUtc = DateTime.UtcNow
-        };
+        var evt = new PlayerInitializedEvent(
+            this.GetPrimaryKey(),
+            command.PlayerName,
+            command.GameId,
+            DateTime.UtcNow);
 
         RaiseEvent(evt);
         await ConfirmEvents();
@@ -50,12 +48,11 @@ public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrai
         await validator.ValidateCommandAndThrowsAsync(command, State, this.GetPrimaryKey());
 
         // If the recipe is not already known, apply the discovery.
-        var evt = new PlayerDiscoveredRecipeEvent
-        {
-            PlayerId = command.PlayerId,
-            RecipeId = command.RecipeId,
-            DiscoveryTimeUtc = command.DiscoveryTimeUtc
-        };
+        var evt = new PlayerDiscoveredRecipeEvent(
+            command.PlayerId,
+            command.RecipeId,
+            command.DiscoveryTimeUtc);
+
         RaiseEvent(evt);
         await ConfirmEvents();
 
@@ -74,12 +71,11 @@ public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrai
         var unlockedAtUtc = command.UnlockedAtUtc;
 
         // Update player state to include the new achievement
-        var evt = new PlayerUnlockedAchievementEvent
-        {
-            PlayerId = command.PlayerId,
-            AchievementId = achievementId,
-            UnlockedAtUtc = unlockedAtUtc
-        };
+        var evt = new PlayerUnlockedAchievementEvent(
+            command.PlayerId,
+            achievementId,
+            unlockedAtUtc);
+
         RaiseEvent(evt);
         await ConfirmEvents();
     }

@@ -3,29 +3,29 @@ using System;
 namespace PastryTycoon.Core.Grains.Player;
 
 [GenerateSerializer]
-public record PlayerEvent
-{
-    [property: Id(0)] public Guid PlayerId { get; init; } = Guid.Empty;
-};
+public record PlayerEvent(
+    [property: Id(0)] Guid PlayerId
+);
 
 [GenerateSerializer]
-public record PlayerInitializedEvent : PlayerEvent
-{
-    [property: Id(1)] public string PlayerName { get; init; } = string.Empty;
-    [property: Id(2)] public Guid GameId { get; init; } = Guid.Empty;
-    [property: Id(3)] public DateTime CreatedAtUtc { get; init; } = DateTime.UtcNow;
- };
+public record PlayerInitializedEvent (
+    Guid PlayerId,
+    [property: Id(1)] string PlayerName,
+    [property: Id(2)] Guid GameId,
+    [property: Id(3)] DateTime CreatedAtUtc
+) : PlayerEvent(PlayerId);
 
 [GenerateSerializer]
-public record PlayerDiscoveredRecipeEvent : PlayerEvent
-{
-    [property: Id(1)] public Guid RecipeId { get; init; } = Guid.Empty;
-    [property: Id(2)] public DateTime DiscoveryTimeUtc { get; init; } = DateTime.UtcNow;
-};
+public record PlayerDiscoveredRecipeEvent(
+    Guid PlayerId,
+    [property: Id(1)] Guid RecipeId,
+    [property: Id(2)] DateTime DiscoveryTimeUtc
+) : PlayerEvent(PlayerId);
 
 [GenerateSerializer]
-public record PlayerUnlockedAchievementEvent : PlayerEvent
-{
-    [property: Id(1)] public string AchievementId { get; init; } = string.Empty;
-    [property: Id(2)] public DateTime UnlockedAtUtc { get; init; } = DateTime.UtcNow;
-};
+public record PlayerUnlockedAchievementEvent
+(
+    Guid PlayerId,
+    [property: Id(1)] string AchievementId,
+    [property: Id(2)] DateTime UnlockedAtUtc
+) : PlayerEvent(PlayerId);
