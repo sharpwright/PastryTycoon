@@ -60,11 +60,11 @@ public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
         }
     }
     
-    public Task<GameStatisticsDto> GetGameStatisticsAsync(Guid gameId)
+    public Task<GameStatisticsDto> GetGameStatisticsAsync()
     {
-        if (!gameId.Equals(this.GetPrimaryKey()))
+        if (!State.IsInitialized)
         {
-            throw new ArgumentException("GameId does not match grain primary key.");
+            throw new InvalidOperationException("Game state is not initialized. Please initialize the game first.");
         }
 
         return Task.FromResult(new GameStatisticsDto

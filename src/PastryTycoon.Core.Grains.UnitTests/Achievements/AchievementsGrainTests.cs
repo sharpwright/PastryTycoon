@@ -24,7 +24,7 @@ public class AchievementsGrainTests : TestKitBase
     }
 
     [Fact]
-    public void AchievementsGrain_Has_Required_Attribute()
+    public void AchievementsGrain_ShouldHaveRequiredAttribute()
     {
         // Arrange
         var grainType = typeof(AchievementsGrain);
@@ -39,7 +39,7 @@ public class AchievementsGrainTests : TestKitBase
 
 
     [Fact]
-    public void ImplicitGameProjectionGrain_Implements_Required_Interfaces()
+    public void AchievementsGrain_ShouldImplementRequiredInterfaces()
     {
         // Arrange
         var grainType = typeof(AchievementsGrain);
@@ -53,7 +53,7 @@ public class AchievementsGrainTests : TestKitBase
 
     [Theory]
     [MemberData(nameof(AchievementsTestData.UnlockAchievementIdForGivenEventAndState), MemberType = typeof(AchievementsTestData))]
-    public async Task OnNextAsync_ShouldUpdateState_AndShouldUnlockAchievementIdForGivenEventAndState(
+    public async Task OnNextAsync_ShouldUpdateState_And_ShouldUnlockAchievementIdForGivenEventAndState(
         PlayerEvent playerEvent,
         AchievementsState grainState,
         string expectedAchievementId,

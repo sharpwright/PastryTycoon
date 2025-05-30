@@ -23,7 +23,7 @@ namespace PastryTycoon.Core.Grains.UnitTests.Game
         }
 
         [Fact]
-        public void ImplicitGameProjectionGrain_Has_Required_Attribute()
+        public void ImplicitGameProjectionGrain_ShouldHaveRequiredAttribute()
         {
             // Arrange
             var grainType = typeof(GameProjectionGrain);
@@ -38,7 +38,7 @@ namespace PastryTycoon.Core.Grains.UnitTests.Game
 
 
         [Fact]
-        public void ImplicitGameProjectionGrain_Implements_Required_Interfaces()
+        public void ImplicitGameProjectionGrain_ShouldImplementRequiredInterfaces()
         {
             // Arrange
             var grainType = typeof(GameProjectionGrain);
@@ -51,7 +51,7 @@ namespace PastryTycoon.Core.Grains.UnitTests.Game
         }
 
         [Fact]
-        public async Task Handle_GameStartedEvent_LogsInformation()
+        public async Task HandleGameStartedEvent_ShouldLogInformation()
         {
             // Arrange
             var gameId = Guid.NewGuid();
@@ -74,7 +74,7 @@ namespace PastryTycoon.Core.Grains.UnitTests.Game
         }
 
         [Fact]
-        public async Task Handle_GameUpdatedEvent_LogsInformation()
+        public async Task HandleGameUpdatedEvent_ShouldLogInformation()
         {
             // Arrange
             var evt = new GameUpdatedEvent(Guid.NewGuid(), "TestGame", DateTime.UtcNow);
@@ -94,7 +94,7 @@ namespace PastryTycoon.Core.Grains.UnitTests.Game
         }
 
         [Fact]
-        public async Task OnErrorAsync_LogsError()
+        public async Task OnErrorAsync_ShouldLogError()
         {
             // Arrange
             var ex = new Exception("Test error");

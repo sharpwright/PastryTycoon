@@ -7,5 +7,5 @@ public interface IGameGrain : IGrainWithGuidKey
 {
     Task InitializeGameStateAsync(InitializeGameStateCommand command);
     Task UpdateGameAsync(UpdateGameCommand command);
-    Task<GameStatisticsDto> GetGameStatisticsAsync(Guid gameId);
+    Task<GameStatisticsDto> GetGameStatisticsAsync();
 }

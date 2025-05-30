@@ -10,6 +10,7 @@ public class GameState
     [Id(2)] public IImmutableList<Guid>? DiscoverableRecipeIds { get; set; }
     [Id(3)] public DateTime StartTimeUtc { get; set; }
     [Id(4)] public DateTime LastUpdatedAtTimeUtc { get; set; }
+    [Id(5)] public bool IsInitialized { get; set; } = false;
 
     // Event sourcing: apply GameStartedEvent
     public void Apply(GameStateInitializedEvent evt)
@@ -19,6 +20,7 @@ public class GameState
         DiscoverableRecipeIds = evt.RecipeIds.ToImmutableList();
         StartTimeUtc = evt.StartTimeUtc;
         LastUpdatedAtTimeUtc = evt.StartTimeUtc;
+        IsInitialized = true;
     }
 
     // Event sourcing: apply GameUpdatedEvent

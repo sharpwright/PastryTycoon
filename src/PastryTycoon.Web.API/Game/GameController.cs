@@ -20,7 +20,7 @@ namespace PastryTycoon.Web.API.Game
         public async Task<IActionResult> Get(Guid gameId)
         {            
             var gameGrain = ClusterClient.GetGrain<IGameGrain>(gameId);
-            var stats = await gameGrain.GetGameStatisticsAsync(gameId);
+            var stats = await gameGrain.GetGameStatisticsAsync();
             return Ok(stats);
         }
 

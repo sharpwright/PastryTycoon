@@ -32,7 +32,7 @@ public class GameFactoryGrainTests : TestKitBase
     }
 
     [Fact]
-    public async Task CreateNewGameAsync_ShouldCreateGameAndInitializeState()
+    public async Task CreateNewGameAsync_ShouldCreateGame_And_ShouldInitializeState()
     {
         // Arrange
         guidProviderMock.Setup(g => g.NewGuid())

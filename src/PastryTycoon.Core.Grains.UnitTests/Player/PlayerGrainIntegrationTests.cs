@@ -13,7 +13,7 @@ public class PlayerGrainIntegrationTests(ClusterFixture fixture)
     private readonly TestCluster cluster = fixture.Cluster;
 
     [Fact]
-    public async Task DiscoverRecipeAsync_Should_Discover_New_Recipe()
+    public async Task DiscoverRecipeAsync_ShouldDiscoverNewRecipe()
     {
         // Arrange
         var playerId = Guid.NewGuid();
@@ -36,7 +36,7 @@ public class PlayerGrainIntegrationTests(ClusterFixture fixture)
     }
 
     [Fact]
-    public async Task DiscoverRecipeAsync_Should_Not_Discover_Recipe_More_Than_Once()
+    public async Task DiscoverRecipeAsync_ShouldThrow_WhenRecipeAlreadyDiscovered()
     {
         // Arrange
         var playerId = Guid.NewGuid();
@@ -53,7 +53,7 @@ public class PlayerGrainIntegrationTests(ClusterFixture fixture)
     }
 
     [Fact]
-    public async Task InitializeAsync_Should_Initialize_Player()
+    public async Task InitializeAsync_ShouldInitializePlayer()
     {
         // Arrange
         var playerId = Guid.NewGuid();
@@ -75,7 +75,7 @@ public class PlayerGrainIntegrationTests(ClusterFixture fixture)
     }
 
     [Fact]
-    public async Task InitializeAsync_Should_Throw_When_Player_Already_Initialized()
+    public async Task InitializeAsync_ShouldThrow_WhenPlayerAlreadyInitialized()
     {
         // Arrange
         var playerId = Guid.NewGuid();
@@ -89,7 +89,7 @@ public class PlayerGrainIntegrationTests(ClusterFixture fixture)
     }
 
     [Fact]
-    public async Task UnlockAchievementAsync_Should_Unlock_Achievement()
+    public async Task UnlockAchievementAsync_ShouldUnlockAchievement()
     {
         // Arrange
         var playerId = Guid.NewGuid();
@@ -110,7 +110,7 @@ public class PlayerGrainIntegrationTests(ClusterFixture fixture)
     }
 
     [Fact]
-    public async Task UnlockAchievementAsync_Should_Throw_When_Achievement_Already_Unlocked()
+    public async Task UnlockAchievementAsync_ShouldThrow_WhenAchievementAlreadyUnlocked()
     {
         // Arrange
         var playerId = Guid.NewGuid();
@@ -125,7 +125,7 @@ public class PlayerGrainIntegrationTests(ClusterFixture fixture)
     }
 
     [Fact]
-    public async Task GetPlayerStatisticsAsync_Should_Return_Initialized_Statistics()
+    public async Task GetPlayerStatisticsAsync_ShouldReturnInitializedStatistics()
     {
         // Arrange
         var playerId = Guid.NewGuid();
@@ -146,7 +146,7 @@ public class PlayerGrainIntegrationTests(ClusterFixture fixture)
     }
 
     [Fact]
-    public async Task GetPlayerStatisticsAsync_Should_Throw_When_Player_Not_Initialized()
+    public async Task GetPlayerStatisticsAsync_ShouldThrow_WhenPlayerNotInitialized()
     {
         // Arrange
         var playerId = Guid.NewGuid();
