@@ -14,7 +14,7 @@ public class RecipeRepositoryTests
     }
 
     [Fact]
-    public async Task GetAllRecipes_ReturnsListOfRecipes()
+    public async Task GetAllRecipes_ShouldReturnRecipes()
     {
         // Arrange
         RecipeRepository recipeRepository = new RecipeRepository(mockLogger.Object);

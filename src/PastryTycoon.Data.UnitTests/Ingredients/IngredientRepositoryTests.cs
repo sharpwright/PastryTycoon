@@ -16,15 +16,15 @@ namespace PastryTycoon.Data.UnitTests.Ingredients
         public IngredientRepositoryTests()
         {
             // Create a mock ILogger<IngredientRepository>
-            this.mockLogger = new Mock<ILogger<IngredientRepository>>();        
+            this.mockLogger = new Mock<ILogger<IngredientRepository>>();
         }
 
         [Fact]
-        public async Task GetAllIngredients_ReturnsListOfIngredients()
+        public async Task GetAllIngredients_ShouldReturnIngredients()
         {
             // Arrange
             var ingredientRepository = new IngredientRepository(mockLogger.Object);
-            
+
             // Act
             var ingredients = await ingredientRepository.GetAllIngredientsAsync();
 
