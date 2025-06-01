@@ -18,10 +18,6 @@ public class UpdateGameCommandValidator : AbstractGrainValidator<UpdateGameComma
             .Must((context, gameId) => gameId == context.GrainPrimaryKey)
             .WithMessage("GameId must match grain primary key");
 
-        RuleFor(x => x.Command.GameName)
-            .NotEmpty()
-            .WithMessage("GameName is required");
-
         RuleFor(x => x.Command.UpdateTimeUtc)
             .NotEmpty()
             .WithMessage("UpdateTimeUtc is required")

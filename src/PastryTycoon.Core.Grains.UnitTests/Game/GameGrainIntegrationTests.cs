@@ -103,7 +103,7 @@ public class GameGrainIntegrationTests(ClusterFixture fixture)
         var playerId = Guid.NewGuid();
         var recipeIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
         var initializeGameStateCommand = new InitializeGameStateCommand(gameId, playerId, recipeIds, DateTime.UtcNow);
-        var updateGameCommand = new UpdateGameCommand(gameId, "Updated Game", DateTime.UtcNow.AddMilliseconds(1));
+        var updateGameCommand = new UpdateGameCommand(gameId, DateTime.UtcNow.AddMilliseconds(1));
         var gameGrain = cluster.GrainFactory.GetGrain<IGameGrain>(gameId);
 
         // Act

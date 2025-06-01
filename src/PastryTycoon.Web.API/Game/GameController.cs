@@ -55,7 +55,7 @@ namespace PastryTycoon.Web.API.Game
 
             // Update the game with the provided game ID
             var gameGrain = ClusterClient.GetGrain<IGameGrain>(request.GameId);
-            var gameCmd = new UpdateGameCommand(request.GameId, request.GameName, DateTime.UtcNow);
+            var gameCmd = new UpdateGameCommand(request.GameId, DateTime.UtcNow);
             await gameGrain.UpdateGameAsync(gameCmd);
 
             return Ok();
