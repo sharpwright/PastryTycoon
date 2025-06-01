@@ -12,8 +12,8 @@ PastryTycoon is a modular, event-driven simulation game backend built with .NET 
 
 ## Project Structure
 
-- `data/`  
-  Local development data, such as Azurite storage files and emulator data.
+- `docker-compose/`
+  Docker Compose files and related resources for running development dependencies (e.g., Azurite, CosmosDB emulator).
 - `docs/`
   Documentation files, architecture diagrams, and additional project resources.
 - `src/`
@@ -51,14 +51,31 @@ git clone https://github.com/your-org/PastryTycoon.git
 
 2. **Install dependencies:**
 
-- [.NET 9 SDK](https://dotnet.microsoft.com/)
-- [Azurite](https://marketplace.visualstudio.com/items?itemName=Azurite.azurite) (for local Azure Storage emulation)
+2. **Install dependencies:**
 
-3. **Run Azurite (for local development):**
-- Use the VS Code Azurite extension or run:
-  ```
-  npx azurite
-  ```
+- [.NET 9 SDK](https://dotnet.microsoft.com/)
+- [Docker](https://www.docker.com/products/docker-desktop) (for running Azurite and CosmosDB emulator via Docker Compose)
+- (Optional) [VS Code Azurite extension](https://marketplace.visualstudio.com/items?itemName=Azurite.azurite) for local Azure Storage emulation
+- (Optional) [Azure Storage Explorer](https://azure.microsoft.com/en-us/products/storage/storage-explorer/) for browsing and managing Azurite/Azure Storage data
+
+1. **Start development dependencies:**
+
+From the root of the repository, run:
+
+```
+docker-compose -f docker-compose/docker-compose.yml up -d
+```
+
+This will start Azurite and the CosmosDB emulator in containers. The following tools let you browse, manage, and debug your local development data.
+
+- **Access Azurite:**  
+  Use [Azure Storage Explorer](https://azure.microsoft.com/en-us/products/storage/storage-explorer/) to connect to Azurite at `http://127.0.0.1:10000` (Blob), `http://127.0.0.1:10001` (Queue), and `http://127.0.0.1:10002` (Table).  
+  In Storage Explorer, add a new connection using "Attach to a local emulator" and select Azurite.
+
+- **Access CosmosDB Emulator:**  
+  Use [Azure Cosmos DB Explorer](https://cosmos.azure.com/) or compatible tools.  
+  Connect to the emulator at `https://localhost:8081/` (you may need to accept the self-signed certificate).  
+  For connection strings and keys, see the [official Cosmos DB emulator documentation](https://learn.microsoft.com/en-us/azure/cosmos-db/emulator).
 
 ## Building and Running the Solution
 
