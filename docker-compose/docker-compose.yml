@@ -21,12 +21,12 @@ services:
       - "10251-10255:10251-10255"
     environment:
       - AZURE_COSMOS_EMULATOR_PARTITION_COUNT=2
-      - AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE=true
+      - AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE=1
       - AZURE_COSMOS_EMULATOR_IP_ADDRESS_OVERRIDE=0.0.0.0
     tty: true
     privileged: true
     volumes:
-      - ./volumes/cosmos:/data
+      - ./volumes/cosmos:/tmp/cosmos/appdata
 
 # Usage:
 #   docker-compose up -d
