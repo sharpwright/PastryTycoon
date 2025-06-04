@@ -17,9 +17,11 @@ using PastryTycoon.Core.Grains.Common;
 await Host.CreateDefaultBuilder(args)
     .ConfigureLogging(logging =>
     {
+        // This affects all logs produced by the host and application.
         logging.ClearProviders();
         logging.AddConsole();
-        logging.SetMinimumLevel(LogLevel.Information);
+        logging.SetMinimumLevel(LogLevel.Warning);
+        logging.AddFilter("PastryTycoon", LogLevel.Debug);
     })
     .ConfigureServices(services =>
     {
@@ -110,15 +112,17 @@ await Host.CreateDefaultBuilder(args)
         {
             options.TableServiceClient = new TableServiceClient(OrleansConstants.AZURE_STORAGE_CONNECTION_STRING);
         });
-    
+
 
         // CONFIGURE LOGGING
-        siloBuilder.ConfigureLogging(logging =>
-        {
-            logging.ClearProviders();            
-            logging.AddConsole();
-            logging.SetMinimumLevel(LogLevel.Information);
-        });          
+        // Uncomment the following lines to ovverride the default logging configuration
+        // and use a custom logging configuration for the Orleans Silo (and all code running in the Silo).
+        // siloBuilder.ConfigureLogging(logging =>
+        // {
+        //     logging.ClearProviders();
+        //     logging.AddConsole();
+        //     logging.SetMinimumLevel(LogLevel.Debug);
+        // });
 
         // Configure how often Grains need to be cleaned up from the cluster.
         // siloBuilder.Configure<GrainCollectionOptions>(options =>
