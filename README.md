@@ -73,8 +73,7 @@ This will start Azurite and the CosmosDB emulator in containers. The following t
   In Storage Explorer, add a new connection using "Attach to a local emulator" and select Azurite.
 
 - **Access CosmosDB Emulator:**  
-  Use [Azure Cosmos DB Explorer](https://cosmos.azure.com/) or compatible tools.  
-  Connect to the emulator at `https://localhost:8081/` (you may need to accept the self-signed certificate).  
+    Connect to the emulator at `https://localhost:8081/_explorer/index.html` (you may need to accept the self-signed certificate).  
   For connection strings and keys, see the [official Cosmos DB emulator documentation](https://learn.microsoft.com/en-us/azure/cosmos-db/emulator).
 
 ## Building and Running the Solution
