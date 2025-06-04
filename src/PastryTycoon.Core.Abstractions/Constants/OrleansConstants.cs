@@ -14,8 +14,13 @@ public static class OrleansConstants
     public const string GRAIN_STATE_ACHIEVEMENTS = "Achievements";
     public const string STREAM_PUBSUB_STORE = "PubSubStore";
     public const string STREAM_NAMESPACE_GAME_EVENTS = "GameEventStream";
+    public const string STREAM_NAMESPACE_ACTIVITY_EVENTS = "ActivityEventStream";
     public const string STREAM_NAMESPACE_PLAYER_EVENTS = "PlayerEventStream";
+    public const string STREAM_NAMESPACE_OPERATION_SAGA_EVENTS = "OperationSagaEventStream";
     public const string EVENT_SOURCING_LOG_PROVIDER = "EventLog";
     public const string EVENT_SOURCING_LOG_STORAGE_GAME_EVENTS = "GameEventLog";
     public const string EVENT_SOURCING_LOG_STORAGE_PLAYER_EVENTS = "PlayerEventLog";
+    public const string EVENT_SOURCING_LOG_STORAGE_ACTIVITY_EVENTS = "ActivityEventLog";
+    public const string EVENT_SOURCING_LOG_STORAGE_OPERATION_SAGA_EVENTS = "OperationSagaEventLog"; 
+    public const string EVENT_SOURCING_LOG_STORAGE_OPERATION_EVENTS = "OperationEventLog"; 
 }

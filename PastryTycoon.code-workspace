@@ -5,6 +5,7 @@
         }
     ],
     "settings": {
-        "azurite.location": "data/azurite"
+        "azurite.location": "data/azurite",
+        "sarif-viewer.connectToGithubCodeScanning": "off"
     }
 }

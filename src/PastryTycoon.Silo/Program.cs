@@ -75,6 +75,37 @@ await Host.CreateDefaultBuilder(args)
             options.UseStringFormat = true;
         });
 
+        // CONFIGURE EVENT SOURCING: add OperationSagaEvent log storage using Azure Table Storage. 
+        siloBuilder.AddAzureTableGrainStorage(OrleansConstants.EVENT_SOURCING_LOG_STORAGE_OPERATION_SAGA_EVENTS, options =>
+        {            
+            options.TableServiceClient = new TableServiceClient(OrleansConstants.AZURE_STORAGE_CONNECTION_STRING);
+            options.TableName = OrleansConstants.EVENT_SOURCING_LOG_STORAGE_OPERATION_SAGA_EVENTS;
+            options.UseStringFormat = true;
+        });
+
+        // CONFIGURE EVENT SOURCING: add OperationEvent log storage using Azure Table Storage. 
+        siloBuilder.AddAzureTableGrainStorage(OrleansConstants.EVENT_SOURCING_LOG_STORAGE_OPERATION_EVENTS, options =>
+        {            
+            options.TableServiceClient = new TableServiceClient(OrleansConstants.AZURE_STORAGE_CONNECTION_STRING);
+            options.TableName = OrleansConstants.EVENT_SOURCING_LOG_STORAGE_OPERATION_EVENTS;
+            options.UseStringFormat = true;
+        });
+
+        // CONFIGURE EVENT SOURCING: add ActivityEvent log storage using Azure Table Storage. 
+        siloBuilder.AddAzureTableGrainStorage(OrleansConstants.EVENT_SOURCING_LOG_STORAGE_ACTIVITY_EVENTS, options =>
+        {            
+            options.TableServiceClient = new TableServiceClient(OrleansConstants.AZURE_STORAGE_CONNECTION_STRING);
+            options.TableName = OrleansConstants.EVENT_SOURCING_LOG_STORAGE_ACTIVITY_EVENTS;
+            options.UseStringFormat = true;
+        });
+
+        // CONFIGURE REMINDERS: Add reminder storage using Azure Table Storage
+        siloBuilder.UseAzureTableReminderService(options =>
+        {
+            options.TableServiceClient = new TableServiceClient(OrleansConstants.AZURE_STORAGE_CONNECTION_STRING);
+        });
+    
+
         // CONFIGURE LOGGING
         siloBuilder.ConfigureLogging(logging =>
         {
