@@ -27,7 +27,8 @@ public class ActivityGrain : JournaledGrain<ActivityState, ActivityEvent>, IActi
 
     public async Task AddActivity(AddActivityCommand command)
     {
-        this.logger.LogInformation("Adding activity with ID: {ActivityId}", command.ActivityId);
+        this.logger.LogInformation("ActivityGrain adding activity with ID: {ActivityId}", command.ActivityId);
+        this.logger.LogInformation("ActivityGrain primary key: {PrimaryKey}", this.GetPrimaryKey().ToString());
 
         if (command == null)
         {
@@ -59,39 +60,41 @@ public class ActivityGrain : JournaledGrain<ActivityState, ActivityEvent>, IActi
                 await HandleAddActivityOnOperation(e);
                 break;
             default:
-                this.logger.LogWarning("Unhandled event type: {EventType}", item.GetType().Name);
+                // this.logger.LogWarning("Unhandled event type: {EventType}", item.GetType().Name);
                 return;
         }
 
 
     }
 
-    public async Task HandleAddActivityOnOperation(AddActivityOnOperationEvent e)
+    private async Task HandleAddActivityOnOperation(AddActivityOnOperationEvent e)
     {
-        var evt = new ActivityAddedEvent(
+        // Call AddActivity with the command to ensure all necessary validations and state changes are applied.
+        var command = new AddActivityCommand(
             e.ActivityId,
             e.Name,
             e.OperationId
-        );
+        );        
+        await AddActivity(command);
 
-        RaiseEvent(evt);
-        await ConfirmEvents();
+        this.logger.LogInformation("ActivityGrain handled AddActivityOnOperationEvent for ActivityId: {ActivityId}", e.ActivityId);
+
+        var activityAddedEvent = new ActivityAddedOnOperationEvent(
+            e.OperationSagaId,
+            e.OperationId,
+            e.ActivityId,
+            e.Name
+        );        
 
         var streamProvider = this.GetStreamProvider(OrleansConstants.AZURE_QUEUE_STREAM_PROVIDER);
-        var operationSagaEventStream = streamProvider.GetStream<OperationSagaEvent>(OrleansConstants.STREAM_NAMESPACE_OPERATION_SAGA_EVENTS, this.GetPrimaryKey());
+        var operationSagaEventStream = streamProvider.GetStream<OperationSagaEvent>(
+            OrleansConstants.STREAM_NAMESPACE_OPERATION_SAGA_EVENTS,
+            e.OperationSagaId); // Use the unique OperationSagaId here!                            
 
-        if (operationSagaEventStream != null)
-        {
-            this.logger.LogInformation("Publishing ActivityAddedOnOperationEvent to stream for OperationId: {OperationId}", e.OperationId);
-            
-            var activityAddedEvent = new ActivityAddedOnOperationEvent(
-                e.OperationId,
-                e.ActivityId,
-                e.Name
-            );
-            await operationSagaEventStream.OnNextAsync(activityAddedEvent);
-        }
+        this.logger.LogInformation("Publishing ActivityAddedOnOperationEvent to stream for OperationId: {OperationId}", e.OperationId);
+        this.logger.LogInformation("Activity grain primary key: {PrimaryKey}", this.GetPrimaryKey().ToString());
 
+        await operationSagaEventStream.OnNextAsync(activityAddedEvent);
     }
 
     public async Task OnSubscribed(IStreamSubscriptionHandleFactory handleFactory)

@@ -13,13 +13,13 @@ public class OperationSagaState
 
     public void Apply(OperationPendingEvent @event)
     {
-        PendingOperationId = @event.OperationId;
+        PendingOperationId = @event.OperationSagaId;
         IsActive = true;
     }
 
     public void Apply(AddActivityOnOperationEvent @event)
     {
-        if (PendingOperationId != @event.OperationId)
+        if (PendingOperationId != @event.OperationSagaId)
             throw new InvalidOperationException("Cannot add activity to a different operation.");
 
         PendingActivityIds.Add(@event.ActivityId);
@@ -27,7 +27,7 @@ public class OperationSagaState
 
     public void Apply(ActivityAddedOnOperationEvent @event)
     {
-        if (PendingOperationId != @event.OperationId)
+        if (PendingOperationId != @event.OperationSagaId)
             throw new InvalidOperationException("Cannot mark activity as added for a different operation.");
 
         if (!PendingActivityIds.Contains(@event.ActivityId))
@@ -37,9 +37,9 @@ public class OperationSagaState
         CompletedActivityIds.Add(@event.ActivityId);
     }
 
-    public void Apply(OperationCompletedEvent @event)
+    public void Apply(OperationSagaCompletedEvent @event)
     {
-        if (PendingOperationId != @event.OperationId)
+        if (PendingOperationId != @event.OperationSagaId)
             throw new InvalidOperationException("Cannot complete a different operation.");
 
         IsActive = false;

@@ -25,7 +25,7 @@ public class OperationGrain : JournaledGrain<OperationState, OperationEvent>, IO
 
     public async Task AddOperation(AddOperationCommand command)
     {
-        this.logger.LogInformation("Adding operation with ID: {OperationId}", command.OperationId);
+        this.logger.LogInformation("OperationGrain adding operation with ID: {OperationId}", command.OperationId);
         
         if (command == null)
         {
@@ -43,15 +43,28 @@ public class OperationGrain : JournaledGrain<OperationState, OperationEvent>, IO
 
     public async Task OnNextAsync(OperationSagaEvent item, StreamSequenceToken? token = null)
     {
-        this.logger.LogInformation("OperationGrain received event: {EventType}", item.GetType().Name);
+        this.logger.LogInformation(
+            "OperationGrain (primary key: {PrimaryKey}) received event: {EventType} for OperationSagaId: {OperationSagaId}",
+            this.GetPrimaryKey(),
+            item.GetType().Name,
+            item.OperationSagaId);
 
         switch (item)
         {
             case OperationPendingEvent e:
-                await HandleOperationPending(e);
+                this.logger.LogInformation("OperationGrain handling OperationPendingEvent for OperationId: {OperationId}", e.OperationId);
+                this.logger.LogInformation("OperationGrain primary key: {PrimaryKey}", this.GetPrimaryKey().ToString());
+                var command = new AddOperationCommand(
+                    e.OperationId,
+                    e.Name
+                );
+                await AddOperation(command);
                 break;
             default:
-                this.logger.LogWarning("Unhandled event type: {EventType}", item.GetType().Name);
+                this.logger.LogWarning(
+                    "OperationGrain unhandled event type: {EventType} for OperationSagaId: {OperationSagaId}",
+                    item.GetType().Name,
+                    item.OperationSagaId);
                 return;
         }
     }
@@ -59,6 +72,7 @@ public class OperationGrain : JournaledGrain<OperationState, OperationEvent>, IO
 
     public Task OnErrorAsync(Exception ex)
     {
+        this.logger.LogError(ex, "OperationGrain encountered an error while processing events.");
         throw new NotImplementedException();
     }
 
@@ -66,16 +80,5 @@ public class OperationGrain : JournaledGrain<OperationState, OperationEvent>, IO
     {
         var handle = handleFactory.Create<OperationSagaEvent>();
         await handle.ResumeAsync(this);
-    }
-
-    private async Task HandleOperationPending(OperationPendingEvent e)
-    {
-        var operationAddedEvent = new OperationAddedEvent(
-            e.OperationId,
-            e.Name
-        );
-
-        RaiseEvent(operationAddedEvent);
-        await ConfirmEvents();
     }
 }

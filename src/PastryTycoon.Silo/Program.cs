@@ -15,6 +15,12 @@ using PastryTycoon.Core.Grains.Common;
 
 
 await Host.CreateDefaultBuilder(args)
+    .ConfigureLogging(logging =>
+    {
+        logging.ClearProviders();
+        logging.AddConsole();
+        logging.SetMinimumLevel(LogLevel.Information);
+    })
     .ConfigureServices(services =>
     {
         services.AddSingleton<IRecipeRepository, RecipeRepository>();
@@ -107,11 +113,12 @@ await Host.CreateDefaultBuilder(args)
     
 
         // CONFIGURE LOGGING
-        siloBuilder.ConfigureLogging(logging =>
-        {
-            logging.AddConsole();
-            logging.SetMinimumLevel(LogLevel.Information);
-        });          
+        // siloBuilder.ConfigureLogging(logging =>
+        // {
+        //     logging.ClearProviders();            
+        //     logging.AddConsole();
+        //     logging.SetMinimumLevel(LogLevel.Information);
+        // });          
 
         // Configure how often Grains need to be cleaned up from the cluster.
         // siloBuilder.Configure<GrainCollectionOptions>(options =>
