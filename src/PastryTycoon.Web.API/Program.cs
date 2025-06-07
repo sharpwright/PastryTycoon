@@ -9,31 +9,27 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.AddServiceDefaults();
-builder.AddKeyedAzureQueueClient("StreamProvider");
-builder.AddKeyedAzureTableClient("OrleansClustering");
-builder.UseOrleansClient();
-// builder.Host.UseOrleansClient((context, client) =>
-// {
-//     // Example: Get connection string from Aspire configuration if needed later
-//     // var storageConnectionString = context.Configuration.GetConnectionString("storagename");
-//     // if (string.IsNullOrEmpty(storageConnectionString))
-//     // {
-//     //     storageConnectionString = OrleansConstants.AZURE_STORAGE_CONNECTION_STRING;
-//     // }
+builder.Host.UseOrleansClient((context, client) =>
+{           
+    var storageConnectionString = builder.Configuration.GetConnectionString("Storage");
 
-//     // Configure Orleans client to be able to find Orleans clusters.
-//     client.UseAzureStorageClustering(configureOptions: options =>
-//     {
-//         options.TableServiceClient = new TableServiceClient(OrleansConstants.AZURE_STORAGE_CONNECTION_STRING);
-//     });
+    // Configure Orleans client to be able to find Orleans clusters.
+    client.UseAzureStorageClustering(configureOptions: options =>
+    {
+        options.TableServiceClient = new TableServiceClient(storageConnectionString);
+    });
 
-//     // Configure Cluster Options, needs to match the silo options.
-//     client.Configure<ClusterOptions>(options =>
-//     {
-//         options.ClusterId = OrleansConstants.CLUSTER_ID;
-//         options.ServiceId = OrleansConstants.SERVICE_ID;  
-//     });
-// });
+    // Configure Cluster Options, needs to match the silo options.
+    client.Configure<ClusterOptions>(options =>
+    {
+        options.ClusterId = OrleansConstants.CLUSTER_ID;
+        options.ServiceId = OrleansConstants.SERVICE_ID;
+    });
+
+    // Configure activity propagation for OpenTelemetry.
+    client.AddActivityPropagation();
+    
+});
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApiDocument();

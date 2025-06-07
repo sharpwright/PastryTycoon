@@ -57,13 +57,14 @@ public static class Extensions
             {
                 metrics.AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
-                    .AddRuntimeInstrumentation();
-                //.AddMeter("Microsoft.Orleans");
+                    .AddRuntimeInstrumentation()
+                    .AddMeter("Microsoft.Orleans");
             })
             .WithTracing(tracing =>
             {
-                //tracing.AddSource("Microsoft.Orleans.Runtime");
-                //tracing.AddSource("Microsoft.Orleans.Application");
+                tracing.AddSource("Microsoft.Orleans.Runtime");
+                tracing.AddSource("Microsoft.Orleans.Application");
+                tracing.AddSource("PastryTycoon.Core.Grains");
                 tracing.AddSource(builder.Environment.ApplicationName)
                     .AddAspNetCoreInstrumentation(tracing =>
                         // Exclude health check requests from tracing
@@ -71,20 +72,28 @@ public static class Extensions
                             !context.Request.Path.StartsWithSegments(HealthEndpointPath)
                             && !context.Request.Path.StartsWithSegments(AlivenessEndpointPath)
                     )
-                    // Uncomment the following line to enable gRPC instrumentation (requires the OpenTelemetry.Instrumentation.GrpcNetClient package)
-                    //.AddGrpcClientInstrumentation()
+
+                    .AddGrpcClientInstrumentation() // requires the OpenTelemetry.Instrumentation.GrpcNetClient package
                     .AddHttpClientInstrumentation(httpClientOptions => // This instruments for traces
                     {
                         httpClientOptions.FilterHttpRequestMessage = (httpRequestMessage) =>
-                        {                            
+                        {
                             var uri = httpRequestMessage.RequestUri;
-                            if (uri != null
-                                && uri.ToString().Contains("devstoreaccount1"))
+                            if (uri != null)
                             {
-                                // Exclude health check requests from tracing
-                                return false;
-                            }   
-                           
+                                // Exclude Azure Queue Storage polling (including Azurite emulator)
+                                bool isQueueMessages = uri.AbsolutePath.EndsWith("/messages", StringComparison.OrdinalIgnoreCase);
+                                bool isLocalQueueHost =
+                                    uri.Host.Equals("127.0.0.1", StringComparison.OrdinalIgnoreCase) ||
+                                    uri.Host.Equals("localhost", StringComparison.OrdinalIgnoreCase) ||
+                                    uri.Host.Equals("host.docker.internal", StringComparison.OrdinalIgnoreCase);
+                                bool isAzureQueueHost = uri.Host.EndsWith(".queue.core.windows.net", StringComparison.OrdinalIgnoreCase);
+
+                                if (isQueueMessages && (isLocalQueueHost || isAzureQueueHost))
+                                {
+                                    return false; // Do not trace these requests
+                                }
+                            }
                             return true; // Trace all other requests
                         };
                     });
