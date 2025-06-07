@@ -7,6 +7,11 @@ using Microsoft.Extensions.Configuration; // Add this for Azure Aspire extension
 
 var builder = DistributedApplication.CreateBuilder(args);
 
+// NOTE: not using the Aspire.Hosting.Orleans package here.
+// It can be used to configure Orleans clusters, but it seems unable to configure
+// Azure Storage to use an external Azurite Docker container.
+// Instead, we use the Aspire.Hosting.Azure package to configure Azure Storage
+
 // Use an external/local Azurite Docker container instead of Aspire-managed emulator
 var storage = builder.AddConnectionString("Storage");
 
