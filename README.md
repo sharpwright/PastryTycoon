@@ -9,31 +9,36 @@ PastryTycoon is a modular, event-driven simulation game backend built with .NET 
 - **Validation:** Business logic validation using FluentValidation.
 - **Azure Storage Support:** Local development with Azurite; ready for Azure deployment.
 - **Modular Architecture:** Clear separation between core logic, abstractions, and data access.
+- **Aspire Orchestration:** Unified local development experience using .NET Aspire for running all dependencies and services.
+- **Comprehensive Testing:** Unit tests for both core grains and data access layers.
+- **Developer Tooling:** Integrated dashboards for Orleans, Aspire, and storage emulators for easy monitoring and debugging.
 
 ## Project Structure
 
-- `docker-compose/`
-  Docker Compose files and related resources for running development dependencies (e.g., Azurite, CosmosDB emulator).
 - `docs/`
   Documentation files, architecture diagrams, and additional project resources.
 - `src/`
   Main source code folder containing all projects.
+  - `PastryTycoon.AppHost/`  
+    Aspire AppHost project for orchestrating local development dependencies and services.
   - `PastryTycoon.Core.Abstractions/`  
-  Interfaces, contracts, and shared abstractions used across the solution.
+    Interfaces, contracts, and shared abstractions used across the solution.
   - `PastryTycoon.Core.Grains/`  
-  Orleans grains and core business logic for the simulation.
+    Orleans grains and core business logic for the simulation.
   - `PastryTycoon.Core.Grains.UnitTests/`  
-  Unit tests for the core grains and business logic.
+    Unit tests for the core grains and business logic.
   - `PastryTycoon.Data/`  
-  Data access logic, storage providers, and persistence-related code.
+    Data access logic, storage providers, and persistence-related code.
   - `PastryTycoon.Data.UnitTests/`  
-  Unit tests for the data access layer.
+    Unit tests for the data access layer.
+  - `PastryTycoon.ServiceDefaults/`  
+    Shared service configuration, OpenTelemetry, and cross-cutting concerns for all projects.
   - `PastryTycoon.Silo/`  
-  Orleans Silo host project, responsible for running the Orleans cluster.  
+    Orleans Silo host project, responsible for running the Orleans cluster.  
   - `PastryTycoon.Web.API/`  
-  ASP.NET Core Web API project for exposing endpoints to clients.
+    ASP.NET Core Web API project for exposing endpoints to clients.
   - `PastryTycoon.sln`  
-  Solution file for the project.
+    Solution file for the project.
 - `.gitignore`  
   Git ignore rules for the repository.
 - `README.md`  
@@ -52,7 +57,7 @@ git clone https://github.com/your-org/PastryTycoon.git
 2. **Install dependencies:**
 
 - [.NET 9 SDK](https://dotnet.microsoft.com/)
-- [Docker](https://www.docker.com/products/docker-desktop) (for running Azurite and CosmosDB emulator via Docker Compose)
+- [Docker](https://www.docker.com/products/docker-desktop) (for running Azurite and CosmosDB emulator via Aspire AppHost)
 - (Optional) [Azure Storage Explorer](https://azure.microsoft.com/en-us/products/storage/storage-explorer/) for browsing and managing Azurite/Azure Storage data
 
 ## Building and Running the Solution
