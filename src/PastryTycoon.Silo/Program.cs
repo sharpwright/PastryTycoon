@@ -88,6 +88,16 @@ builder.UseOrleans(siloBuilder =>
     // CONFIGURE ACTIVITY PROPAGATION: add Activity propagation for distributed tracing.
     siloBuilder.AddActivityPropagation();
 
+    // CONFIGURE ORLEAN DASHBOARD: add dashboard for monitoring and management.
+    siloBuilder.UseDashboard(options =>
+    {
+        options.Port = 8080;
+        options.Host = "0.0.0.0";
+        options.HostSelf = true;
+        options.Username = "admin";
+        options.Password = "password";
+    });
+
     // CONFIGURE LOGGING
     // siloBuilder.ConfigureLogging(logging =>
     // {
