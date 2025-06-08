@@ -8,39 +8,24 @@ using Microsoft.Extensions.Configuration;
 using PastryTycoon.Core.Grains.Game;
 using PastryTycoon.Core.Grains.Game.Validators;
 using PastryTycoon.Core.Abstractions.Game;
+using System.Numerics;
+using PastryTycoon.Data.Recipes;
 
 namespace PastryTycoon.Core.Grains.UnitTests.TestClusterHelpers;
 
+/// <summary>
+/// Defines a fixture for the test cluster used in integration tests.
+/// This fixture sets up the cluster with default configurations.
+/// For specific grain configurations, use the <see cref="ClusterFactory"/>  
+/// to create and deploy a cluster with custom configurators, instead of using this fixture.
+/// </summary>
 public class ClusterFixture : IDisposable
 {
     public TestCluster Cluster { get; } = new TestClusterBuilder()
-        .AddSiloBuilderConfigurator<TestSiloConfigurations>()
+        .AddSiloBuilderConfigurator<DefaultTestSiloConfigurations>()
         .Build();
 
     public ClusterFixture() => Cluster.Deploy();
 
     void IDisposable.Dispose() => Cluster.StopAllSilos();
-}
-
-file sealed class TestSiloConfigurations : ISiloConfigurator
-{
-    public void Configure(ISiloBuilder siloBuilder)
-    {
-        siloBuilder.AddMemoryStreams(OrleansConstants.AZURE_QUEUE_STREAM_PROVIDER);
-        siloBuilder.AddMemoryGrainStorage(OrleansConstants.STREAM_PUBSUB_STORE);
-        siloBuilder.AddLogStorageBasedLogConsistencyProvider(OrleansConstants.EVENT_SOURCING_LOG_PROVIDER);
-        siloBuilder.AddMemoryGrainStorage(OrleansConstants.EVENT_SOURCING_LOG_STORAGE_GAME_EVENTS);
-        siloBuilder.AddMemoryGrainStorage(OrleansConstants.EVENT_SOURCING_LOG_STORAGE_PLAYER_EVENTS);
-        siloBuilder.ConfigureServices(static services =>
-        {
-            // Mock the InitializeGameStateCommandValidator to always succeed.
-            // The validator has its own unit tests, so we can mock it here for simplicity.
-            var mockValidation = new Mock<InitializeGameStateCommandValidator>();
-            mockValidation
-                .Setup(v => v.ValidateCommandAndThrowsAsync(It.IsAny<InitializeGameStateCommand>(), It.IsAny<GameState>(), It.IsAny<Guid>()))
-                .Returns(Task.FromResult(true));
-            
-            services.AddSingleton(mockValidation.Object);
-        });
-    }
 }

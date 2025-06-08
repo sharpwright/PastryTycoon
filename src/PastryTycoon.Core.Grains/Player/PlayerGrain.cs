@@ -17,6 +17,12 @@ namespace PastryTycoon.Core.Grains.Player;
 public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrain
 {
     private IAsyncStream<PlayerEvent>? playerEventStream;
+    private readonly IRecipeRepository recipeRepository;
+
+    public PlayerGrain(IRecipeRepository recipeRepository)
+    {
+        this.recipeRepository = recipeRepository;
+    }
 
     /// <summary>
     /// Called when the grain is activated.
@@ -39,12 +45,7 @@ public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrai
     public async Task InitializeAsync(InitializePlayerCommand command)
     {
         var validator = new InitializePlayerCommandValidator();
-        await validator.ValidateCommandAndThrowsAsync(command, State, this.GetPrimaryKey());
-
-        if (State.IsInitialized)
-        {
-            throw new InvalidOperationException("Player is already initialized.");
-        }
+        await validator.ValidateCommandAndThrowsAsync(command, State, this.GetPrimaryKey());        
 
         var evt = new PlayerInitializedEvent(
             this.GetPrimaryKey(),
@@ -61,25 +62,32 @@ public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrai
     /// </summary>
     /// <param name="command">The command containing the recipe discovery details.</param>
     /// <returns></returns>
-    public async Task DiscoverRecipeAsync(DiscoverRecipeCommand command)
+    public async Task TryDiscoverRecipeFromIngredientsAsync(TryDiscoverRecipeCommand command)
     {
-        var validator = new DiscoverRecipeCommandValidator();
+        var validator = new TryDiscoverRecipeCommandValidator();
         await validator.ValidateCommandAndThrowsAsync(command, State, this.GetPrimaryKey());
 
-        // If the recipe is not already known, apply the discovery.
-        var evt = new PlayerDiscoveredRecipeEvent(
-            command.PlayerId,
-            command.RecipeId,
-            command.DiscoveryTimeUtc);
+        // TODO: Extract the recipe discovery logic to a service or handler.
+        // Look up the recipe based on the provided ingredient IDs.
+        var recipe = await recipeRepository.GetRecipeByIngredientIdsAsync(command.IngredientIds);
 
-        RaiseEvent(evt);
-        await ConfirmEvents();
-
-        if (playerEventStream != null)
+        // If the recipe is found and not already discovered, raise an event.
+        if (recipe != null && !State.DiscoveredRecipeIds.ContainsKey(recipe.Id))
         {
-            await playerEventStream.OnNextAsync(evt);
+            var evt = new PlayerDiscoveredRecipeEvent(
+                command.PlayerId,
+                recipe.Id,
+                DateTime.UtcNow);
+
+            RaiseEvent(evt);
+            await ConfirmEvents();
+
+            if (playerEventStream != null)
+            {
+                await playerEventStream.OnNextAsync(evt);
+            }
         }
-    }    
+    }
 
     /// <summary>
     /// Unlocks an achievement for the player based on the provided command.
@@ -103,7 +111,7 @@ public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrai
         RaiseEvent(evt);
         await ConfirmEvents();
     }
-    
+
     /// <summary>
     /// Retrieves the player statistics asynchronously.
     /// </summary>

@@ -1,30 +1,76 @@
 using System;
+using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using Orleans.TestingHost;
 using PastryTycoon.Core.Abstractions.Constants;
 using PastryTycoon.Core.Abstractions.Player;
 using PastryTycoon.Core.Grains.Player;
 using PastryTycoon.Core.Grains.UnitTests.TestClusterHelpers;
+using PastryTycoon.Data.Ingredients;
+using PastryTycoon.Data.Recipes;
 
 namespace PastryTycoon.Core.Grains.UnitTests.Player;
 
-[Collection(ClusterCollection.Name)]
-public class PlayerGrainIntegrationTests(ClusterFixture fixture)
+/// <summary>
+/// Silo Configurator for the PlayerGrain tests.
+/// </summary>
+file sealed class PlayerGrainTestsConfigurator : ISiloConfigurator
 {
-    private readonly TestCluster cluster = fixture.Cluster;
+    public Recipe TestRecipe { get; } = new Recipe(
+        "recipe-id",
+        "Test Recipe",
+        [
+            new RecipeIngredient("ingredient-1", null, 1),
+            new RecipeIngredient("ingredient-2", null, 2)
+        ]);
+
+    public void Configure(ISiloBuilder siloBuilder)
+    {
+        siloBuilder.ConfigureServices(services =>
+        {
+            // Mock the IRecipeRepository to always return a test recipe.
+            var mockRecipeRepository = new Mock<IRecipeRepository>();
+            mockRecipeRepository
+                .Setup(r => r.GetRecipeByIngredientIdsAsync(It.IsAny<List<string>>()))
+                .ReturnsAsync(TestRecipe);
+            services.AddSingleton(mockRecipeRepository.Object);
+        });
+    }
+}
+
+/// <summary>
+/// Integration tests for the PlayerGrain.
+/// Uses <see cref="ClusterFactory"/> to create and deploy a test cluster with specific grain configurations.
+/// </summary>
+public class PlayerGrainIntegrationTests
+{
+    private readonly TestCluster cluster;
+
+    public PlayerGrainIntegrationTests()
+    {
+        // Ensure the cluster is initialized with specific configurators
+        // that set up the necessary grain types and dependencies.
+        cluster = ClusterFactory.CreateAndDeployCluster(builder =>
+        {
+            builder.AddSiloBuilderConfigurator<PlayerGrainTestsConfigurator>();
+        });
+    }
 
     [Fact]
-    public async Task DiscoverRecipeAsync_ShouldDiscoverNewRecipe()
+    public async Task TryDiscoverRecipeAsync_ShouldEmitPlayerDiscoveredRecipeEvent_WhenRecipeNotDiscovered()
     {
         // Arrange
         var playerId = Guid.NewGuid();
-        var recipeId = "recipe-id";
-        var command = new DiscoverRecipeCommand(playerId, recipeId, DateTime.UtcNow);
+        var ingredientIds = new List<string> { "ingredient-1", "ingredient-2" };
+        var command = new TryDiscoverRecipeCommand(playerId, ingredientIds);
+
+        // Use a test helper to inject the mock into the grain if your test cluster supports DI overrides
         var grain = cluster.GrainFactory.GetGrain<IPlayerGrain>(playerId);
         var observer = cluster.GrainFactory.GetGrain<IStreamObserverGrain<PlayerEvent>>(playerId);
         await observer.SubscribeAsync(OrleansConstants.STREAM_NAMESPACE_PLAYER_EVENTS, OrleansConstants.AZURE_QUEUE_STREAM_PROVIDER);
 
         // Act
-        await grain.DiscoverRecipeAsync(command);
+        await grain.TryDiscoverRecipeFromIngredientsAsync(command);
         var received = await observer.WaitForReceivedEventsAsync();
         var events = await observer.GetReceivedEventsAsync();
 
@@ -32,24 +78,48 @@ public class PlayerGrainIntegrationTests(ClusterFixture fixture)
         Assert.True(received, "No events received within timeout.");
         Assert.Single(events, evt =>
             evt is PlayerDiscoveredRecipeEvent e &&
-            e.RecipeId == recipeId);
+            e.RecipeId == "recipe-id");
     }
 
     [Fact]
-    public async Task DiscoverRecipeAsync_ShouldThrow_WhenRecipeAlreadyDiscovered()
+    public async Task TryDiscoverRecipeAsync_ShouldNotEmitPlayerDiscoveredRecipeEvent_WhenRecipeAlreadyDiscovered()
     {
         // Arrange
         var playerId = Guid.NewGuid();
+        var ingredientIds = new List<string> { "ingredient-1", "ingredient-2" };
+        var discoverCommand = new TryDiscoverRecipeCommand(playerId, ingredientIds);
+
+        // Initialize the grain state before testing
         var grain = cluster.GrainFactory.GetGrain<IPlayerGrain>(playerId);
         var observer = cluster.GrainFactory.GetGrain<IStreamObserverGrain<PlayerEvent>>(playerId);
         await observer.SubscribeAsync(OrleansConstants.STREAM_NAMESPACE_PLAYER_EVENTS, OrleansConstants.AZURE_QUEUE_STREAM_PROVIDER);
 
-        // Act
-        var command = new DiscoverRecipeCommand(playerId, "recipe-id", DateTime.UtcNow);
-        await grain.DiscoverRecipeAsync(command);
+        // Initialize the player
+        var initializeCommand = new InitializePlayerCommand("TestPlayer", Guid.NewGuid());
+        await grain.InitializeAsync(initializeCommand);
 
-        // Assert: Verify second call throws an exception
-        var exception = await Assert.ThrowsAsync<ArgumentException>(() => grain.DiscoverRecipeAsync(command));
+        // Simulate discovering a recipe
+        await grain.TryDiscoverRecipeFromIngredientsAsync(discoverCommand);
+        var received = await observer.WaitForReceivedEventsAsync();
+        var events = await observer.GetReceivedEventsAsync();
+
+        // Assert: Verify first discovery emits the event
+        Assert.True(received, "No events received within timeout.");
+        Assert.Single(events, evt =>
+            evt is PlayerDiscoveredRecipeEvent e &&
+            e.RecipeId == "recipe-id");
+
+        // Clear events for the next test
+        await observer.ClearReceivedEventsAsync();
+
+        // Verify second discovery does not emit an event
+        await grain.TryDiscoverRecipeFromIngredientsAsync(discoverCommand);
+        received = await observer.WaitForReceivedEventsAsync();
+        events = await observer.GetReceivedEventsAsync();
+
+        // Assert: Verify second call does not emit any events
+        Assert.False(received, "Events received within timeout.");
+        Assert.Empty(events);
     }
 
     [Fact]
@@ -155,5 +225,5 @@ public class PlayerGrainIntegrationTests(ClusterFixture fixture)
         // Act & Assert: Verify getting statistics throws an exception
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => grain.GetPlayerStatisticsAsync());
         Assert.Equal("Player is not initialized.", exception.Message);
-    }    
+    }
 }

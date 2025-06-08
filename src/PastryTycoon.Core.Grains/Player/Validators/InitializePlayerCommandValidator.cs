@@ -12,6 +12,10 @@ public class InitializePlayerCommandValidator : AbstractGrainValidator<Initializ
 {
     public InitializePlayerCommandValidator()
     {
+        RuleFor(x => x.GrainState.IsInitialized)
+            .NotEqual(true)
+            .WithMessage("Player is already initialized");
+
         RuleFor(x => x.Command.PlayerName)
             .NotEmpty()
             .WithMessage("PlayerName is required")

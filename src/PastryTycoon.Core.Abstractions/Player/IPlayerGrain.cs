@@ -20,7 +20,7 @@ public interface IPlayerGrain : IGrainWithGuidKey
     /// </summary>
     /// <param name="command">Command containing the recipe discovery details.</param>
     /// <returns></returns>
-    public Task DiscoverRecipeAsync(DiscoverRecipeCommand command);
+    public Task TryDiscoverRecipeFromIngredientsAsync(TryDiscoverRecipeCommand command);
 
     /// <summary>
     /// Unlocks an achievement for the player based on the provided command.

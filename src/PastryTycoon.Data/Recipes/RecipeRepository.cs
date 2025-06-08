@@ -85,4 +85,18 @@ public class RecipeRepository : IRecipeRepository
         var recipe = recipes.FirstOrDefault(r => r.Id.Equals(recipeId, StringComparison.OrdinalIgnoreCase));
         return Task.FromResult(recipe);
     }
+
+    public Task<Recipe?> GetRecipeByIngredientIdsAsync(IList<string> ingredientIds)
+    {
+        if (ingredientIds == null || ingredientIds.Count == 0)
+        {
+            throw new ArgumentException("Ingredient IDs cannot be null or empty.", nameof(ingredientIds));
+        }
+
+        var recipe = recipes.FirstOrDefault(r =>
+            r.Ingredients.All(i => i.IngredientId != null && ingredientIds.Contains(i.IngredientId)) &&
+            r.Ingredients.Count == ingredientIds.Count
+        );
+        return Task.FromResult(recipe);
+    }
 }
