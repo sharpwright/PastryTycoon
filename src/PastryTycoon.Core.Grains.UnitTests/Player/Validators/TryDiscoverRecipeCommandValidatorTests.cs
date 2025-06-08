@@ -65,7 +65,7 @@ public class DiscoverRecipeCommandValidatorTests
         // Arrange
         var playerId = Guid.NewGuid();
         List<string>? ingredientIds = null; // Null ingredient IDs
-        var command = new TryDiscoverRecipeCommand(playerId, ingredientIds);
+        var command = new TryDiscoverRecipeCommand(playerId, ingredientIds!);
         var grainState = new PlayerState();
 
         var validator = new TryDiscoverRecipeCommandValidator();

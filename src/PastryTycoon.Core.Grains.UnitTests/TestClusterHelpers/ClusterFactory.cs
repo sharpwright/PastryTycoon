@@ -21,7 +21,7 @@ public static class ClusterFactory
     /// </summary>
     /// <param name="configure"></param>
     /// <returns></returns>
-    public static TestCluster CreateAndDeployCluster(Action<TestClusterBuilder> configure = null)
+    public static TestCluster CreateAndDeployCluster(Action<TestClusterBuilder>? configure = null)
     {
         var builder = CreateBuilder();
         configure?.Invoke(builder);
