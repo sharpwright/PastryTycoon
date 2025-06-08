@@ -20,7 +20,7 @@ public class FirstRecipeDiscoveredUnlockHandlerTests
     {
         // Arrange
         var playerId = Guid.NewGuid();
-        var recipeId = Guid.NewGuid();
+        var recipeId = "test-recipe";
         var state = new AchievementsState()
         {
             RecipesDiscovered = 1 // Start with no recipes discovered
@@ -40,7 +40,7 @@ public class FirstRecipeDiscoveredUnlockHandlerTests
     {
         // Arrange
         var playerId = Guid.NewGuid();
-        var recipeId = Guid.NewGuid();
+        var recipeId = "test-recipe";
         var state = new AchievementsState()
         {
             RecipesDiscovered = 2 // More than one recipe discovered

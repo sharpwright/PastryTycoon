@@ -15,7 +15,7 @@ namespace PastryTycoon.Core.Grains.UnitTests.Game.Validators
             var primaryKey = Guid.NewGuid();
             var gameId = primaryKey;
             var playerId = Guid.NewGuid();
-            var recipeIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
+            var recipeIds = new List<string> { "test-1-recipe", "test-2-recipe" };
             var command = new InitializeGameStateCommand(gameId, playerId, recipeIds, DateTime.UtcNow);
             var validator = new InitializeGameStateCommandValidator();
 
@@ -41,7 +41,7 @@ namespace PastryTycoon.Core.Grains.UnitTests.Game.Validators
             var primaryKey = Guid.NewGuid();
             var gameId = Guid.NewGuid();
             var playerId = Guid.NewGuid();
-            var recipeIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
+            var recipeIds = new List<string> { "test-1-recipe", "test-2-recipe" };
             var command = new InitializeGameStateCommand(gameId, playerId, recipeIds, DateTime.UtcNow);
             var validator = new InitializeGameStateCommandValidator();
 

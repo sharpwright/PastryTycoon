@@ -17,7 +17,7 @@ public class PlayerGrainIntegrationTests(ClusterFixture fixture)
     {
         // Arrange
         var playerId = Guid.NewGuid();
-        var recipeId = Guid.NewGuid();
+        var recipeId = "recipe-id";
         var command = new DiscoverRecipeCommand(playerId, recipeId, DateTime.UtcNow);
         var grain = cluster.GrainFactory.GetGrain<IPlayerGrain>(playerId);
         var observer = cluster.GrainFactory.GetGrain<IStreamObserverGrain<PlayerEvent>>(playerId);
@@ -45,7 +45,7 @@ public class PlayerGrainIntegrationTests(ClusterFixture fixture)
         await observer.SubscribeAsync(OrleansConstants.STREAM_NAMESPACE_PLAYER_EVENTS, OrleansConstants.AZURE_QUEUE_STREAM_PROVIDER);
 
         // Act
-        var command = new DiscoverRecipeCommand(playerId, Guid.NewGuid(), DateTime.UtcNow);
+        var command = new DiscoverRecipeCommand(playerId, "recipe-id", DateTime.UtcNow);
         await grain.DiscoverRecipeAsync(command);
 
         // Assert: Verify second call throws an exception

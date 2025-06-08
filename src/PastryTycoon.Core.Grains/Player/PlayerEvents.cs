@@ -35,7 +35,7 @@ public record PlayerInitializedEvent (
 [GenerateSerializer]
 public record PlayerDiscoveredRecipeEvent(
     Guid PlayerId,
-    [property: Id(1)] Guid RecipeId,
+    [property: Id(1)] string RecipeId,
     [property: Id(2)] DateTime DiscoveryTimeUtc
 ) : PlayerEvent(PlayerId);
 

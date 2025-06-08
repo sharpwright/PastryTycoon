@@ -12,7 +12,7 @@ public class DiscoverRecipeCommandValidatorTests
     {
         // Arrange
         var playerId = Guid.NewGuid();
-        var recipeId = Guid.NewGuid();
+        var recipeId = "recipe-id";
         var command = new DiscoverRecipeCommand(playerId, recipeId, DateTime.UtcNow);
         var state = new PlayerState();
 
@@ -28,7 +28,7 @@ public class DiscoverRecipeCommandValidatorTests
     {
         // Arrange
         var playerId = Guid.Empty; // Invalid player ID
-        var recipeId = Guid.NewGuid();
+        var recipeId = "recipe-id";
         var command = new DiscoverRecipeCommand(playerId, recipeId, DateTime.UtcNow);
         var grainState = new PlayerState();
 
@@ -46,7 +46,7 @@ public class DiscoverRecipeCommandValidatorTests
     {
         // Arrange
         var playerId = Guid.NewGuid();
-        var recipeId = Guid.Empty; // Invalid recipe ID
+        var recipeId = string.Empty; // Invalid recipe ID
         var command = new DiscoverRecipeCommand(playerId, recipeId, DateTime.UtcNow);
         var grainState = new PlayerState();
 
@@ -64,12 +64,12 @@ public class DiscoverRecipeCommandValidatorTests
     {
         // Arrange
         var playerId = Guid.NewGuid();
-        var recipeId = Guid.NewGuid();
+        var recipeId = "recipe-id";
         var command = new DiscoverRecipeCommand(playerId, recipeId, DateTime.UtcNow);
         var grainState = new PlayerState()
         {
             PlayerId = playerId,
-            DiscoveredRecipeIds = new Dictionary<Guid, DateTime> { { recipeId, DateTime.UtcNow } }
+            DiscoveredRecipeIds = new Dictionary<string, DateTime> { { recipeId, DateTime.UtcNow } }
         };
 
         var validator = new DiscoverRecipeCommandValidator();
@@ -86,7 +86,7 @@ public class DiscoverRecipeCommandValidatorTests
     {
         // Arrange
         var playerId = Guid.NewGuid();
-        var recipeId = Guid.NewGuid();
+        var recipeId = "recipe-id";
         var command = new DiscoverRecipeCommand(playerId, recipeId, DateTime.UtcNow.AddMinutes(10)); // Future time
         var grainState = new PlayerState();
 
