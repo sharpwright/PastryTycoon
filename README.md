@@ -51,30 +51,14 @@ git clone https://github.com/your-org/PastryTycoon.git
 
 2. **Install dependencies:**
 
-2. **Install dependencies:**
-
 - [.NET 9 SDK](https://dotnet.microsoft.com/)
 - [Docker](https://www.docker.com/products/docker-desktop) (for running Azurite and CosmosDB emulator via Docker Compose)
 - (Optional) [VS Code Azurite extension](https://marketplace.visualstudio.com/items?itemName=Azurite.azurite) for local Azure Storage emulation
 - (Optional) [Azure Storage Explorer](https://azure.microsoft.com/en-us/products/storage/storage-explorer/) for browsing and managing Azurite/Azure Storage data
 
-1. **Start development dependencies:**
+3. **Start development dependencies:**
 
-From the root of the repository, run:
-
-```
-docker-compose -f docker-compose/docker-compose.yml up -d
-```
-
-This will start Azurite and the CosmosDB emulator in containers. The following tools let you browse, manage, and debug your local development data.
-
-- **Access Azurite:**  
-  Use [Azure Storage Explorer](https://azure.microsoft.com/en-us/products/storage/storage-explorer/) to connect to Azurite at `http://127.0.0.1:10000` (Blob), `http://127.0.0.1:10001` (Queue), and `http://127.0.0.1:10002` (Table).  
-  In Storage Explorer, add a new connection using "Attach to a local emulator" and select Azurite.
-
-- **Access CosmosDB Emulator:**  
-    Connect to the emulator at `https://localhost:8081/_explorer/index.html` (you may need to accept the self-signed certificate).  
-  For connection strings and keys, see the [official Cosmos DB emulator documentation](https://learn.microsoft.com/en-us/azure/cosmos-db/emulator).
+There is no need to start development dependencies manually. All dependencies are managed by the `PastryTycoon.AppHost` using Aspire.Net.
 
 ## Building and Running the Solution
 
@@ -92,27 +76,50 @@ To execute all unit tests (for both core grains and data layers), run:
 dotnet test src/PastryTycoon.sln
 ```
 
-3. **Run the Orleans Silo**
+3. **Run the project**
 
-To start the Orleans Silo host for local development:
+To run all dependencies, the Orleans Silo and the Web API:
 
 ```
-dotnet run --project src/PastryTycoon.Silo
+dotnet run --project src/PastryTycoon.AppHost
 ```
 
-4. **Run the Web API**
+This will start Azurite and the CosmosDB emulator in containers. The following tools let you browse, manage, and debug your local development data.
 
-To start the ASP.NET Core Web API:
-```
-dotnet run --project src/PastryTycoon.Web.API
-```
+- **Access Azurite:**  
+  Use [Azure Storage Explorer](https://azure.microsoft.com/en-us/products/storage/storage-explorer/) to connect to Azurite at `http://127.0.0.1:10000` (Blob), `http://127.0.0.1:10001` (Queue), and `http://127.0.0.1:10002` (Table).  
+  In Storage Explorer, add a new connection using "Attach to a local emulator" and select Azurite.
 
-> **Tip:** You can run the Silo and Web API in separate terminals to simulate a full backend environment.
+- **Access CosmosDB Emulator:**  
+  Use [Azure Cosmos DB Explorer](https://cosmos.azure.com/) or compatible tools.  
+  Connect to the emulator at `https://localhost:8081/` (you may need to accept the self-signed certificate).  
+  For connection strings and keys, see the [official Cosmos DB emulator documentation](https://learn.microsoft.com/en-us/azure/cosmos-db/emulator).
+
+- **Access Aspire Dashboard:**  
+  After starting, open `http://localhost:18888` in your browser to view the Aspire dashboard, which provides health, logs, and endpoint links for all running services.
+
+- **Access Orleans Dashboard:**  
+   After starting, open [http://localhost:8080](http://localhost:8080) in your browser to view the Orleans dashboard for cluster monitoring and management.  
+  > **Note:** If you do not see a link to the Orleans dashboard in the Aspire dashboard, simply open the URL above directly in your browser.
 
 ## Development
 
-- Use Visual Studio Code for best integration with Azurite and .NET tooling.
-- Data files in the `data/` folder are for local development only and are excluded from version control.
+For the best development experience with PastryTycoon in VSCode, install the following extensions:
+
+- [C#](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp)  
+  Core C# language support (required by C# Dev Kit).
+- [C# Dev Kit](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit)  
+  Full-featured C# support for .NET projects, including IntelliSense, debugging, and project management.
+- [IntelliCode for C# Dev Kit](https://marketplace.visualstudio.com/items?itemName=VisualStudioExptTeam.vscodeintellicode-csharp)  
+  AI-assisted code completions and recommendations for C# Dev Kit.
+- [Container Tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-container-tools)  
+  Enhanced support for developing with containers in VS Code.
+- [Docker](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker)  
+  Build, run, and manage Docker containers and images.
+- [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one)  
+  Enhanced Markdown editing and preview support.
+- [Todo Tree](https://marketplace.visualstudio.com/items?itemName=Gruntfuggly.todo-tree)  
+  Quickly search and visualize TODO comments and code annotations across your project.
 
 ## Contributing
 

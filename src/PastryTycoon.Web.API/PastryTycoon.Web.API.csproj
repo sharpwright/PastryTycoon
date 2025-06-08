@@ -10,10 +10,12 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0" />
     <PackageReference Include="Microsoft.Orleans.Client" Version="9.1.2" />
     <PackageReference Include="Microsoft.Orleans.Clustering.AzureStorage" Version="9.1.2" />
+    <PackageReference Include="Microsoft.Orleans.Streaming.AzureStorage" Version="9.1.2" />
     <PackageReference Include="NSwag.AspNetCore" Version="14.4.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PastryTycoon.ServiceDefaults\PastryTycoon.ServiceDefaults.csproj" />
     <ProjectReference Include="..\PastryTycoon.Core.Abstractions\PastryTycoon.Core.Abstractions.csproj" />
   </ItemGroup>
 
