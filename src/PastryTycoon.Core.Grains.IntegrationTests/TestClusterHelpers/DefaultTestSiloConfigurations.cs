@@ -37,7 +37,7 @@ public sealed class DefaultTestSiloConfigurations : ISiloConfigurator
             services.AddSingleton<IGrainValidator<UpdateGameCommand, GameState, Guid>, UpdateGameCommandValidator>();
 
             // Add player grain command handlers and validators.
-            services.AddSingleton<ICommandHandler<TryDiscoverRecipeCommand, PlayerEvent, PlayerState>, TryDiscoverRecipeCommandHandler>();
+            services.AddSingleton<ICommandHandler<TryDiscoverRecipeCommand, PlayerState, Guid, PlayerEvent>, TryDiscoverRecipeCommandHandler>();
             services.AddSingleton<IGrainValidator<InitializePlayerCommand, PlayerState, Guid>, InitializePlayerCommandValidator>();
             services.AddSingleton<IGrainValidator<TryDiscoverRecipeCommand, PlayerState, Guid>, TryDiscoverRecipeCommandValidator>();
             services.AddSingleton<IGrainValidator<UnlockAchievementCommand, PlayerState, Guid>, UnlockAchievementCommandValidator>();            

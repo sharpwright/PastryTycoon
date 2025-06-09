@@ -9,7 +9,7 @@ namespace PastryTycoon.Core.Grains.Player.CommandHandlers;
 /// <summary>
 /// Handles recipe discovery commands and produces discovery events when appropriate.
 /// </summary>
-public class TryDiscoverRecipeCommandHandler : ICommandHandler<TryDiscoverRecipeCommand, PlayerEvent, PlayerState>
+public class TryDiscoverRecipeCommandHandler : ICommandHandler<TryDiscoverRecipeCommand, PlayerState, Guid, PlayerEvent>
 {
     private readonly IRecipeRepository recipeRepository;
     private readonly IGrainValidator<TryDiscoverRecipeCommand, PlayerState, Guid> validator;
@@ -31,6 +31,7 @@ public class TryDiscoverRecipeCommandHandler : ICommandHandler<TryDiscoverRecipe
     public async Task<PlayerEvent?> HandleAsync(TryDiscoverRecipeCommand command, PlayerState state, Guid playerId)
     {
         // Validate the command
+        
         await validator.ValidateCommandAndThrowsAsync(command, state, playerId);
 
         // Look up the recipe based on the provided ingredient IDs

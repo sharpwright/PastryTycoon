@@ -21,12 +21,12 @@ public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrai
     private IAsyncStream<PlayerEvent>? playerEventStream;
     private readonly IGrainValidator<InitializePlayerCommand, PlayerState, Guid> initializeValidator;
     private readonly IGrainValidator<UnlockAchievementCommand, PlayerState, Guid> unlockAchievementValidator;
-    private readonly ICommandHandler<TryDiscoverRecipeCommand, PlayerEvent, PlayerState> recipeDiscoveryHandler;
+    private readonly ICommandHandler<TryDiscoverRecipeCommand, PlayerState, Guid, PlayerEvent> recipeDiscoveryHandler;
 
     public PlayerGrain(
         IGrainValidator<InitializePlayerCommand, PlayerState, Guid> initializeValidator,
         IGrainValidator<UnlockAchievementCommand, PlayerState, Guid> unlockAchievementValidator,
-        ICommandHandler<TryDiscoverRecipeCommand, PlayerEvent, PlayerState> recipeDiscoveryHandler)
+        ICommandHandler<TryDiscoverRecipeCommand, PlayerState, Guid, PlayerEvent> recipeDiscoveryHandler)
     {
         this.initializeValidator = initializeValidator;
         this.unlockAchievementValidator = unlockAchievementValidator;

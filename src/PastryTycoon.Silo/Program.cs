@@ -32,7 +32,7 @@ builder.Services.AddSingleton<IGrainValidator<InitializeGameStateCommand, GameSt
 builder.Services.AddSingleton<IGrainValidator<UpdateGameCommand, GameState, Guid>, UpdateGameCommandValidator>();
 
 // Add player grain command handlers and validators.
-builder.Services.AddSingleton<ICommandHandler<TryDiscoverRecipeCommand, PlayerEvent, PlayerState>, TryDiscoverRecipeCommandHandler>();
+builder.Services.AddSingleton<ICommandHandler<TryDiscoverRecipeCommand, PlayerState, Guid, PlayerEvent>, TryDiscoverRecipeCommandHandler>();
 builder.Services.AddSingleton<IGrainValidator<InitializePlayerCommand, PlayerState, Guid>, InitializePlayerCommandValidator>();
 builder.Services.AddSingleton<IGrainValidator<TryDiscoverRecipeCommand, PlayerState, Guid>, TryDiscoverRecipeCommandValidator>();
 
