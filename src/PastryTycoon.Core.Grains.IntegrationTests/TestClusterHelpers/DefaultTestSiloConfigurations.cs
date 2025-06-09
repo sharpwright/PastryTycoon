@@ -10,8 +10,6 @@ using PastryTycoon.Core.Grains.Player;
 using PastryTycoon.Core.Grains.Player.CommandHandlers;
 using PastryTycoon.Data.Ingredients;
 using PastryTycoon.Data.Recipes;
-using Xunit.Abstractions;
-using Xunit.Sdk;
 
 namespace PastryTycoon.Core.Grains.IntegrationTests.TestClusterHelpers;
 
@@ -26,9 +24,6 @@ public sealed class DefaultTestSiloConfigurations : ISiloConfigurator
         siloBuilder.AddMemoryGrainStorage(OrleansConstants.EVENT_SOURCING_LOG_STORAGE_PLAYER_EVENTS);
         siloBuilder.ConfigureServices(static services =>
         {
-            // Add xUnit test output helper by default.
-            services.AddSingleton<ITestOutputHelper, TestOutputHelper>();
-
             // Add default services for the test cluster.
             services.AddSingleton(SetupRecipeRepositoryMock().Object);
             services.AddSingleton<IIngredientRepository, IngredientRepository>();
