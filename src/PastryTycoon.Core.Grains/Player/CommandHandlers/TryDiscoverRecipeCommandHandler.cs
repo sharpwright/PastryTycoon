@@ -28,7 +28,7 @@ public class TryDiscoverRecipeCommandHandler : ICommandHandler<TryDiscoverRecipe
     /// <param name="state">Current player state</param>
     /// <param name="playerId">The player's ID</param>
     /// <returns>A discovery event if a new recipe is discovered, null otherwise</returns>
-    public async Task<PlayerEvent?> HandleAsync(TryDiscoverRecipeCommand command, PlayerState state, Guid playerId)
+    public async Task<PlayerEvent> HandleAsync(TryDiscoverRecipeCommand command, PlayerState state, Guid playerId)
     {
         // Validate the command
         
@@ -47,6 +47,6 @@ public class TryDiscoverRecipeCommandHandler : ICommandHandler<TryDiscoverRecipe
         }
 
         // No event to raise
-        return null;
+        return null!;
     }
 }

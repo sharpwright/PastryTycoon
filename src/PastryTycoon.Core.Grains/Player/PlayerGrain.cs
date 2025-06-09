@@ -4,9 +4,6 @@ using Orleans.EventSourcing;
 using Orleans.Providers;
 using Orleans.Streams;
 using PastryTycoon.Core.Abstractions.Player;
-using PastryTycoon.Data.Recipes;
-using PastryTycoon.Core.Grains.Player.Validators;
-using PastryTycoon.Core.Grains.Player.CommandHandlers;
 using PastryTycoon.Core.Grains.Common;
 
 namespace PastryTycoon.Core.Grains.Player;
