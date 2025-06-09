@@ -12,12 +12,13 @@ namespace PastryTycoon.Core.Grains.Player.CommandHandlers;
 public class TryDiscoverRecipeCommandHandler : ICommandHandler<TryDiscoverRecipeCommand, PlayerEvent, PlayerState>
 {
     private readonly IRecipeRepository recipeRepository;
-    private readonly TryDiscoverRecipeCommandValidator validator;
+    private readonly IGrainValidator<TryDiscoverRecipeCommand, PlayerState, Guid> validator;
 
-    public TryDiscoverRecipeCommandHandler(IRecipeRepository recipeRepository)
+    public TryDiscoverRecipeCommandHandler(IRecipeRepository recipeRepository,
+        IGrainValidator<TryDiscoverRecipeCommand, PlayerState, Guid> validator)
     {
         this.recipeRepository = recipeRepository;
-        this.validator = new TryDiscoverRecipeCommandValidator();
+        this.validator = validator;
     }
 
     /// <summary>

@@ -19,11 +19,17 @@ namespace PastryTycoon.Core.Grains.Player;
 public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrain
 {
     private IAsyncStream<PlayerEvent>? playerEventStream;
+    private readonly IGrainValidator<InitializePlayerCommand, PlayerState, Guid> initializeValidator;
+    private readonly IGrainValidator<UnlockAchievementCommand, PlayerState, Guid> unlockAchievementValidator;
     private readonly ICommandHandler<TryDiscoverRecipeCommand, PlayerEvent, PlayerState> recipeDiscoveryHandler;
 
     public PlayerGrain(
+        IGrainValidator<InitializePlayerCommand, PlayerState, Guid> initializeValidator,
+        IGrainValidator<UnlockAchievementCommand, PlayerState, Guid> unlockAchievementValidator,
         ICommandHandler<TryDiscoverRecipeCommand, PlayerEvent, PlayerState> recipeDiscoveryHandler)
     {
+        this.initializeValidator = initializeValidator;
+        this.unlockAchievementValidator = unlockAchievementValidator;
         this.recipeDiscoveryHandler = recipeDiscoveryHandler;
     }
 
@@ -47,8 +53,7 @@ public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrai
     /// <exception cref="InvalidOperationException">Thrown if the player is already initialized.</exception>
     public async Task InitializeAsync(InitializePlayerCommand command)
     {
-        var validator = new InitializePlayerCommandValidator();
-        await validator.ValidateCommandAndThrowsAsync(command, State, this.GetPrimaryKey());        
+        await initializeValidator.ValidateCommandAndThrowsAsync(command, State, this.GetPrimaryKey());        
 
         var evt = new PlayerInitializedEvent(
             this.GetPrimaryKey(),
@@ -91,8 +96,7 @@ public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrai
     /// <returns></returns>
     public virtual async Task UnlockAchievementAsync(UnlockAchievementCommand command)
     {
-        var validator = new UnlockAchievementCommandValidator();
-        await validator.ValidateCommandAndThrowsAsync(command, State, this.GetPrimaryKey());
+        await unlockAchievementValidator.ValidateCommandAndThrowsAsync(command, State, this.GetPrimaryKey());
 
         var achievementId = command.AchievementId;
         var unlockedAtUtc = command.UnlockedAtUtc;

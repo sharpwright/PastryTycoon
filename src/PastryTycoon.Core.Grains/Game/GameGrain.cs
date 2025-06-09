@@ -5,6 +5,7 @@ using Orleans.Streams;
 using Orleans.EventSourcing;
 using PastryTycoon.Core.Grains.Game.Validators;
 using PastryTycoon.Core.Abstractions.Game;
+using PastryTycoon.Core.Grains.Common;
 
 namespace PastryTycoon.Core.Grains.Game;
 
@@ -16,7 +17,17 @@ namespace PastryTycoon.Core.Grains.Game;
 public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
 {
     private IAsyncStream<GameEvent>? gameEventStream;
+    private readonly IGrainValidator<InitializeGameStateCommand, GameState, Guid> initializeValidator;
+    private readonly IGrainValidator<UpdateGameCommand, GameState, Guid> updateValidator;
 
+    public GameGrain(
+        IGrainValidator<InitializeGameStateCommand, GameState, Guid> initializeValidator,
+        IGrainValidator<UpdateGameCommand, GameState, Guid> updateValidator)
+    {
+        this.initializeValidator = initializeValidator;
+        this.updateValidator = updateValidator;
+    }
+    
     /// <summary>
     /// Called when the grain is activated.
     /// </summary>
@@ -37,7 +48,6 @@ public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
     public async Task InitializeGameStateAsync(InitializeGameStateCommand command)
     {
         // Validate the command.
-        var initializeValidator = new InitializeGameStateCommandValidator();
         await initializeValidator.ValidateCommandAndThrowsAsync(command, State, this.GetPrimaryKey());
 
         var evt = new GameStateInitializedEvent(
@@ -62,8 +72,7 @@ public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
     /// <returns></returns>
     public async Task UpdateGameAsync(UpdateGameCommand command)
     {
-        var validator = new UpdateGameCommandValidator();
-        await validator.ValidateCommandAndThrowsAsync(command, State, this.GetPrimaryKey());
+        await updateValidator.ValidateCommandAndThrowsAsync(command, State, this.GetPrimaryKey());
 
         var evt = new GameUpdatedEvent(command.GameId, command.UpdateTimeUtc);
         RaiseEvent(evt);

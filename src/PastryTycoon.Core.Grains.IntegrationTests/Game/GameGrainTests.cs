@@ -4,7 +4,7 @@ using PastryTycoon.Core.Abstractions.Game;
 using PastryTycoon.Core.Grains.Game;
 using PastryTycoon.Core.Grains.IntegrationTests.TestClusterHelpers;
 
-namespace PastryTycoon.Core.Grains.UnitTests.Game;
+namespace PastryTycoon.Core.Grains.IntegrationTests.Game;
 
 /// <summary>
 ///     Contains unit tests to verify correct behavior for game state initialization,

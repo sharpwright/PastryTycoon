@@ -14,18 +14,28 @@ using Azure.Storage.Queues;
 using PastryTycoon.Core.Abstractions.Player;
 using PastryTycoon.Core.Grains.Player;
 using PastryTycoon.Core.Grains.Player.CommandHandlers;
+using PastryTycoon.Core.Abstractions.Game;
+using PastryTycoon.Core.Grains.Game;
+using PastryTycoon.Core.Grains.Player.Validators;
 
 // Create a new host builder for the application.
 var builder = Host.CreateApplicationBuilder(args);
-
 builder.AddServiceDefaults();
+
+// Add default services for the application.
 builder.Services.AddSingleton<IRecipeRepository, RecipeRepository>();
 builder.Services.AddSingleton<IIngredientRepository, IngredientRepository>();
 builder.Services.AddSingleton<IGuidProvider, GuidProvider>();
-builder.Services.AddSingleton<InitializeGameStateCommandValidator>();
-builder.Services.AddTransient<ICommandHandler<TryDiscoverRecipeCommand, PlayerEvent, PlayerState>, TryDiscoverRecipeCommandHandler>();
 
-//builder.UseOrleans((context, siloBuilder) =>
+// Add game grain validators and command handlers.
+builder.Services.AddSingleton<IGrainValidator<InitializeGameStateCommand, GameState, Guid>, InitializeGameStateCommandValidator>();
+builder.Services.AddSingleton<IGrainValidator<UpdateGameCommand, GameState, Guid>, UpdateGameCommandValidator>();
+
+// Add player grain command handlers and validators.
+builder.Services.AddSingleton<ICommandHandler<TryDiscoverRecipeCommand, PlayerEvent, PlayerState>, TryDiscoverRecipeCommandHandler>();
+builder.Services.AddSingleton<IGrainValidator<InitializePlayerCommand, PlayerState, Guid>, InitializePlayerCommandValidator>();
+builder.Services.AddSingleton<IGrainValidator<TryDiscoverRecipeCommand, PlayerState, Guid>, TryDiscoverRecipeCommandValidator>();
+
 builder.UseOrleans(siloBuilder =>
 {
     var storageConnectionString = builder.Configuration.GetConnectionString("Storage");

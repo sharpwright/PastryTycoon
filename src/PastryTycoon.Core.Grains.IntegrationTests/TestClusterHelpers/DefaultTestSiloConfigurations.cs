@@ -3,11 +3,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Orleans.TestingHost;
 using PastryTycoon.Core.Abstractions.Constants;
+using PastryTycoon.Core.Abstractions.Game;
 using PastryTycoon.Core.Abstractions.Player;
 using PastryTycoon.Core.Grains.Common;
+using PastryTycoon.Core.Grains.Game;
 using PastryTycoon.Core.Grains.Game.Validators;
 using PastryTycoon.Core.Grains.Player;
 using PastryTycoon.Core.Grains.Player.CommandHandlers;
+using PastryTycoon.Core.Grains.Player.Validators;
 using PastryTycoon.Data.Ingredients;
 using PastryTycoon.Data.Recipes;
 
@@ -28,8 +31,16 @@ public sealed class DefaultTestSiloConfigurations : ISiloConfigurator
             services.AddSingleton(SetupRecipeRepositoryMock().Object);
             services.AddSingleton<IIngredientRepository, IngredientRepository>();
             services.AddSingleton<IGuidProvider, GuidProvider>();
-            services.AddSingleton<InitializeGameStateCommandValidator>();
-            services.AddTransient<ICommandHandler<TryDiscoverRecipeCommand, PlayerEvent, PlayerState>, TryDiscoverRecipeCommandHandler>();
+
+            // Add game grain validators and command handlers.
+            services.AddSingleton<IGrainValidator<InitializeGameStateCommand, GameState, Guid>, InitializeGameStateCommandValidator>();
+            services.AddSingleton<IGrainValidator<UpdateGameCommand, GameState, Guid>, UpdateGameCommandValidator>();
+
+            // Add player grain command handlers and validators.
+            services.AddSingleton<ICommandHandler<TryDiscoverRecipeCommand, PlayerEvent, PlayerState>, TryDiscoverRecipeCommandHandler>();
+            services.AddSingleton<IGrainValidator<InitializePlayerCommand, PlayerState, Guid>, InitializePlayerCommandValidator>();
+            services.AddSingleton<IGrainValidator<TryDiscoverRecipeCommand, PlayerState, Guid>, TryDiscoverRecipeCommandValidator>();
+            services.AddSingleton<IGrainValidator<UnlockAchievementCommand, PlayerState, Guid>, UnlockAchievementCommandValidator>();            
         });
     }
 

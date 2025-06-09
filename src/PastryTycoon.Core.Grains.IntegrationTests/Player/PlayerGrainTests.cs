@@ -1,6 +1,4 @@
 using System;
-using Microsoft.Extensions.DependencyInjection;
-using Moq;
 using Orleans.TestingHost;
 using PastryTycoon.Core.Abstractions.Constants;
 using PastryTycoon.Core.Abstractions.Player;
@@ -8,7 +6,7 @@ using PastryTycoon.Core.Grains.IntegrationTests.TestClusterHelpers;
 using PastryTycoon.Core.Grains.Player;
 using Xunit.Abstractions;
 
-namespace PastryTycoon.Core.Grains.UnitTests.Player;
+namespace PastryTycoon.Core.Grains.IntegrationTests.Player;
 
 /// <summary>
 /// Integration tests for the PlayerGrain.
