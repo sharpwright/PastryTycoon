@@ -1,9 +1,8 @@
-using System;
 using Orleans.TestingHost;
 using PastryTycoon.Core.Abstractions.Constants;
 using PastryTycoon.Core.Abstractions.Game;
 using PastryTycoon.Core.Grains.Game;
-using PastryTycoon.Core.Grains.UnitTests.TestClusterHelpers;
+using PastryTycoon.Core.Grains.IntegrationTests.TestClusterHelpers;
 
 namespace PastryTycoon.Core.Grains.UnitTests.Game;
 

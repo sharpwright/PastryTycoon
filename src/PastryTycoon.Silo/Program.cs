@@ -11,6 +11,9 @@ using PastryTycoon.Core.Grains.Game.Validators;
 using PastryTycoon.Core.Grains.Common;
 using Microsoft.Extensions.Configuration;
 using Azure.Storage.Queues;
+using PastryTycoon.Core.Abstractions.Player;
+using PastryTycoon.Core.Grains.Player;
+using PastryTycoon.Core.Grains.Player.CommandHandlers;
 
 // Create a new host builder for the application.
 var builder = Host.CreateApplicationBuilder(args);
@@ -20,6 +23,7 @@ builder.Services.AddSingleton<IRecipeRepository, RecipeRepository>();
 builder.Services.AddSingleton<IIngredientRepository, IngredientRepository>();
 builder.Services.AddSingleton<IGuidProvider, GuidProvider>();
 builder.Services.AddSingleton<InitializeGameStateCommandValidator>();
+builder.Services.AddTransient<ICommandHandler<TryDiscoverRecipeCommand, PlayerEvent, PlayerState>, TryDiscoverRecipeCommandHandler>();
 
 //builder.UseOrleans((context, siloBuilder) =>
 builder.UseOrleans(siloBuilder =>

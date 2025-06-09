@@ -6,6 +6,8 @@ using Orleans.Streams;
 using PastryTycoon.Core.Abstractions.Player;
 using PastryTycoon.Data.Recipes;
 using PastryTycoon.Core.Grains.Player.Validators;
+using PastryTycoon.Core.Grains.Player.CommandHandlers;
+using PastryTycoon.Core.Grains.Common;
 
 namespace PastryTycoon.Core.Grains.Player;
 
@@ -17,11 +19,12 @@ namespace PastryTycoon.Core.Grains.Player;
 public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrain
 {
     private IAsyncStream<PlayerEvent>? playerEventStream;
-    private readonly IRecipeRepository recipeRepository;
+    private readonly ICommandHandler<TryDiscoverRecipeCommand, PlayerEvent, PlayerState> recipeDiscoveryHandler;
 
-    public PlayerGrain(IRecipeRepository recipeRepository)
+    public PlayerGrain(
+        ICommandHandler<TryDiscoverRecipeCommand, PlayerEvent, PlayerState> recipeDiscoveryHandler)
     {
-        this.recipeRepository = recipeRepository;
+        this.recipeDiscoveryHandler = recipeDiscoveryHandler;
     }
 
     /// <summary>
@@ -64,24 +67,16 @@ public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrai
     /// <returns></returns>
     public async Task TryDiscoverRecipeFromIngredientsAsync(TryDiscoverRecipeCommand command)
     {
-        var validator = new TryDiscoverRecipeCommandValidator();
-        await validator.ValidateCommandAndThrowsAsync(command, State, this.GetPrimaryKey());
+        // Use the handler to process the command and get a potential event
+        var evt = await recipeDiscoveryHandler.HandleAsync(command, State, this.GetPrimaryKey());
 
-        // TODO: Extract the recipe discovery logic to a service or handler.
-        // Look up the recipe based on the provided ingredient IDs.
-        var recipe = await recipeRepository.GetRecipeByIngredientIdsAsync(command.IngredientIds);
-
-        // If the recipe is found and not already discovered, raise an event.
-        if (recipe != null && !State.DiscoveredRecipeIds.ContainsKey(recipe.Id))
+        // If the handler returned an event, raise it
+        if (evt != null)
         {
-            var evt = new PlayerDiscoveredRecipeEvent(
-                command.PlayerId,
-                recipe.Id,
-                DateTime.UtcNow);
-
             RaiseEvent(evt);
             await ConfirmEvents();
 
+            // Publish to stream if available
             if (playerEventStream != null)
             {
                 await playerEventStream.OnNextAsync(evt);
@@ -128,8 +123,8 @@ public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrai
             this.GetPrimaryKey(),
             State.PlayerName,
             State.UnlockedAchievements.Count,
-            State.CraftedRecipeIds.Count,
-            State.DiscoveredRecipeIds.Count,
+            State.CraftedRecipes.Count,
+            State.DiscoveredRecipes.Count,
             State.CreatedAtUtc,
             State.LastActivityAtUtc));
     }

@@ -1,17 +1,7 @@
 using System;
-using PastryTycoon.Core.Abstractions.Constants;
 using Orleans.TestingHost;
-using FluentValidation;
-using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using Microsoft.Extensions.Configuration;
-using PastryTycoon.Core.Grains.Game;
-using PastryTycoon.Core.Grains.Game.Validators;
-using PastryTycoon.Core.Abstractions.Game;
-using System.Numerics;
-using PastryTycoon.Data.Recipes;
 
-namespace PastryTycoon.Core.Grains.UnitTests.TestClusterHelpers;
+namespace PastryTycoon.Core.Grains.IntegrationTests.TestClusterHelpers;
 
 /// <summary>
 /// Defines a fixture for the test cluster used in integration tests.
