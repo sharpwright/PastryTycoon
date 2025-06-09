@@ -25,8 +25,10 @@ PastryTycoon is a modular, event-driven simulation game backend built with .NET 
     Interfaces, contracts, and shared abstractions used across the solution.
   - `PastryTycoon.Core.Grains/`  
     Orleans grains and core business logic for the simulation.
+  - `PastryTycoon.Core.Grains.IntegrationTests/`  
+    Integration tests for testing event flows in the grains using the Orleans Testing Host.
   - `PastryTycoon.Core.Grains.UnitTests/`  
-    Unit tests for the core grains and business logic.
+    Unit tests for the core grains and business logic using mocks and OrleansTestkit.
   - `PastryTycoon.Data/`  
     Data access logic, storage providers, and persistence-related code.
   - `PastryTycoon.Data.UnitTests/`  
