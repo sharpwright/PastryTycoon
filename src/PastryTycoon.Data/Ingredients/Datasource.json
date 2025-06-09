@@ -1,88 +1,274 @@
 {
     "ingredients": [
         {
-            "id": "a1c2d3e4-f5b6-4c7d-8e9f-0a1b2c3d4e5f",
-            "name": "Flour",
-            "type": "dry",
-            "unit": "grams",
-            "description": "All-purpose wheat flour, used as a base for most pastries."
+            "id": "pastry-flour",
+            "name": "Pastry Flour",
+            "type": "base",
+            "description": "Soft wheat flour with low protein content, ideal for tender pastries.",
+            "state": "dry",
+            "categories": ["flour"],
+            "unit": "gr"
         },
         {
-            "id": "b2d3e4f5-a6b7-4c8d-9e0f-1a2b3c4d5e6f",
-            "name": "Sugar",
-            "type": "dry",
-            "unit": "grams",
-            "description": "Granulated white sugar for sweetening recipes."
+            "id": "patent-flour",
+            "name": "Patent Flour",
+            "type": "base",
+            "description": "High-quality flour with a high protein content, suitable for bread and rolls.",
+            "state": "dry",
+            "categories": ["flour"],
+            "unit": "gr"
         },
         {
-            "id": "b3f4c5d6-e7f8-4a9b-8c0d-1e2f3a4b5c6d",
+            "id": "granulated-sugar",
+            "name": "Granulated Sugar",
+            "type": "base",
+            "description": "Common white sugar, used for sweetening and texture in baked goods.",
+            "state": "dry",
+            "categories": ["sweetener"],
+            "unit": "gr"
+        },
+        {
+            "id": "powdered-sugar",
             "name": "Powdered Sugar",
-            "type": "dry",
-            "unit": "grams",
-            "description": "Finely ground sugar, also known as confectioners' sugar, used for icing and dusting."
+            "type": "base",
+            "description": "Finely ground sugar, often used for icing and dusting pastries.",
+            "state": "dry",
+            "categories": ["sweetener"],
+            "unit": "gr"
         },
         {
-            "id": "c3e4f5a6-b7c8-4d9e-0f1a-2b3c4d5e6f7a",
-            "name": "Butter",
-            "type": "dairy",
-            "unit": "grams",
-            "description": "Unsalted butter, adds richness and flavor."
+            "id": "castor-sugar",
+            "name": "Castor Sugar",
+            "type": "base",
+            "description": "Finely granulated sugar that dissolves quickly, ideal for meringues and delicate pastries.",
+            "state": "dry",
+            "categories": ["sweetener"],
+            "unit": "gr"
         },
         {
-            "id": "d4f5a6b7-c8d9-4e0f-1a2b-3c4d5e6f7a8b",
+            "id": "unsalted-butter",
+            "name": "Unsalted Butter",
+            "type": "base",
+            "description": "Unsalted butter, adds richness and flavor.",
+            "state": "wet",
+            "categories": ["fat"],
+            "unit": "gr"
+        },
+        {
+            "id": "salted-butter",
+            "name": "Salted Butter",
+            "type": "base",
+            "description": "Salted butter, adds flavor and moisture.",
+            "state": "wet",
+            "categories": ["fat"],
+            "unit": "gr"
+        },
+        {
+            "id": "whole-milk",
+            "name": "Whole Milk",
+            "type": "base",
+            "description": "Milk with full fat content, used for richness and moisture in pastries.",
+            "state": "wet",
+            "categories": ["liquid"],
+            "unit": "ml"
+        },
+        {
+            "id": "heavy-cream",
+            "name": "Heavy Cream",
+            "type": "base",
+            "description": "High-fat cream, used for whipping and adding richness.",
+            "state": "wet",
+            "categories": ["liquid"],
+            "unit": "ml"
+        },
+        {
+            "id": "eggs",
             "name": "Eggs",
-            "type": "leavening",
-            "unit": "pieces",
-            "description": "Chicken eggs, used for binding and leavening."
+            "type": "base",
+            "description": "Whole eggs, used for binding, leavening, and adding moisture.",
+            "state": "wet",
+            "categories": ["protein"],
+            "unit": "pcs"
         },
         {
-            "id": "e5a6b7c8-d9e0-4f1a-2b3c-4d5e6f7a8b9c",
-            "name": "Milk",
-            "type": "dairy",
-            "unit": "milliliters",
-            "description": "Whole milk, adds moisture and richness."
+            "id": "egg-yolks",
+            "name": "Egg Yolks",
+            "type": "base",
+            "description": "The yellow part of eggs, rich in fat and used for richness and emulsification.",
+            "state": "wet",
+            "categories": ["protein"],
+            "unit": "pcs"
         },
         {
-            "id": "f6b7c8d9-e0f1-4a2b-3c4d-5e6f7a8b9c0d",
-            "name": "Yeast",
-            "type": "leavening",
-            "unit": "grams",
-            "description": "Active dry yeast, used for leavening dough."
+            "id": "egg-whites",
+            "name": "Egg Whites",
+            "type": "base",
+            "description": "The clear part of eggs, high in protein and used for leavening and structure.",
+            "state": "wet",
+            "categories": ["protein"],
+            "unit": "pcs"
         },
         {
-            "id": "07c8d9e0-f1a2-4b3c-4d5e-6f7a8b9c0d1e",
-            "name": "Salt",
-            "type": "seasoning",
-            "unit": "grams",
-            "description": "Fine table salt, enhances flavor."
+            "id": "cornstarch",
+            "name": "Cornstarch",
+            "type": "base",
+            "description": "A fine, powdery starch used as a thickening agent in fillings and custards.",
+            "state": "dry",
+            "categories": ["thickener"],
+            "unit": "gr"
         },
         {
-            "id": "18d9e0f1-a2b3-4c4d-5e6f-7a8b9c0d1e2f",
+            "id": "baking-powder",
             "name": "Baking Powder",
-            "type": "leavening",
-            "unit": "grams",
-            "description": "Chemical leavening agent for quick breads and cakes."
+            "type": "base",
+            "description": "Chemical leavener that helps baked goods rise and become light.",
+            "state": "dry",
+            "categories": ["leavening"],
+            "unit": "gr"
         },
         {
-            "id": "21f0e1d2-c3b4-4a5f-6e7d-8c9b0a1d2e3f",
+            "id": "baking-powder",
+            "name": "Baking Powder",
+            "type": "base",
+            "description": "Chemical leavener that helps baked goods rise and become light.",
+            "state": "dry",
+            "categories": ["leavening"],
+            "unit": "gr"
+        },
+        {
+            "id": "baking-soda",
             "name": "Baking Soda",
-            "type": "leavening",
-            "unit": "grams",
-            "description": "Sodium bicarbonate, a chemical leavening agent for baked goods."
+            "type": "base",
+            "description": "Alkaline leavener used to help doughs and batters rise.",
+            "state": "dry",
+            "categories": ["leavening"],
+            "unit": "gr"
         },
         {
-            "id": "29e0f1a2-b3c4-4d5e-6f7a-8b9c0d1e2f3a",
+            "id": "yeast",
+            "name": "Yeast",
+            "type": "base",
+            "description": "Living organism used to ferment and leaven dough.",
+            "state": "dry",
+            "categories": ["leavening"],
+            "unit": "gr"
+        },
+        {
+            "id": "vanilla-extract",
             "name": "Vanilla Extract",
-            "type": "flavoring",
-            "unit": "milliliters",
-            "description": "Pure vanilla extract for flavor."
+            "type": "base",
+            "description": "Extracted from vanilla beans, adds sweet and floral notes.",
+            "state": "wet",
+            "categories": ["flavouring"],
+            "unit": "ml"
         },
         {
-            "id": "3af1a2b3-c4d5-4e6f-7a8b-9c0d1e2f3a4b",
-            "name": "Cocoa Powder",
-            "type": "dry",
-            "unit": "grams",
-            "description": "Unsweetened cocoa powder for chocolate flavor."
+            "id": "almond-extract",
+            "name": "Almond Extract",
+            "type": "base",
+            "description": "Concentrated almond flavoring for pastries and desserts.",
+            "state": "wet",
+            "categories": ["flavouring"],
+            "unit": "ml"
+        },
+        {
+            "id": "lemon-zest",
+            "name": "Lemon Zest",
+            "type": "base",
+            "description": "Finely grated lemon peel, adds bright citrus flavor.",
+            "state": "dry",
+            "categories": ["flavouring"],
+            "unit": "gr"
+        },
+        {
+            "id": "cinnamon",
+            "name": "Cinnamon",
+            "type": "base",
+            "description": "Ground spice with a warm, sweet flavor, commonly used in pastries.",
+            "state": "dry",
+            "categories": ["spice"],
+            "unit": "gr"
+        },
+        {
+            "id": "nutmeg",
+            "name": "Nutmeg",
+            "type": "base",
+            "description": "Ground spice with a warm, nutty flavor, used in various pastries.",
+            "state": "dry",
+            "categories": ["spice"],
+            "unit": "gr"
+        },
+        {
+            "id": "powdered-cocoa",
+            "name": "Powdered Cocoa",
+            "type": "base",
+            "description": "Unsweetened cocoa powder for chocolate flavor in pastries.",
+            "state": "dry",
+            "categories": ["cocoa"],
+            "unit": "gr"
+        },
+        {
+            "id": "dark-chocolate-chips",
+            "name": "Dark Chocolate Chips",
+            "type": "base",
+            "description": "Semi-sweet chocolate chips for adding chocolate flavor and texture.",
+            "state": "dry",
+            "categories": ["chocolate"],
+            "unit": "gr"
+        },
+        {
+            "id": "milk-chocolate-chips",
+            "name": "Milk Chocolate Chips",
+            "type": "base",
+            "description": "Sweet milk chocolate chips for a creamy chocolate flavor.",
+            "state": "dry",
+            "categories": ["chocolate"],
+            "unit": "gr"
+        },
+        {
+            "id": "white-chocolate-chips",
+            "name": "White Chocolate Chips",
+            "type": "base",
+            "description": "Sweet white chocolate chips for a creamy, sweet flavor.",
+            "state": "dry",
+            "categories": ["chocolate"],
+            "unit": "gr"
+        },
+        {
+            "id": "raisins",
+            "name": "Raisins",
+            "type": "base",
+            "description": "Dried grapes, adds sweetness and texture to pastries.",
+            "state": "dry",
+            "categories": ["fruit"],
+            "unit": "gr"
+        },
+        {
+            "id": "chocolate-ganache",
+            "name": "Chocolate Ganache",
+            "type": "composite",
+            "description": "Rich mixture of chocolate and cream, used for filling or glazing pastries.",
+            "state": "wet",
+            "categories": ["chocolate", "filling"],
+            "unit": "gr"
+        },
+        {
+            "id": "pastry-cream",
+            "name": "Pastry Cream",
+            "type": "composite",
+            "description": "Rich custard-like filling made with milk, sugar, eggs, and flavorings.",
+            "state": "wet",
+            "categories": ["filling"],
+            "unit": "gr"
+        },
+        {
+            "id": "fruit-jam",
+            "name": "Fruit Jam",
+            "type": "composite",
+            "description": "Sweet spread made from fruit and sugar, used as a filling or topping.",
+            "state": "wet",
+            "categories": ["filling", "fruit"],
+            "unit": "gr"
         }
     ]
 }

@@ -23,8 +23,8 @@ public class GameFactoryGrainTests : TestKitBase
     private readonly string playerName = "Test Player";
     private readonly List<Recipe> recipes = new()
     {
-        new Recipe(Guid.NewGuid(), "Chocolate Cake", new List<RecipeIngredient>()),
-        new Recipe(Guid.NewGuid(), "Apple Pie", new List<RecipeIngredient>())
+        new Recipe("test-1-recipe", "Test 1", new List<RecipeIngredient>()),
+        new Recipe("test-2-recipe", "Test 2", new List<RecipeIngredient>(), ProducesIngredientId: "test-2")
     };
 
     public GameFactoryGrainTests()

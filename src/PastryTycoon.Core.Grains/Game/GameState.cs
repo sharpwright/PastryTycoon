@@ -10,7 +10,7 @@ public class GameState
 {
     [Id(0)] public Guid GameId { get; set; }
     [Id(1)] public Guid PlayerId { get; set; }
-    [Id(2)] public IImmutableList<Guid>? DiscoverableRecipeIds { get; set; }
+    [Id(2)] public IImmutableList<string>? DiscoverableRecipeIds { get; set; }
     [Id(3)] public DateTime StartTimeUtc { get; set; }
     [Id(4)] public DateTime LastUpdatedAtTimeUtc { get; set; }
     [Id(5)] public bool IsInitialized { get; set; } = false;

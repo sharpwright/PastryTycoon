@@ -4,7 +4,9 @@ using FluentValidation;
 
 namespace PastryTycoon.Core.Grains.Common;
 
-public abstract class AbstractGrainValidator<TCommand, TState, TPrimaryKey> : AbstractValidator<GrainValidationContext<TCommand, TState, TPrimaryKey>>
+public abstract class AbstractGrainValidator<TCommand, TState, TPrimaryKey> : 
+    AbstractValidator<GrainValidationContext<TCommand, TState, TPrimaryKey>>,
+    IGrainValidator<TCommand, TState, TPrimaryKey>
 {
     /// <summary>
     /// Validates the command against the grain state and primary key. Throws an <see cref="ArgumentExcepion"/> if validation fails.

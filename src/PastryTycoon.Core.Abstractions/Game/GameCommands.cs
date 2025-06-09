@@ -13,7 +13,7 @@ namespace PastryTycoon.Core.Abstractions.Game;
 public record InitializeGameStateCommand(
     [property: Id(0)] Guid GameId,
     [property: Id(1)] Guid PlayerId,
-    [property: Id(2)] List<Guid> RecipeIds,
+    [property: Id(2)] List<string> RecipeIds,
     [property: Id(4)] DateTime StartTimeUtc
 );
 

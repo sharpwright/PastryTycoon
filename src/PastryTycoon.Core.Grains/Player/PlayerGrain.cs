@@ -4,8 +4,7 @@ using Orleans.EventSourcing;
 using Orleans.Providers;
 using Orleans.Streams;
 using PastryTycoon.Core.Abstractions.Player;
-using PastryTycoon.Data.Recipes;
-using PastryTycoon.Core.Grains.Player.Validators;
+using PastryTycoon.Core.Grains.Common;
 
 namespace PastryTycoon.Core.Grains.Player;
 
@@ -17,6 +16,19 @@ namespace PastryTycoon.Core.Grains.Player;
 public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrain
 {
     private IAsyncStream<PlayerEvent>? playerEventStream;
+    private readonly IGrainValidator<InitializePlayerCommand, PlayerState, Guid> initializeValidator;
+    private readonly IGrainValidator<UnlockAchievementCommand, PlayerState, Guid> unlockAchievementValidator;
+    private readonly ICommandHandler<TryDiscoverRecipeCommand, PlayerState, Guid, PlayerEvent> recipeDiscoveryHandler;
+
+    public PlayerGrain(
+        IGrainValidator<InitializePlayerCommand, PlayerState, Guid> initializeValidator,
+        IGrainValidator<UnlockAchievementCommand, PlayerState, Guid> unlockAchievementValidator,
+        ICommandHandler<TryDiscoverRecipeCommand, PlayerState, Guid, PlayerEvent> recipeDiscoveryHandler)
+    {
+        this.initializeValidator = initializeValidator;
+        this.unlockAchievementValidator = unlockAchievementValidator;
+        this.recipeDiscoveryHandler = recipeDiscoveryHandler;
+    }
 
     /// <summary>
     /// Called when the grain is activated.
@@ -38,13 +50,7 @@ public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrai
     /// <exception cref="InvalidOperationException">Thrown if the player is already initialized.</exception>
     public async Task InitializeAsync(InitializePlayerCommand command)
     {
-        var validator = new InitializePlayerCommandValidator();
-        await validator.ValidateCommandAndThrowsAsync(command, State, this.GetPrimaryKey());
-
-        if (State.IsInitialized)
-        {
-            throw new InvalidOperationException("Player is already initialized.");
-        }
+        await initializeValidator.ValidateCommandAndThrowsAsync(command, State, this.GetPrimaryKey());        
 
         var evt = new PlayerInitializedEvent(
             this.GetPrimaryKey(),
@@ -61,25 +67,24 @@ public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrai
     /// </summary>
     /// <param name="command">The command containing the recipe discovery details.</param>
     /// <returns></returns>
-    public async Task DiscoverRecipeAsync(DiscoverRecipeCommand command)
+    public async Task TryDiscoverRecipeFromIngredientsAsync(TryDiscoverRecipeCommand command)
     {
-        var validator = new DiscoverRecipeCommandValidator();
-        await validator.ValidateCommandAndThrowsAsync(command, State, this.GetPrimaryKey());
+        // Use the handler to process the command and get a potential event
+        var evt = await recipeDiscoveryHandler.HandleAsync(command, State, this.GetPrimaryKey());
 
-        // If the recipe is not already known, apply the discovery.
-        var evt = new PlayerDiscoveredRecipeEvent(
-            command.PlayerId,
-            command.RecipeId,
-            command.DiscoveryTimeUtc);
-
-        RaiseEvent(evt);
-        await ConfirmEvents();
-
-        if (playerEventStream != null)
+        // If the handler returned an event, raise it
+        if (evt != null)
         {
-            await playerEventStream.OnNextAsync(evt);
+            RaiseEvent(evt);
+            await ConfirmEvents();
+
+            // Publish to stream if available
+            if (playerEventStream != null)
+            {
+                await playerEventStream.OnNextAsync(evt);
+            }
         }
-    }    
+    }
 
     /// <summary>
     /// Unlocks an achievement for the player based on the provided command.
@@ -88,8 +93,7 @@ public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrai
     /// <returns></returns>
     public virtual async Task UnlockAchievementAsync(UnlockAchievementCommand command)
     {
-        var validator = new UnlockAchievementCommandValidator();
-        await validator.ValidateCommandAndThrowsAsync(command, State, this.GetPrimaryKey());
+        await unlockAchievementValidator.ValidateCommandAndThrowsAsync(command, State, this.GetPrimaryKey());
 
         var achievementId = command.AchievementId;
         var unlockedAtUtc = command.UnlockedAtUtc;
@@ -103,7 +107,7 @@ public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrai
         RaiseEvent(evt);
         await ConfirmEvents();
     }
-    
+
     /// <summary>
     /// Retrieves the player statistics asynchronously.
     /// </summary>
@@ -120,8 +124,8 @@ public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrai
             this.GetPrimaryKey(),
             State.PlayerName,
             State.UnlockedAchievements.Count,
-            State.CraftedRecipeIds.Count,
-            State.DiscoveredRecipeIds.Count,
+            State.CraftedRecipes.Count,
+            State.DiscoveredRecipes.Count,
             State.CreatedAtUtc,
             State.LastActivityAtUtc));
     }

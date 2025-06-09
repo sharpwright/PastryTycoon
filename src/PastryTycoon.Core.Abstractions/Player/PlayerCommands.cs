@@ -17,13 +17,11 @@ public record InitializePlayerCommand(
 /// Command to discover a new recipe in the Pastry Tycoon application.
 /// </summary>
 /// <param name="PlayerId">The unique identifier of the player discovering the recipe.</param>
-/// <param name="RecipeId">>The unique identifier of the recipe being discovered.</param>
-/// <param name="DiscoveryTimeUtc">>The UTC timestamp when the recipe was discovered.</param>
+/// <param name="IngredientIds">A list of ingredient identifiers required for the recipe discovery.</param>
 [GenerateSerializer]
-public record DiscoverRecipeCommand(
+public record TryDiscoverRecipeCommand(
     [property: Id(0)] Guid PlayerId,
-    [property: Id(1)] Guid RecipeId,
-    [property: Id(2)] DateTime DiscoveryTimeUtc
+    [property: Id(1)] IList<string> IngredientIds
 );
 
 /// <summary>

@@ -11,14 +11,24 @@ public record Datasource(
 );
 
 public record Recipe(
-    [property: JsonPropertyName("id")] Guid Id,
-    [property: JsonPropertyName("recipeName")] string RecipeName,
-    [property: JsonPropertyName("ingredients")] List<RecipeIngredient> Ingredients
+    [property: JsonPropertyName("id")] string Id,
+    [property: JsonPropertyName("name")] string Name,
+    [property: JsonPropertyName("ingredients")] List<RecipeIngredient> Ingredients,
+    [property: JsonPropertyName("optionalIngredients")] List<OptionalRecipeIngredient>? OptionalIngredients = null,
+    [property: JsonPropertyName("producesIngredientId")] string? ProducesIngredientId = null
 );
 
 public record RecipeIngredient(
-    [property: JsonPropertyName("ingredientId")] Guid IngredientId,
+    [property: JsonPropertyName("ingredientId")] string? IngredientId,
+    [property: JsonPropertyName("category")] string? Category,
     [property: JsonPropertyName("amount")] int Amount
+);
+
+public record OptionalRecipeIngredient(
+    [property: JsonPropertyName("ingredientId")] string? IngredientId,
+    [property: JsonPropertyName("category")] string? Category,
+    [property: JsonPropertyName("amount")] int Amount,
+    [property: JsonPropertyName("qualityBoost")] int QualityBoost
 );
 
 /// <summary>
@@ -63,5 +73,30 @@ public class RecipeRepository : IRecipeRepository
     public Task<IReadOnlyList<Recipe>> GetAllRecipesAsync()
     {
         return Task.FromResult(recipes);
+    }
+
+    public Task<Recipe?> GetRecipeByIdAsync(string recipeId)
+    {
+        if (string.IsNullOrEmpty(recipeId))
+        {
+            throw new ArgumentException("Recipe ID cannot be null or empty.", nameof(recipeId));
+        }
+
+        var recipe = recipes.FirstOrDefault(r => r.Id.Equals(recipeId, StringComparison.OrdinalIgnoreCase));
+        return Task.FromResult(recipe);
+    }
+
+    public Task<Recipe?> GetRecipeByIngredientIdsAsync(IList<string> ingredientIds)
+    {
+        if (ingredientIds == null || ingredientIds.Count == 0)
+        {
+            throw new ArgumentException("Ingredient IDs cannot be null or empty.", nameof(ingredientIds));
+        }
+
+        var recipe = recipes.FirstOrDefault(r =>
+            r.Ingredients.All(i => i.IngredientId != null && ingredientIds.Contains(i.IngredientId)) &&
+            r.Ingredients.Count == ingredientIds.Count
+        );
+        return Task.FromResult(recipe);
     }
 }

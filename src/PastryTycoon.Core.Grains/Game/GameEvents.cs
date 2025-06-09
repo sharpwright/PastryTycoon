@@ -22,7 +22,7 @@ public record GameEvent(
 public record GameStateInitializedEvent(
     Guid GameId,
     [property: Id(1)] Guid PlayerId,
-    [property: Id(2)] IReadOnlyList<Guid> RecipeIds,
+    [property: Id(2)] IReadOnlyList<string> RecipeIds,
     [property: Id(4)] DateTime StartTimeUtc
 ) : GameEvent(GameId);
 
@@ -45,5 +45,5 @@ public record GameUpdatedEvent(
 [GenerateSerializer]
 public record RecipeAddedEvent(
     Guid GameId,
-    [property: Id(2)] Guid RecipeId
+    [property: Id(2)] string RecipeId
 ) : GameEvent(GameId);

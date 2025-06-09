@@ -12,12 +12,15 @@ public record Datasource(
 );
 
 public record Ingredient(
-    [property: JsonPropertyName("id")] Guid Id,
+    [property: JsonPropertyName("id")] string Id,
     [property: JsonPropertyName("name")] string Name,
     [property: JsonPropertyName("type")] string Type,
-    [property: JsonPropertyName("unit")] string Unit,
-    [property: JsonPropertyName("description")] string Description
+    [property: JsonPropertyName("description")] string Description,
+    [property: JsonPropertyName("state")] string State,
+    [property: JsonPropertyName("categories")] IReadOnlyList<string> Categories,
+    [property: JsonPropertyName("unit")] string Unit    
 );
+
 
 /// <summary>
 /// Repository for managing ingredients.
@@ -60,5 +63,39 @@ public class IngredientRepository : IIngredientRepository
     public Task<IReadOnlyList<Ingredient>> GetAllIngredientsAsync()
     {
         return Task.FromResult(ingredients);
+    }
+
+    /// <summary>
+    /// Asynchronously retrieves an ingredient by its ID.
+    /// </summary>
+    /// <param name="ingredientId"></param>
+    /// <returns></returns>
+    public Task<Ingredient?> GetIngredientByIdAsync(string ingredientId)
+    {
+        if (string.IsNullOrEmpty(ingredientId))
+        {
+            throw new ArgumentException("Ingredient ID cannot be null or empty.", nameof(ingredientId));
+        }
+
+        var ingredient = ingredients.FirstOrDefault(i => i.Id.Equals(ingredientId));
+        return Task.FromResult(ingredient);
+    }
+
+    /// <summary>
+    /// Asynchronously retrieves a list of ingredients by their IDs.
+    /// </summary>
+    /// <param name="ingredientIds"></param>
+    /// <returns></returns>
+    public Task<IList<Ingredient>> GetIngredientsByIdsAsync(params string[] ingredientIds)
+    {
+        if (ingredientIds == null || ingredientIds.Length == 0)
+        {
+            throw new ArgumentException("Ingredient IDs cannot be null or empty.", nameof(ingredientIds));
+        }
+        
+        var ingredientList = ingredients
+            .Where(i => ingredientIds.Contains(i.Id))
+            .ToList();
+        return Task.FromResult<IList<Ingredient>>(ingredientList);
     }
 }

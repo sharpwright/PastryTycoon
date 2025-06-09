@@ -27,7 +27,7 @@ public class UnlockAchievementCommandValidator : AbstractGrainValidator<UnlockAc
         RuleFor(x => x.Command.UnlockedAtUtc)
             .NotEmpty()
             .WithMessage("UnlockedAtUtc is required")
-            .LessThanOrEqualTo(DateTime.UtcNow)
+            .Must((context, unlockedAtUtc) => unlockedAtUtc <= DateTime.UtcNow)
             .WithMessage("UnlockedAtUtc must be in the past or present");
     }
 }
