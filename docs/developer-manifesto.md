@@ -71,7 +71,7 @@ By following these practices, you’ll help us build a robust, maintainable, and
   - Use integration tests with a real Orleans test silo for any `JournaledGrain`.
   - Use unit tests with OrleansTestkit for any `Grain` to verify behaviour.
 
-## 8. Serialization & Versioning
+## 8. Serialization, Versioning & Compatibility
 
 - **[Alias] Usage:**  
   - Annotate all grain interfaces, state classes, and persisted event types with `[Alias]`.
@@ -87,6 +87,22 @@ By following these practices, you’ll help us build a robust, maintainable, and
   - Use `Val` or `Validator` (e.g., `UnlockAchievementCmdVal`).
 - **Events:**  
   - Use clear, descriptive names and annotate with `[Alias]` if persisted (e.g. journaled grains events).
+- **[Version] Usage:**  
+  - Use `[Version(n)]` on properties of grain state, event, or DTO classes that may change over time and are persisted or shared, to enable safe versioning and schema evolution in Orleans.
+  - When adding a new property to a persisted type, annotate it with `[Version(n)]` where `n` is the version number when it was introduced.
+  - Example:
+    ```csharp
+    [GenerateSerializer]
+    public class PlayerState
+    {
+        [Id(0)] public Guid PlayerId { get; set; }
+        [Id(1)] public string PlayerName { get; set; } = string.Empty;
+        [Id(2), Version(1)] public Guid GameId { get; set; } // Added in version 1
+        [Id(3), Version(2)] public string? NewProperty { get; set; } // Added in version 2
+    }
+    ```
+  - Use `[Version]` especially for grain state and event types that are persisted or may evolve.
+
 
 ## 10. General Coding Do’s and Don’ts
 
@@ -98,6 +114,7 @@ By following these practices, you’ll help us build a robust, maintainable, and
 - Use immutable records for events.
 - Use immutable records for commands.
 - Use immutable records for DTOs.
+- Use `[Version]` on persisted types when evolving schemas.
 
 ### Don’t:
 - Don’t put business logic in grains.
