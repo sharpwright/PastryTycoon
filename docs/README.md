@@ -4,7 +4,6 @@ This folder contains documentation for the PastryTycoon project, including archi
 
 ## Table of Contents
 
-- [Overview](#documentation)
 - [Developer Manifesto](developer-manifesto.md)
 - [event-flows](event-flows/README.md)  
   - [Event Flows Documentation](event-flows/README.md)

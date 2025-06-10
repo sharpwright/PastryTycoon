@@ -6,7 +6,7 @@ namespace PastryTycoon.Core.Abstractions.Player;
 /// Command to initialize a player in the Pastry Tycoon application.
 /// </summary>
 /// <param name="PlayerName">The name of the player to be initialized.</param>
-/// <param name="GameId">>The unique identifier of the game associated with the player.</param>
+/// <param name="GameId">The unique identifier of the game associated with the player.</param>
 [GenerateSerializer]
 public record InitPlayerCmd(
     [property: Id(0)] string PlayerName,
