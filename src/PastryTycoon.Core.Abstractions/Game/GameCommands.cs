@@ -10,7 +10,7 @@ namespace PastryTycoon.Core.Abstractions.Game;
 /// <param name="RecipeIds">The list of recipe identifiers that are discoverable in the game</param>
 /// <param name="StartTimeUtc">The UTC timestamp when the game starts</param>
 [GenerateSerializer]
-public record InitializeGameStateCommand(
+public record InitGameStateCmd(
     [property: Id(0)] Guid GameId,
     [property: Id(1)] Guid PlayerId,
     [property: Id(2)] List<string> RecipeIds,
@@ -23,7 +23,7 @@ public record InitializeGameStateCommand(
 /// <param name="GameId">The unique identifier of the game</param>
 /// <param name="UpdateTimeUtc">The UTC timestamp when the game was last updated</param>
 [GenerateSerializer]
-public record UpdateGameCommand(
+public record UpdateGameCmd(
     [property: Id(0)] Guid GameId,
     [property: Id(2)] DateTime UpdateTimeUtc
 );
@@ -34,7 +34,7 @@ public record UpdateGameCommand(
 /// <param name="GameId">The unique identifier of the game</param>
 /// <param name="RecipeId">The unique identifier of the recipe to be added</param>
 [GenerateSerializer]
-public record AddRecipeToGameCommand(
+public record AddRecipeToGameCmd(
     [property: Id(0)] Guid GameId,
     [property: Id(1)] Guid RecipeId
 );

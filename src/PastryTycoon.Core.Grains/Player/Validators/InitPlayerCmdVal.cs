@@ -8,21 +8,17 @@ namespace PastryTycoon.Core.Grains.Player.Validators;
 /// <summary>
 /// Validator for the InitializePlayerCommand.
 /// </summary>
-public class InitializePlayerCommandValidator : AbstractGrainValidator<InitializePlayerCommand, PlayerState, Guid>
+public class InitPlayerCmdVal : AbstractValidator<InitPlayerCmd>
 {
-    public InitializePlayerCommandValidator()
+    public InitPlayerCmdVal()
     {
-        RuleFor(x => x.GrainState.IsInitialized)
-            .NotEqual(true)
-            .WithMessage("Player is already initialized");
-
-        RuleFor(x => x.Command.PlayerName)
+        RuleFor(x => x.PlayerName)
             .NotEmpty()
             .WithMessage("PlayerName is required")
             .MaximumLength(50)
             .WithMessage("PlayerName cannot exceed 50 characters");
 
-        RuleFor(x => x.Command.GameId)
+        RuleFor(x => x.GameId)
             .NotEmpty()
             .WithMessage("GameId is required");
     }

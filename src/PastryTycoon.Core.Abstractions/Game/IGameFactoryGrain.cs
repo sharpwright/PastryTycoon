@@ -1,5 +1,6 @@
 using System;
 using Orleans;
+using PastryTycoon.Core.Abstractions.Common;
 
 namespace PastryTycoon.Core.Abstractions.Game;
 
@@ -10,5 +11,5 @@ public interface IGameFactoryGrain : IGrainWithGuidKey
     /// </summary>
     /// <param name="command">Command containing player ID, player name, and difficulty level.</param>
     /// <returns></returns>
-    Task<Guid> CreateNewGameAsync(CreateNewGameCommand command);
+    Task<CommandResult> CreateNewGameAsync(CreateNewGameCmd command);
 }

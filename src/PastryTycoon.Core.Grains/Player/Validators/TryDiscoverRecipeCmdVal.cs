@@ -8,17 +8,15 @@ namespace PastryTycoon.Core.Grains.Player.Validators;
 /// <summary>
 /// Validator for the DiscoverRecipeCommand.
 /// </summary>
-public class TryDiscoverRecipeCommandValidator : AbstractGrainValidator<TryDiscoverRecipeCommand, PlayerState, Guid>
+public class TryDiscoverRecipeCmdVal : AbstractValidator<TryDiscoverRecipeCmd>
 {
-    public TryDiscoverRecipeCommandValidator()
+    public TryDiscoverRecipeCmdVal()
     {
-        RuleFor(x => x.Command.PlayerId)
+        RuleFor(x => x.PlayerId)
             .NotEmpty()
-            .WithMessage("PlayerId is required")
-            .Must((context, playerId) => playerId == context.GrainPrimaryKey)
-            .WithMessage("PlayerId must match grain primary key");
+            .WithMessage("PlayerId is required");    
 
-        RuleFor(x => x.Command.IngredientIds)
+        RuleFor(x => x.IngredientIds)
             .Must(ingredientIds => ingredientIds != null && ingredientIds.Count > 0)
             .WithMessage("At least one ingredient ID must be provided");
     }
