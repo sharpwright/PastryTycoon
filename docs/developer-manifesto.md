@@ -9,8 +9,6 @@ By following these practices, you’ll help us build a robust, maintainable, and
 - Favor **explicitness over cleverness** and **robustness over shortcuts**.
 - All code should be **testable, observable, and easy to reason about**.
 
----
-
 ## 2. Solution Structure
 
 - **Separation of Concerns:**  
@@ -20,8 +18,6 @@ By following these practices, you’ll help us build a robust, maintainable, and
 - **Tests:**  
   - Unit tests for handlers/validators.
   - Integration tests for grains using a real Orleans test silo.
-
----
 
 ## 3. Orleans Best Practices
 
@@ -38,8 +34,6 @@ By following these practices, you’ll help us build a robust, maintainable, and
   - Always call `ConfirmEvents()` before publishing events to streams.
   - Only publish events to streams that are meant for external subscribers.
 
----
-
 ## 4. Command Handlers & Validators
 
 - **Handlers:**
@@ -52,8 +46,6 @@ By following these practices, you’ll help us build a robust, maintainable, and
   - Place validators in the same or adjacent namespace as their handler.
   - Abbreviate as `Val` if brevity is needed, or use the full word for clarity.
 
----
-
 ## 5. Dependency Injection
 
 - **Constructor Injection:**  
@@ -61,8 +53,6 @@ By following these practices, you’ll help us build a robust, maintainable, and
   - Use factories to avoid constructor bloat when many handlers/validators are needed.
 - **No Service Locator:**  
   - Do not inject `IServiceProvider` for ad-hoc resolution except in rare, well-documented cases.
-
----
 
 ## 6. Error Handling
 
@@ -73,8 +63,6 @@ By following these practices, you’ll help us build a robust, maintainable, and
 - **Logging:**  
   - Log all failures with enough context for diagnostics.
 
----
-
 ## 7. Testing
 
 - **Handlers and Validators:**  
@@ -82,8 +70,6 @@ By following these practices, you’ll help us build a robust, maintainable, and
 - **Grains:**  
   - Use integration tests with a real Orleans test silo for any `JournaledGrain`.
   - Use unit tests with OrleansTestkit for any `Grain` to verify behaviour.
-
----
 
 ## 8. Serialization & Versioning
 
@@ -93,8 +79,6 @@ By following these practices, you’ll help us build a robust, maintainable, and
 - **[GenerateSerializer]:**  
   - Use `[GenerateSerializer]` on all types persisted or sent over the wire.
 
----
-
 ## 9. Naming Conventions
 
 - **Handlers:**  
@@ -103,8 +87,6 @@ By following these practices, you’ll help us build a robust, maintainable, and
   - Use `Val` or `Validator` (e.g., `UnlockAchievementCmdVal`).
 - **Events:**  
   - Use clear, descriptive names and annotate with `[Alias]` if persisted (e.g. journaled grains events).
-
----
 
 ## 10. General Coding Do’s and Don’ts
 
@@ -123,8 +105,6 @@ By following these practices, you’ll help us build a robust, maintainable, and
 - Don’t use magic strings or numbers.
 - Don’t use `[Alias]` on grain classes.
 - Don’t use service locator patterns.
-
----
 
 ## 11. Onboarding Checklist
 
