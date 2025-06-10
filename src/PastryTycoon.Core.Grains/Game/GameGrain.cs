@@ -6,6 +6,8 @@ using Orleans.EventSourcing;
 using PastryTycoon.Core.Grains.Game.Validators;
 using PastryTycoon.Core.Abstractions.Game;
 using PastryTycoon.Core.Grains.Common;
+using PastryTycoon.Core.Abstractions.Common;
+using PastryTycoon.Core.Grains.Game.CommandHandlers;
 
 namespace PastryTycoon.Core.Grains.Game;
 
@@ -17,15 +19,15 @@ namespace PastryTycoon.Core.Grains.Game;
 public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
 {
     private IAsyncStream<GameEvent>? gameEventStream;
-    private readonly IGrainValidator<InitializeGameStateCommand, GameState, Guid> initializeValidator;
-    private readonly IGrainValidator<UpdateGameCommand, GameState, Guid> updateValidator;
+    private readonly ICommandHandler<InitGameStateCmd, GameState, Guid, GameEvent> initGameHandler;
+    private readonly ICommandHandler<UpdateGameCmd, GameState, Guid, GameEvent> updGameHandler;
 
     public GameGrain(
-        IGrainValidator<InitializeGameStateCommand, GameState, Guid> initializeValidator,
-        IGrainValidator<UpdateGameCommand, GameState, Guid> updateValidator)
+        ICommandHandler<InitGameStateCmd, GameState, Guid, GameEvent> initGameHandler,
+        ICommandHandler<UpdateGameCmd, GameState, Guid, GameEvent> updGameHandler)
     {
-        this.initializeValidator = initializeValidator;
-        this.updateValidator = updateValidator;
+        this.initGameHandler = initGameHandler;
+        this.updGameHandler = updGameHandler;
     }
     
     /// <summary>
@@ -45,43 +47,62 @@ public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
     /// </summary>
     /// <param name="command">The command containing the game initialization details.</param>
     /// <returns></returns>
-    public async Task InitializeGameStateAsync(InitializeGameStateCommand command)
+    public async Task<CommandResult> InitializeGameStateAsync(InitGameStateCmd command)
     {
         // Validate the command.
-        await initializeValidator.ValidateCommandAndThrowsAsync(command, State, this.GetPrimaryKey());
+        var handlerResult = await initGameHandler.HandleAsync(command, State, this.GetPrimaryKey());
 
-        var evt = new GameStateInitializedEvent(
-            command.GameId,
-            command.PlayerId,
-            command.RecipeIds,
-            command.StartTimeUtc);
-
-        RaiseEvent(evt);
-        await ConfirmEvents();
-
-        if (gameEventStream != null)
+        if (!handlerResult.IsSuccess)
         {
-            await gameEventStream.OnNextAsync(evt);
+            // If the handler result indicates failure, return the errors
+            return CommandResult.Failure([.. handlerResult.Errors]);
         }
+
+        // If the command is valid, create the event to initialize the game state.
+        if (handlerResult.IsSuccess && handlerResult.Event != default)
+        {
+            RaiseEvent(handlerResult.Event);
+            await ConfirmEvents();
+
+            if (gameEventStream != null
+                && handlerResult.Event is GameStateInitializedEvent evt)
+            {
+                await gameEventStream.OnNextAsync(evt);
+            }
+        }
+
+        return CommandResult.Success();
     }
-    
+
     /// <summary>
     /// Updates the game state based on the provided command.
     /// </summary>
     /// <param name="command">The command containing the game update details.</param>
     /// <returns></returns>
-    public async Task UpdateGameAsync(UpdateGameCommand command)
+    public async Task<CommandResult> UpdateGameAsync(UpdateGameCmd command)
     {
-        await updateValidator.ValidateCommandAndThrowsAsync(command, State, this.GetPrimaryKey());
+        var handlerResult = await updGameHandler.HandleAsync(command, State, this.GetPrimaryKey());
 
-        var evt = new GameUpdatedEvent(command.GameId, command.UpdateTimeUtc);
-        RaiseEvent(evt);
-        await ConfirmEvents();
-
-        if (gameEventStream != null)
+        if (!handlerResult.IsSuccess)
         {
-            await gameEventStream.OnNextAsync(evt);
+            // If the handler result indicates failure, return the errors
+            return CommandResult.Failure([.. handlerResult.Errors]);
         }
+
+        // If the command is valid, create the event to initialize the game state.
+        if (handlerResult.IsSuccess && handlerResult.Event != default)
+        {
+            RaiseEvent(handlerResult.Event);
+            await ConfirmEvents();
+
+            if (gameEventStream != null
+                && handlerResult.Event is GameUpdatedEvent evt)
+            {
+                await gameEventStream.OnNextAsync(evt);
+            }
+        }
+        
+        return CommandResult.Success();
     }
     
     /// <summary>

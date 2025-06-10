@@ -6,13 +6,15 @@ using PastryTycoon.Core.Abstractions.Constants;
 using PastryTycoon.Core.Abstractions.Game;
 using PastryTycoon.Core.Abstractions.Player;
 using PastryTycoon.Core.Grains.Common;
-using PastryTycoon.Core.Grains.Game;
-using PastryTycoon.Core.Grains.Game.Validators;
 using PastryTycoon.Core.Grains.Player;
 using PastryTycoon.Core.Grains.Player.CommandHandlers;
 using PastryTycoon.Core.Grains.Player.Validators;
 using PastryTycoon.Data.Ingredients;
 using PastryTycoon.Data.Recipes;
+using FluentValidation;
+using PastryTycoon.Core.Grains.Game.Validators;
+using PastryTycoon.Core.Grains.Game;
+using PastryTycoon.Core.Grains.Game.CommandHandlers;
 
 namespace PastryTycoon.Core.Grains.IntegrationTests.TestClusterHelpers;
 
@@ -33,14 +35,19 @@ public sealed class DefaultTestSiloConfigurations : ISiloConfigurator
             services.AddSingleton<IGuidProvider, GuidProvider>();
 
             // Add game grain validators and command handlers.
-            services.AddSingleton<IGrainValidator<InitializeGameStateCommand, GameState, Guid>, InitializeGameStateCommandValidator>();
-            services.AddSingleton<IGrainValidator<UpdateGameCommand, GameState, Guid>, UpdateGameCommandValidator>();
-
+            services.AddSingleton<IValidator<CreateNewGameCmd>, CreateNewGameCmdVal>();
+            services.AddSingleton<IValidator<InitGameStateCmd>, InitGameStateCmdVal>();
+            services.AddSingleton<IValidator<UpdateGameCmd>, UpdateGameCmdVal>();
+            services.AddSingleton<ICommandHandler<InitGameStateCmd, GameState, Guid, GameEvent>, InitGameStateCmdHdlr>();
+            services.AddSingleton<ICommandHandler<UpdateGameCmd, GameState, Guid, GameEvent>, UpdateGameCmdHdlr>();
+                        
             // Add player grain command handlers and validators.
-            services.AddSingleton<ICommandHandler<TryDiscoverRecipeCommand, PlayerState, Guid, PlayerEvent>, TryDiscoverRecipeCommandHandler>();
-            services.AddSingleton<IGrainValidator<InitializePlayerCommand, PlayerState, Guid>, InitializePlayerCommandValidator>();
-            services.AddSingleton<IGrainValidator<TryDiscoverRecipeCommand, PlayerState, Guid>, TryDiscoverRecipeCommandValidator>();
-            services.AddSingleton<IGrainValidator<UnlockAchievementCommand, PlayerState, Guid>, UnlockAchievementCommandValidator>();            
+            services.AddSingleton<IValidator<InitPlayerCmd>, InitPlayerCmdVal>();
+            services.AddSingleton<IValidator<TryDiscoverRecipeCmd>, TryDiscoverRecipeCmdVal>();
+            services.AddSingleton<IValidator<UnlockAchievementCmd>, UnlockAchievementCmdVal>();
+            services.AddSingleton<ICommandHandler<InitPlayerCmd, PlayerState, Guid, PlayerEvent>, InitPlayerCmdHdlr>();
+            services.AddSingleton<ICommandHandler<TryDiscoverRecipeCmd, PlayerState, Guid, PlayerEvent>, TryDiscoverRecipeCmdHdlr>();
+            services.AddSingleton<ICommandHandler<UnlockAchievementCmd, PlayerState, Guid, PlayerEvent>, UnlockAchievementCmdHdlr>();
         });
     }
 
@@ -58,11 +65,11 @@ public sealed class DefaultTestSiloConfigurations : ISiloConfigurator
         // Setup default behavior for GetRecipeByIngredientIdsAsync
         mock.Setup(r => r.GetRecipeByIngredientIdsAsync(It.IsAny<List<string>>()))
             .ReturnsAsync(testRecipe);
-            
+
         // Add any other method setups for IRecipeRepository
         mock.Setup(r => r.GetRecipeByIdAsync(testRecipe.Id))
             .ReturnsAsync(testRecipe);
-            
+
         return mock;
     }
 }

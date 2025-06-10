@@ -82,7 +82,7 @@ public class AchievementsGrain : Grain, IAchievementsGrain,
                 {
                     // Call player grain to add unlocked achievement to the player state.
                     var playerGrain = GrainFactory.GetGrain<IPlayerGrain>(item.PlayerId);
-                    var command = new UnlockAchievementCommand(
+                    var command = new UnlockAchievementCmd(
                         PlayerId: item.PlayerId,
                         AchievementId: result.AchievementId,
                         UnlockedAtUtc: DateTime.UtcNow

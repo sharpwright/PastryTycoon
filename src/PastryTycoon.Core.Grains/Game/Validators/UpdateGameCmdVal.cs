@@ -8,17 +8,15 @@ namespace PastryTycoon.Core.Grains.Game.Validators;
 /// <summary>
 /// Validator for the UpdateGameCommand.
 /// </summary>
-public class UpdateGameCommandValidator : AbstractGrainValidator<UpdateGameCommand, GameState, Guid>
+public class UpdateGameCmdVal : AbstractValidator<UpdateGameCmd>
 {
-    public UpdateGameCommandValidator()
+    public UpdateGameCmdVal()
     {
-        RuleFor(x => x.Command.GameId)
+        RuleFor(x => x.GameId)
             .NotEmpty()
-            .WithMessage("GameId is required")
-            .Must((context, gameId) => gameId == context.GrainPrimaryKey)
-            .WithMessage("GameId must match grain primary key");
+            .WithMessage("GameId is required");
 
-        RuleFor(x => x.Command.UpdateTimeUtc)
+        RuleFor(x => x.UpdateTimeUtc)
             .NotEmpty()
             .WithMessage("UpdateTimeUtc is required")
             .Must(updateTime => updateTime <= DateTime.UtcNow)

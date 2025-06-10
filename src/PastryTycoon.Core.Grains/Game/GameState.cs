@@ -5,6 +5,7 @@ namespace PastryTycoon.Core.Grains.Game;
 /// <summary>
 /// Represents the state of a game in the Pastry Tycoon application.
 /// </summary>
+[Alias("GameState")]
 [GenerateSerializer]
 public class GameState
 {
@@ -14,7 +15,7 @@ public class GameState
     [Id(3)] public DateTime StartTimeUtc { get; set; }
     [Id(4)] public DateTime LastUpdatedAtTimeUtc { get; set; }
     [Id(5)] public bool IsInitialized { get; set; } = false;
-    
+
     /// <summary>
     /// Applies the GameStateInitializedEvent to initialize the game state.
     /// </summary>

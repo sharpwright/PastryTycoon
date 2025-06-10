@@ -5,6 +5,8 @@ using Orleans.Providers;
 using Orleans.Streams;
 using PastryTycoon.Core.Abstractions.Player;
 using PastryTycoon.Core.Grains.Common;
+using System.IO.Pipelines;
+using PastryTycoon.Core.Abstractions.Common;
 
 namespace PastryTycoon.Core.Grains.Player;
 
@@ -15,19 +17,19 @@ namespace PastryTycoon.Core.Grains.Player;
 [StorageProvider(ProviderName = OrleansConstants.EVENT_SOURCING_LOG_STORAGE_PLAYER_EVENTS)]
 public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrain
 {
-    private IAsyncStream<PlayerEvent>? playerEventStream;
-    private readonly IGrainValidator<InitializePlayerCommand, PlayerState, Guid> initializeValidator;
-    private readonly IGrainValidator<UnlockAchievementCommand, PlayerState, Guid> unlockAchievementValidator;
-    private readonly ICommandHandler<TryDiscoverRecipeCommand, PlayerState, Guid, PlayerEvent> recipeDiscoveryHandler;
+    private IAsyncStream<PlayerEvent>? playerEventStream;    
+    private readonly ICommandHandler<InitPlayerCmd, PlayerState, Guid, PlayerEvent> initializePlayerHandler;
+    private readonly ICommandHandler<TryDiscoverRecipeCmd, PlayerState, Guid, PlayerEvent> recipeDiscoveryHandler;
+    private readonly ICommandHandler<UnlockAchievementCmd, PlayerState, Guid, PlayerEvent> unlockAchievementHandler;
 
     public PlayerGrain(
-        IGrainValidator<InitializePlayerCommand, PlayerState, Guid> initializeValidator,
-        IGrainValidator<UnlockAchievementCommand, PlayerState, Guid> unlockAchievementValidator,
-        ICommandHandler<TryDiscoverRecipeCommand, PlayerState, Guid, PlayerEvent> recipeDiscoveryHandler)
+        ICommandHandler<InitPlayerCmd, PlayerState, Guid, PlayerEvent> initializePlayerHandler,
+        ICommandHandler<TryDiscoverRecipeCmd, PlayerState, Guid, PlayerEvent> recipeDiscoveryHandler,
+        ICommandHandler<UnlockAchievementCmd, PlayerState, Guid, PlayerEvent> unlockAchievementHandler)
     {
-        this.initializeValidator = initializeValidator;
-        this.unlockAchievementValidator = unlockAchievementValidator;
+        this.initializePlayerHandler = initializePlayerHandler;
         this.recipeDiscoveryHandler = recipeDiscoveryHandler;
+        this.unlockAchievementHandler = unlockAchievementHandler;
     }
 
     /// <summary>
@@ -48,18 +50,23 @@ public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrai
     /// <param name="command">The command containing the player initialization details.</param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException">Thrown if the player is already initialized.</exception>
-    public async Task InitializeAsync(InitializePlayerCommand command)
+    public async Task<CommandResult> InitializeAsync(InitPlayerCmd command)
     {
-        await initializeValidator.ValidateCommandAndThrowsAsync(command, State, this.GetPrimaryKey());        
+        var handlerResult = await initializePlayerHandler.HandleAsync(command, State, this.GetPrimaryKey());
 
-        var evt = new PlayerInitializedEvent(
-            this.GetPrimaryKey(),
-            command.PlayerName,
-            command.GameId,
-            DateTime.UtcNow);
+        if (!handlerResult.IsSuccess)
+        {
+            // If the handler result indicates failure, return the errors
+            return CommandResult.Failure([.. handlerResult.Errors]);
+        }
 
-        RaiseEvent(evt);
-        await ConfirmEvents();
+        if (handlerResult.IsSuccess && handlerResult.Event != default)
+        {
+            RaiseEvent(handlerResult.Event);
+            await ConfirmEvents();
+        }
+
+        return CommandResult.Success();        
     }
 
     /// <summary>
@@ -67,23 +74,32 @@ public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrai
     /// </summary>
     /// <param name="command">The command containing the recipe discovery details.</param>
     /// <returns></returns>
-    public async Task TryDiscoverRecipeFromIngredientsAsync(TryDiscoverRecipeCommand command)
+    public async Task<CommandResult> TryDiscoverRecipeFromIngredientsAsync(TryDiscoverRecipeCmd command)
     {
         // Use the handler to process the command and get a potential event
-        var evt = await recipeDiscoveryHandler.HandleAsync(command, State, this.GetPrimaryKey());
+        var handlerResult = await recipeDiscoveryHandler.HandleAsync(command, State, this.GetPrimaryKey());
 
-        // If the handler returned an event, raise it
-        if (evt != null)
+        if (!handlerResult.IsSuccess)
         {
-            RaiseEvent(evt);
+            // If the handler result indicates failure, return the errors
+            return CommandResult.Failure([.. handlerResult.Errors]);
+        }
+
+        // If the handler result indicates success, proceed to raise events if any were produced.
+        if (handlerResult.IsSuccess && handlerResult.Event != default)
+        {
+            RaiseEvent(handlerResult.Event);
             await ConfirmEvents();
 
-            // Publish to stream if available
-            if (playerEventStream != null)
+            if (playerEventStream != null &&
+                handlerResult.Event is PlayerDiscoveredRecipeEvent)
             {
-                await playerEventStream.OnNextAsync(evt);
+                // If the event stream is available, send the discovered recipe event
+                await playerEventStream.OnNextAsync(handlerResult.Event);
             }
         }
+        
+        return CommandResult.Success();
     }
 
     /// <summary>
@@ -91,21 +107,23 @@ public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrai
     /// </summary>
     /// <param name="command">The command containing the achievement unlock details.</param>
     /// <returns></returns>
-    public virtual async Task UnlockAchievementAsync(UnlockAchievementCommand command)
+    public virtual async Task<CommandResult> UnlockAchievementAsync(UnlockAchievementCmd command)
     {
-        await unlockAchievementValidator.ValidateCommandAndThrowsAsync(command, State, this.GetPrimaryKey());
+        var handlerResult = await unlockAchievementHandler.HandleAsync(command, State, this.GetPrimaryKey());
 
-        var achievementId = command.AchievementId;
-        var unlockedAtUtc = command.UnlockedAtUtc;
+        if (!handlerResult.IsSuccess)
+        {
+            // If the handler result indicates failure, return the errors
+            return CommandResult.Failure([.. handlerResult.Errors]);
+        }
 
-        // Update player state to include the new achievement
-        var evt = new PlayerUnlockedAchievementEvent(
-            command.PlayerId,
-            achievementId,
-            unlockedAtUtc);
+        if (handlerResult.IsSuccess || handlerResult.Event != default)
+        {
+            RaiseEvent(handlerResult.Event);
+            await ConfirmEvents();
+        }
 
-        RaiseEvent(evt);
-        await ConfirmEvents();
+        return CommandResult.Success();
     }
 
     /// <summary>

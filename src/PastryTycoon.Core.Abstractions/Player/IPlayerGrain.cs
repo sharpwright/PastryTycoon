@@ -1,11 +1,13 @@
 using System;
 using Orleans;
+using PastryTycoon.Core.Abstractions.Common;
 
 namespace PastryTycoon.Core.Abstractions.Player;
 
 /// <summary>
 /// Interface for the Player grain.
 /// </summary>
+[Alias("PlayerGrain")]
 public interface IPlayerGrain : IGrainWithGuidKey
 {
     /// <summary>
@@ -13,21 +15,21 @@ public interface IPlayerGrain : IGrainWithGuidKey
     /// </summary>
     /// <param name="command">Command containing player initialization details.</param>
     /// <returns></returns>
-    public Task InitializeAsync(InitializePlayerCommand command);
+    public Task<CommandResult> InitializeAsync(InitPlayerCmd command);
 
     /// <summary>
     /// Discovers a recipe for the player based on the provided command.
     /// </summary>
     /// <param name="command">Command containing the recipe discovery details.</param>
     /// <returns></returns>
-    public Task TryDiscoverRecipeFromIngredientsAsync(TryDiscoverRecipeCommand command);
+    public Task<CommandResult> TryDiscoverRecipeFromIngredientsAsync(TryDiscoverRecipeCmd command);
 
     /// <summary>
     /// Unlocks an achievement for the player based on the provided command.
     /// </summary>
     /// <param name="command">Command containing the achievement unlock details.</param>
     /// <returns></returns>
-    public Task UnlockAchievementAsync(UnlockAchievementCommand command);
+    public Task<CommandResult> UnlockAchievementAsync(UnlockAchievementCmd command);
 
     /// <summary>
     /// Retrieves the player statistics asynchronously.

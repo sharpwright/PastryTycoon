@@ -17,6 +17,7 @@ using PastryTycoon.Core.Grains.Player.CommandHandlers;
 using PastryTycoon.Core.Abstractions.Game;
 using PastryTycoon.Core.Grains.Game;
 using PastryTycoon.Core.Grains.Player.Validators;
+using PastryTycoon.Core.Grains.Game.CommandHandlers;
 
 // Create a new host builder for the application.
 var builder = Host.CreateApplicationBuilder(args);
@@ -28,13 +29,19 @@ builder.Services.AddSingleton<IIngredientRepository, IngredientRepository>();
 builder.Services.AddSingleton<IGuidProvider, GuidProvider>();
 
 // Add game grain validators and command handlers.
-builder.Services.AddSingleton<IGrainValidator<InitializeGameStateCommand, GameState, Guid>, InitializeGameStateCommandValidator>();
-builder.Services.AddSingleton<IGrainValidator<UpdateGameCommand, GameState, Guid>, UpdateGameCommandValidator>();
-
+builder.Services.AddSingleton<IValidator<CreateNewGameCmd>, CreateNewGameCmdVal>();
+builder.Services.AddSingleton<IValidator<InitGameStateCmd>, InitGameStateCmdVal>();
+builder.Services.AddSingleton<IValidator<UpdateGameCmd>, UpdateGameCmdVal>();
+builder.Services.AddSingleton<ICommandHandler<InitGameStateCmd, GameState, Guid, GameEvent>, InitGameStateCmdHdlr>();
+builder.Services.AddSingleton<ICommandHandler<UpdateGameCmd, GameState, Guid, GameEvent>, UpdateGameCmdHdlr>();
+           
 // Add player grain command handlers and validators.
-builder.Services.AddSingleton<ICommandHandler<TryDiscoverRecipeCommand, PlayerState, Guid, PlayerEvent>, TryDiscoverRecipeCommandHandler>();
-builder.Services.AddSingleton<IGrainValidator<InitializePlayerCommand, PlayerState, Guid>, InitializePlayerCommandValidator>();
-builder.Services.AddSingleton<IGrainValidator<TryDiscoverRecipeCommand, PlayerState, Guid>, TryDiscoverRecipeCommandValidator>();
+builder.Services.AddSingleton<IValidator<InitPlayerCmd>, InitPlayerCmdVal>();
+builder.Services.AddSingleton<IValidator<TryDiscoverRecipeCmd>, TryDiscoverRecipeCmdVal>();
+builder.Services.AddSingleton<IValidator<UnlockAchievementCmd>, UnlockAchievementCmdVal>();
+builder.Services.AddSingleton<ICommandHandler<InitPlayerCmd, PlayerState, Guid, PlayerEvent>, InitPlayerCmdHdlr>();
+builder.Services.AddSingleton<ICommandHandler<TryDiscoverRecipeCmd, PlayerState, Guid, PlayerEvent>, TryDiscoverRecipeCmdHdlr>();
+builder.Services.AddSingleton<ICommandHandler<UnlockAchievementCmd, PlayerState, Guid, PlayerEvent>, UnlockAchievementCmdHdlr>();
 
 builder.UseOrleans(siloBuilder =>
 {

@@ -8,19 +8,19 @@ namespace PastryTycoon.Core.Grains.Game.Validators;
 /// <summary>
 /// Validator for the CreateNewGameCommand.
 /// </summary>
-public class CreateNewGameCommandValidator : AbstractGrainValidator<CreateNewGameCommand, object, Guid>
+public class CreateNewGameCmdVal : AbstractValidator<CreateNewGameCmd>
 {
-    public CreateNewGameCommandValidator()
+    public CreateNewGameCmdVal()
     {
-        RuleFor(x => x.Command.PlayerId)
+        RuleFor(x => x.PlayerId)
             .NotEmpty()
             .WithMessage("PlayerId is required");
 
-        RuleFor(x => x.Command.PlayerName)
+        RuleFor(x => x.PlayerName)
             .NotEmpty()
             .WithMessage("PlayerName is required");
 
-        RuleFor(x => x.Command.DifficultyLevel)
+        RuleFor(x => x.DifficultyLevel)
             .IsInEnum()
             .WithMessage("DifficultyLevel is invalid");
     }

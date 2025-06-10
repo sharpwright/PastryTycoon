@@ -80,7 +80,7 @@ public class AchievementsGrainTests : TestKitBase
 
         // Verify behaviour
         player.Verify(
-            x => x.UnlockAchievementAsync(It.Is<UnlockAchievementCommand>(cmd => 
+            x => x.UnlockAchievementAsync(It.Is<UnlockAchievementCmd>(cmd => 
                 cmd.PlayerId == playerEvent.PlayerId &&
                 cmd.AchievementId == expectedAchievementId &&
                 cmd.UnlockedAtUtc != default)),        
