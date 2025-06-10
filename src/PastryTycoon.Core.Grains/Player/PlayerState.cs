@@ -5,6 +5,7 @@ namespace PastryTycoon.Core.Grains.Player;
 /// <summary>
 /// Represents the state of a player in the game.
 /// </summary>
+[Alias("PlayerState")]
 [GenerateSerializer]
 public class PlayerState
 {

@@ -4,6 +4,7 @@ using PastryTycoon.Core.Abstractions.Common;
 
 namespace PastryTycoon.Core.Abstractions.Game;
 
+[Alias("GameFactoryGrain")]
 public interface IGameFactoryGrain : IGrainWithGuidKey
 {
     /// <summary>

@@ -7,6 +7,7 @@ namespace PastryTycoon.Core.Abstractions.Player;
 /// <summary>
 /// Interface for the Player grain.
 /// </summary>
+[Alias("PlayerGrain")]
 public interface IPlayerGrain : IGrainWithGuidKey
 {
     /// <summary>

@@ -5,6 +5,7 @@ namespace PastryTycoon.Core.Grains.Achievements;
 /// <summary>
 /// Represents the state of achievements for a player.
 /// </summary>
+[Alias("AchievementsState")]
 [GenerateSerializer]
 public record AchievementsState
 {

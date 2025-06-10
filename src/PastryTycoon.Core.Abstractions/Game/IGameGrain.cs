@@ -7,6 +7,7 @@ namespace PastryTycoon.Core.Abstractions.Game;
 /// <summary>
 /// Interface for the Game grain.
 /// </summary>
+[Alias("GameGrain")]
 public interface IGameGrain : IGrainWithGuidKey
 {
     /// <summary>
