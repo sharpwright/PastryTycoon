@@ -15,7 +15,8 @@ By following these practices, you’ll help us build a robust, maintainable, and
 
 - **Separation of Concerns:**  
   - Grains, state, events, command handlers, and validators are in distinct folders and namespaces.
-  - Shared contracts (interfaces, DTOs, events, state) live in `PastryTycoon.Core.Abstractions`.
+  - Shared contracts (commands, DTOs) live in `PastryTycoon.Core.Abstractions`.
+  - Internal contracts (events, state) live in `PastryTycoon.Core.Grains`.
 - **Tests:**  
   - Unit tests for handlers/validators.
   - Integration tests for grains using a real Orleans test silo.
@@ -26,6 +27,7 @@ By following these practices, you’ll help us build a robust, maintainable, and
 
 - **Grain Design:**
   - Grains should be thin orchestrators, delegating business logic to handlers.
+  - All grain methods that modify state should have a `Command` parameter and use `CommandResult` as return-type.
   - Never put complex business logic directly in grains.
   - Use `JournaledGrain` for event-sourced entities; use `[Alias]` on all persisted event and state types.
 - **Grain Interfaces:**  
@@ -112,6 +114,8 @@ By following these practices, you’ll help us build a robust, maintainable, and
 - Use async/await for all Orleans grain methods.
 - Document public APIs and grain methods.
 - Use immutable records for events.
+- Use immutable records for commands.
+- Use immutable records for DTOs.
 
 ### Don’t:
 - Don’t put business logic in grains.
