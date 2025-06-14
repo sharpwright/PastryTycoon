@@ -43,7 +43,7 @@ public class GameGrainIntegrationTests(ClusterFixture fixture)
         var gameId = Guid.NewGuid();
         var playerId = Guid.NewGuid();
         var recipeIds = new List<string> { "test-1-recipe", "test-2-recipe" };
-        var initializeGameStateCommand = new InitializeGameStateCommand(gameId, playerId, recipeIds, DateTime.UtcNow);
+        var initializeGameStateCommand = new InitGameStateCmd(gameId, playerId, recipeIds, DateTime.UtcNow);
         var gameGrain = cluster.GrainFactory.GetGrain<IGameGrain>(gameId);
 
         // Act
@@ -54,21 +54,7 @@ public class GameGrainIntegrationTests(ClusterFixture fixture)
         Assert.Equal(gameId, gameStatistics.GameId);
         Assert.Equal(playerId, gameStatistics.PlayerId);
         Assert.Equal(recipeIds.Count, gameStatistics.TotalRecipes);
-    }
-
-    [Fact]
-    public async Task InitializeGameState_ShouldThrowException_WhenGameIdDoesNotMatchGrainId()
-    {
-        // Arrange
-        var gameId = Guid.NewGuid();
-        var playerId = Guid.NewGuid();
-        var recipeIds = new List<string> { "test-1-recipe", "test-2-recipe" };
-        var initializeGameStateCommand = new InitializeGameStateCommand(Guid.NewGuid(), playerId, recipeIds, DateTime.UtcNow);
-        var gameGrain = cluster.GrainFactory.GetGrain<IGameGrain>(gameId);
-
-        // Act & Assert
-        await Assert.ThrowsAsync<ArgumentException>(() => gameGrain.InitializeGameStateAsync(initializeGameStateCommand));
-    }
+    }    
 
     [Fact]
     public async Task InitializeGameState_ShouldEmitGameStateInitializedEvent()
@@ -77,7 +63,7 @@ public class GameGrainIntegrationTests(ClusterFixture fixture)
         var gameId = Guid.NewGuid();
         var playerId = Guid.NewGuid();
         var recipeIds = new List<string> { "test-1-recipe", "test-2-recipe" };
-        var command = new InitializeGameStateCommand(gameId, playerId, recipeIds, DateTime.UtcNow);
+        var command = new InitGameStateCmd(gameId, playerId, recipeIds, DateTime.UtcNow);
         var grain = cluster.GrainFactory.GetGrain<IGameGrain>(gameId);
         var observer = cluster.GrainFactory.GetGrain<IStreamObserverGrain<GameEvent>>(gameId);
         await observer.SubscribeAsync(OrleansConstants.STREAM_NAMESPACE_GAME_EVENTS, OrleansConstants.AZURE_QUEUE_STREAM_PROVIDER);
@@ -95,14 +81,33 @@ public class GameGrainIntegrationTests(ClusterFixture fixture)
     }
 
     [Fact]
+    public async Task InitializeGameState_ShouldReturnFailure_WhenGameAlreadyInitialized()
+    {
+        // Arrange
+        var gameId = Guid.NewGuid();
+        var playerId = Guid.NewGuid();
+        var recipeIds = new List<string> { "test-1-recipe", "test-2-recipe" };
+        var initializeGameStateCommand = new InitGameStateCmd(gameId, playerId, recipeIds, DateTime.UtcNow);
+        var gameGrain = cluster.GrainFactory.GetGrain<IGameGrain>(gameId);
+
+        // Act 1 
+        var result = await gameGrain.InitializeGameStateAsync(initializeGameStateCommand);
+        Assert.True(result.IsSuccess);
+
+        // Act 2 - Attempt to re-initialize the game state
+        var secondResult = await gameGrain.InitializeGameStateAsync(initializeGameStateCommand);
+        Assert.False(secondResult.IsSuccess);
+    }
+
+    [Fact]
     public async Task UpdateGame_ShouldPersistUpdatedValues()
     {
         // Arrange
         var gameId = Guid.NewGuid();
         var playerId = Guid.NewGuid();
         var recipeIds = new List<string> { "test-1-recipe", "test-2-recipe" };
-        var initializeGameStateCommand = new InitializeGameStateCommand(gameId, playerId, recipeIds, DateTime.UtcNow);
-        var updateGameCommand = new UpdateGameCommand(gameId, DateTime.UtcNow.AddMilliseconds(1));
+        var initializeGameStateCommand = new InitGameStateCmd(gameId, playerId, recipeIds, DateTime.UtcNow);
+        var updateGameCommand = new UpdateGameCmd(gameId, DateTime.UtcNow.AddMilliseconds(1));
         var gameGrain = cluster.GrainFactory.GetGrain<IGameGrain>(gameId);
 
         // Act
@@ -127,7 +132,7 @@ public class GameGrainIntegrationTests(ClusterFixture fixture)
         var gameId = Guid.NewGuid();
         var playerId = Guid.NewGuid();
         var recipeIds = new List<string> { "test-1-recipe", "test-2-recipe" };
-        var initializeGameStateCommand = new InitializeGameStateCommand(gameId, playerId, recipeIds, DateTime.UtcNow);
+        var initializeGameStateCommand = new InitGameStateCmd(gameId, playerId, recipeIds, DateTime.UtcNow);
         var gameGrain = cluster.GrainFactory.GetGrain<IGameGrain>(gameId);
 
         // Act

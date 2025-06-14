@@ -6,9 +6,10 @@ namespace PastryTycoon.Core.Grains.Player;
 /// Base class for all player-related events.
 /// </summary>
 /// <param name="PlayerId">The unique identifier for the player.</param>
+[Alias("PlayerEvent")]
 [GenerateSerializer]
 public record PlayerEvent(
-    [property: Id(0)] Guid PlayerId
+    Guid PlayerId
 );
 
 /// <summary>
@@ -18,12 +19,13 @@ public record PlayerEvent(
 /// <param name="PlayerName">The name of the player.</param>
 /// <param name="GameId">The unique identifier for the game the player is associated with.</param>
 /// <param name="CreatedAtUtc">The UTC timestamp when the player was created.</param>
+[Alias("PlayerInitializedEvent")]
 [GenerateSerializer]
 public record PlayerInitializedEvent (
     Guid PlayerId,
-    [property: Id(1)] string PlayerName,
-    [property: Id(2)] Guid GameId,
-    [property: Id(3)] DateTime CreatedAtUtc
+    string PlayerName,
+    Guid GameId,
+    DateTime CreatedAtUtc
 ) : PlayerEvent(PlayerId);
 
 /// <summary>
@@ -32,11 +34,12 @@ public record PlayerInitializedEvent (
 /// <param name="PlayerId">The unique identifier for the player.</param>
 /// <param name="RecipeId">The unique identifier for the recipe that was discovered.</param>
 /// <param name="DiscoveryTimeUtc">Represents the UTC timestamp when the recipe was discovered.</param>
+[Alias("PlayerDiscoveredRecipeEvent")]
 [GenerateSerializer]
 public record PlayerDiscoveredRecipeEvent(
     Guid PlayerId,
-    [property: Id(1)] string RecipeId,
-    [property: Id(2)] DateTime DiscoveryTimeUtc
+    string RecipeId,
+    DateTime DiscoveryTimeUtc
 ) : PlayerEvent(PlayerId);
 
 /// <summary>
@@ -45,10 +48,11 @@ public record PlayerDiscoveredRecipeEvent(
 /// <param name="PlayerId">The unique identifier for the player.</param>
 /// <param name="AchievementId">The unique identifier for the achievement that was unlocked.</param>
 /// <param name="UnlockedAtUtc">Represents the UTC timestamp when the achievement was unlocked.</param>
+[Alias("PlayerUnlockedAchievementEvent")]
 [GenerateSerializer]
 public record PlayerUnlockedAchievementEvent
 (
     Guid PlayerId,
-    [property: Id(1)] string AchievementId,
-    [property: Id(2)] DateTime UnlockedAtUtc
+    string AchievementId,
+    DateTime UnlockedAtUtc
 ) : PlayerEvent(PlayerId);

@@ -105,6 +105,13 @@ The following tools let you browse, manage, and debug your local development dat
 
 ## Development
 
+1. **Developer manifesto**
+
+> [!IMPORTANT]
+> Read the [Developer Manifesto](docs/developer-manifesto.md) before writing and committing any code!
+
+2. **Tooling**
+   
 For the best development experience with PastryTycoon in VSCode, install the following extensions:
 
 - [C#](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp)  

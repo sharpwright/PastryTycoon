@@ -6,9 +6,10 @@ namespace PastryTycoon.Core.Grains.Game;
 /// Base class for all game-related events.
 /// </summary>
 /// <param name="GameId">The unique identifier of the game</param>
+[Alias("GameEvent")]
 [GenerateSerializer]
 public record GameEvent(
-    [property: Id(0)] Guid GameId
+    Guid GameId
 );
 
 /// <summary>
@@ -18,12 +19,13 @@ public record GameEvent(
 /// <param name="PlayerId">The unique identifier of the player</param>
 /// <param name="RecipeIds">The list of recipe IDs available in the game</param>
 /// <param name="StartTimeUtc">The start time of the game in UTC</param>
+[Alias("GameStateInitializedEvent")]
 [GenerateSerializer]
 public record GameStateInitializedEvent(
     Guid GameId,
-    [property: Id(1)] Guid PlayerId,
-    [property: Id(2)] IReadOnlyList<string> RecipeIds,
-    [property: Id(4)] DateTime StartTimeUtc
+    Guid PlayerId,
+    IReadOnlyList<string> RecipeIds,
+    DateTime StartTimeUtc
 ) : GameEvent(GameId);
 
 /// <summary>
@@ -31,10 +33,11 @@ public record GameStateInitializedEvent(
 /// </summary>
 /// <param name="GameId">The unique identifier of the game</param>
 /// <param name="UpdateTimeUtc">>The time when the game state was last updated in UTC</param>
+[Alias("GameUpdatedEvent")]
 [GenerateSerializer]
 public record GameUpdatedEvent(
     Guid GameId,
-    [property: Id(2)] DateTime UpdateTimeUtc
+    DateTime UpdateTimeUtc
 ) : GameEvent(GameId);
 
 /// <summary>
@@ -42,8 +45,9 @@ public record GameUpdatedEvent(
 /// </summary>
 /// <param name="GameId">The unique identifier of the game</param>
 /// <param name="RecipeId">>The unique identifier of the recipe that was added</param>
+[Alias("RecipeAddedEvent")]
 [GenerateSerializer]
 public record RecipeAddedEvent(
     Guid GameId,
-    [property: Id(2)] string RecipeId
+    string RecipeId
 ) : GameEvent(GameId);
