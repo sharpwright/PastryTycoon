@@ -31,7 +31,7 @@ public class UpdateGameCmdHdlr : ICommandHandler<UpdateGameCmd, GameState, GameE
 
         // Create the event to update the game state.
         var evt = new GameUpdatedEvent(
-            command.GameId,
+            command.GameId.ToString("N"),
             command.UpdateTimeUtc);
 
         // Return the result with the event.

@@ -9,7 +9,7 @@ namespace PastryTycoon.Core.Grains.Game;
 [Alias("GameEvent")]
 [GenerateSerializer]
 public record GameEvent(
-    Guid GameId
+    string GameId
 );
 
 /// <summary>
@@ -22,8 +22,8 @@ public record GameEvent(
 [Alias("GameStateInitializedEvent")]
 [GenerateSerializer]
 public record GameStateInitializedEvent(
-    Guid GameId,
-    Guid PlayerId,
+    string GameId,
+    string PlayerId,
     IReadOnlyList<string> RecipeIds,
     DateTime StartTimeUtc
 ) : GameEvent(GameId);
@@ -36,7 +36,7 @@ public record GameStateInitializedEvent(
 [Alias("GameUpdatedEvent")]
 [GenerateSerializer]
 public record GameUpdatedEvent(
-    Guid GameId,
+    string GameId,
     DateTime UpdateTimeUtc
 ) : GameEvent(GameId);
 
@@ -48,6 +48,6 @@ public record GameUpdatedEvent(
 [Alias("RecipeAddedEvent")]
 [GenerateSerializer]
 public record RecipeAddedEvent(
-    Guid GameId,
+    string GameId,
     string RecipeId
 ) : GameEvent(GameId);

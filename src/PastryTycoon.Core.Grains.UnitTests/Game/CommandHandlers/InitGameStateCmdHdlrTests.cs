@@ -27,7 +27,7 @@ public class InitGameStateCmdHdlrTests
         var recipeIds = new List<string>() { "recipe1", "recipe2" };
         var startTimeUtc = DateTime.UtcNow;
         var command = new InitGameStateCmd(gameId, playerId, recipeIds, startTimeUtc);
-        var gameState = new GameState { IsInitialized = false, GameId = gameId };
+        var gameState = new GameState { IsInitialized = false, GameId = gameId.ToString("N") };
         var handler = new InitGameStateCmdHdlr(validatorMock.Object);
 
         validatorMock
@@ -35,7 +35,7 @@ public class InitGameStateCmdHdlrTests
             .ReturnsAsync(new ValidationResult());
 
         // Act
-        var result = await handler.HandleAsync(command, gameState, gameId.ToString());
+        var result = await handler.HandleAsync(command, gameState, gameId.ToString("N"));
 
         // Assert
         Assert.NotNull(result);
@@ -54,7 +54,7 @@ public class InitGameStateCmdHdlrTests
         var recipeIds = new List<string>() { "recipe1", "recipe2" };
         var startTimeUtc = DateTime.UtcNow;
         var command = new InitGameStateCmd(gameId, playerId, recipeIds, startTimeUtc);
-        var gameState = new GameState { IsInitialized = true, GameId = gameId };
+        var gameState = new GameState { IsInitialized = true, GameId = gameId.ToString("N") };
         var handler = new InitGameStateCmdHdlr(validatorMock.Object);
 
         validatorMock
@@ -62,7 +62,7 @@ public class InitGameStateCmdHdlrTests
             .ReturnsAsync(new ValidationResult());
 
         // Act
-        var result = await handler.HandleAsync(command, gameState, gameId.ToString());
+        var result = await handler.HandleAsync(command, gameState, gameId.ToString("N"));
 
         // Assert
         Assert.NotNull(result);
@@ -80,7 +80,7 @@ public class InitGameStateCmdHdlrTests
         var recipeIds = new List<string>() { "recipe1", "recipe2" };
         var startTimeUtc = DateTime.UtcNow;
         var command = new InitGameStateCmd(gameId, playerId, recipeIds, startTimeUtc);
-        var gameState = new GameState { IsInitialized = false, GameId = gameId };
+        var gameState = new GameState { IsInitialized = false, GameId = gameId.ToString("N") };
         var handler = new InitGameStateCmdHdlr(validatorMock.Object);
 
         validatorMock
@@ -91,7 +91,7 @@ public class InitGameStateCmdHdlrTests
             }));
 
         // Act
-        var result = await handler.HandleAsync(command, gameState, gameId.ToString());
+        var result = await handler.HandleAsync(command, gameState, gameId.ToString("N"));
 
         // Assert
         Assert.NotNull(result);

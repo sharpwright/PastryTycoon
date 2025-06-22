@@ -26,14 +26,14 @@ public class UnlockAchievementCmdHdlrTsts
         var unlockedAtUtc = DateTime.UtcNow;
         var command = new UnlockAchievementCmd(playerId, achievementId, unlockedAtUtc);
         var handler = new UnlockAchievementCmdHdlr(validatorMock.Object);
-        var playerState = new PlayerState { IsInitialized = true, PlayerId = playerId };
+        var playerState = new PlayerState { IsInitialized = true, PlayerId = playerId.ToString("N") };
 
         validatorMock
             .Setup(v => v.ValidateAsync(command, default))
             .ReturnsAsync(new ValidationResult());
 
         // Act
-        var result = await handler.HandleAsync(command, playerState, playerId.ToString());
+        var result = await handler.HandleAsync(command, playerState, playerId.ToString("N"));
 
         // Assert
         Assert.NotNull(result);
@@ -55,7 +55,7 @@ public class UnlockAchievementCmdHdlrTsts
         var playerState = new PlayerState
         {
             IsInitialized = true,
-            PlayerId = playerId,
+            PlayerId = playerId.ToString("N"),
             UnlockedAchievements = { [achievementId] = unlockedAtUtc }
         };
 
@@ -64,7 +64,7 @@ public class UnlockAchievementCmdHdlrTsts
             .ReturnsAsync(new ValidationResult());
 
         // Act
-        var result = await handler.HandleAsync(command, playerState, playerId.ToString());
+        var result = await handler.HandleAsync(command, playerState, playerId.ToString("N"));
 
         // Assert
         Assert.NotNull(result);
@@ -89,7 +89,7 @@ public class UnlockAchievementCmdHdlrTsts
             .ReturnsAsync(new ValidationResult());
 
         // Act
-        var result = await handler.HandleAsync(command, playerState, playerId.ToString());
+        var result = await handler.HandleAsync(command, playerState, playerId.ToString("N"));
 
         // Assert
         Assert.NotNull(result);
@@ -107,14 +107,14 @@ public class UnlockAchievementCmdHdlrTsts
         var unlockedAtUtc = DateTime.UtcNow;
         var command = new UnlockAchievementCmd(Guid.NewGuid(), achievementId, unlockedAtUtc); // Mismatched PlayerId
         var handler = new UnlockAchievementCmdHdlr(validatorMock.Object);
-        var playerState = new PlayerState { IsInitialized = true, PlayerId = playerId };
+        var playerState = new PlayerState { IsInitialized = true, PlayerId = playerId.ToString("N") };
 
         validatorMock
             .Setup(v => v.ValidateAsync(command, default))
             .ReturnsAsync(new ValidationResult());
 
         // Act
-        var result = await handler.HandleAsync(command, playerState, playerId.ToString());
+        var result = await handler.HandleAsync(command, playerState, playerId.ToString("N"));
 
         // Assert
         Assert.NotNull(result);
@@ -132,17 +132,17 @@ public class UnlockAchievementCmdHdlrTsts
         var unlockedAtUtc = DateTime.UtcNow;
         var command = new UnlockAchievementCmd(playerId, achievementId, unlockedAtUtc);
         var handler = new UnlockAchievementCmdHdlr(validatorMock.Object);
-        var playerState = new PlayerState { IsInitialized = true, PlayerId = playerId };
+        var playerState = new PlayerState { IsInitialized = true, PlayerId = playerId.ToString("N") };
 
         validatorMock
             .Setup(v => v.ValidateAsync(command, default))
-            .ReturnsAsync(new ValidationResult(new List<ValidationFailure>
-            {
+            .ReturnsAsync(new ValidationResult(
+            [
                 new ValidationFailure("AchievementId", "Achievement ID cannot be empty.")
-            }));
+            ]));
 
         // Act
-        var result = await handler.HandleAsync(command, playerState, playerId.ToString());
+        var result = await handler.HandleAsync(command, playerState, playerId.ToString("N"));
 
         // Assert
         Assert.NotNull(result);

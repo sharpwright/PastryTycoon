@@ -22,7 +22,7 @@ public class TryDiscoverRecipeCmdHdlrTests
         // Initialize any required services or mocks here
         recipeRepositoryMock = new Mock<IRecipeRepository>();
         validatorMock = new Mock<IValidator<TryDiscoverRecipeCmd>>();
-        playerState.PlayerId = playerId;
+        playerState.PlayerId = playerId.ToString("N");
         playerState.IsInitialized = true;
     }
 
@@ -50,7 +50,7 @@ public class TryDiscoverRecipeCmdHdlrTests
         );
 
         // Act
-        var result = await handler.HandleAsync(command, playerState, playerId.ToString());
+        var result = await handler.HandleAsync(command, playerState, playerId.ToString("N"));
 
         // Assert
         Assert.NotNull(result);
@@ -86,7 +86,7 @@ public class TryDiscoverRecipeCmdHdlrTests
         );
 
         // Act
-        var result = await handler.HandleAsync(command, playerState, playerId.ToString());
+        var result = await handler.HandleAsync(command, playerState, playerId.ToString("N"));
 
         // Assert
         Assert.NotNull(result);
@@ -114,7 +114,7 @@ public class TryDiscoverRecipeCmdHdlrTests
         );
 
         // Act
-        var result = await handler.HandleAsync(command, playerState, playerId.ToString());
+        var result = await handler.HandleAsync(command, playerState, playerId.ToString("N"));
 
         // Assert
         Assert.NotNull(result);
@@ -141,7 +141,7 @@ public class TryDiscoverRecipeCmdHdlrTests
         );
 
         // Act
-        var result = await handler.HandleAsync(command, playerState, playerId.ToString());
+        var result = await handler.HandleAsync(command, playerState, playerId.ToString("N"));
 
         // Assert
         Assert.NotNull(result);

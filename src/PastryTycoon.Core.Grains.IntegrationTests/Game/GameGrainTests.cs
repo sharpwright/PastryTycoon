@@ -51,8 +51,8 @@ public class GameGrainIntegrationTests(ClusterFixture fixture)
         var gameStatistics = await gameGrain.GetGameStatisticsAsync();
 
         // Assert
-        Assert.Equal(gameId, gameStatistics.GameId);
-        Assert.Equal(playerId, gameStatistics.PlayerId);
+        Assert.Equal(gameId.ToString("N"), gameStatistics.GameId);
+        Assert.Equal(playerId.ToString("N"), gameStatistics.PlayerId);
         Assert.Equal(recipeIds.Count, gameStatistics.TotalRecipes);
     }    
 
@@ -77,7 +77,7 @@ public class GameGrainIntegrationTests(ClusterFixture fixture)
         Assert.True(received, "No events received within timeout.");
         Assert.Single(events, evt =>
             evt is GameStateInitializedEvent e &&
-            e.GameId == gameId);
+            e.GameId == gameId.ToString("N"));
     }
 
     [Fact]
@@ -119,8 +119,8 @@ public class GameGrainIntegrationTests(ClusterFixture fixture)
         gameStatistics = await gameGrain.GetGameStatisticsAsync();
 
         // Assert
-        Assert.Equal(gameId, gameStatistics.GameId);
-        Assert.Equal(playerId, gameStatistics.PlayerId);
+        Assert.Equal(gameId.ToString("N"), gameStatistics.GameId);
+        Assert.Equal(playerId.ToString("N"), gameStatistics.PlayerId);
         Assert.True(lastUpdated < gameStatistics.LastUpdatedUtc,
             "Last updated time should be updated after the UpdateGame command.");
     }
@@ -141,8 +141,8 @@ public class GameGrainIntegrationTests(ClusterFixture fixture)
 
         // Assert
         Assert.NotNull(gameStatistics);
-        Assert.Equal(gameId, gameStatistics.GameId);
-        Assert.Equal(playerId, gameStatistics.PlayerId);
+        Assert.Equal(gameId.ToString("N"), gameStatistics.GameId);
+        Assert.Equal(playerId.ToString("N"), gameStatistics.PlayerId);
         Assert.Equal(recipeIds.Count, gameStatistics.TotalRecipes);
     }
 

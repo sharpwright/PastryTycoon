@@ -9,8 +9,8 @@ namespace PastryTycoon.Core.Grains.Game;
 [GenerateSerializer]
 public class GameState
 {
-    [Id(0)] public Guid GameId { get; set; }
-    [Id(1)] public Guid PlayerId { get; set; }
+    [Id(0)] public string GameId { get; set; } = string.Empty;
+    [Id(1)] public string PlayerId { get; set; } = string.Empty;
     [Id(2)] public IImmutableList<string>? DiscoverableRecipeIds { get; set; }
     [Id(3)] public DateTime StartTimeUtc { get; set; }
     [Id(4)] public DateTime LastUpdatedAtTimeUtc { get; set; }

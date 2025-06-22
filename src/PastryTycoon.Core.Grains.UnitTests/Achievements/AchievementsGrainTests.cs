@@ -64,7 +64,7 @@ public class AchievementsGrainTests : TestKitBase
         Silo.AddProbe(identity => player);
         Silo.AddService(loggerMock.Object);
         Silo.AddPersistentState(OrleansConstants.GRAIN_STATE_ACHIEVEMENTS, OrleansConstants.GRAIN_STATE_ACHIEVEMENTS, grainState);
-        var grain = await Silo.CreateGrainAsync<AchievementsGrain>(playerEvent.PlayerId);
+        var grain = await Silo.CreateGrainAsync<AchievementsGrain>(Guid.Parse(playerEvent.PlayerId));
 
         // Act
         await grain.OnNextAsync(playerEvent);
@@ -81,7 +81,7 @@ public class AchievementsGrainTests : TestKitBase
         // Verify behaviour
         player.Verify(
             x => x.UnlockAchievementAsync(It.Is<UnlockAchievementCmd>(cmd => 
-                cmd.PlayerId == playerEvent.PlayerId &&
+                cmd.PlayerId.ToString("N") == playerEvent.PlayerId &&
                 cmd.AchievementId == expectedAchievementId &&
                 cmd.UnlockedAtUtc != default)),        
             Times.Once,

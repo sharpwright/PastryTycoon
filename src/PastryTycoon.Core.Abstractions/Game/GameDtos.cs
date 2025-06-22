@@ -13,8 +13,8 @@ namespace PastryTycoon.Core.Abstractions.Game;
 /// <param name="LastUpdatedUtc">The UTC timestamp when the game statistics were last updated.</param>
 [GenerateSerializer]
 public record GameStatisticsDto(
-    [property: Id(0)] Guid GameId,
-    [property: Id(1)] Guid PlayerId,
+    [property: Id(0)] string GameId,
+    [property: Id(1)] string PlayerId,
     [property: Id(2)] int TotalRecipes,
     [property: Id(3)] DateTime StartTimeUtc,
     [property: Id(4)] DateTime LastUpdatedUtc);

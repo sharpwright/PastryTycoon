@@ -19,7 +19,7 @@ public class FirstRecipeDiscoveredUnlockHandlerTests
     public async Task FirstRecipeDiscoveredUnlockHandler_ShouldUnlockAchievement_WhenFirstRecipeDiscovered()
     {
         // Arrange
-        var playerId = Guid.NewGuid();
+        var playerId = Guid.NewGuid().ToString();
         var recipeId = "test-recipe";
         var state = new AchievementsState()
         {
@@ -39,7 +39,7 @@ public class FirstRecipeDiscoveredUnlockHandlerTests
     public async Task FirstRecipeDiscoveredUnlockHandler_ShouldNotUnlockAchievement_WhenMoreThanOneRecipeDiscovered()
     {
         // Arrange
-        var playerId = Guid.NewGuid();
+        var playerId = Guid.NewGuid().ToString();
         var recipeId = "test-recipe";
         var state = new AchievementsState()
         {

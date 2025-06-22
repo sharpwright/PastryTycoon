@@ -81,9 +81,16 @@ public class AchievementsGrain : Grain, IAchievementsGrain,
                 if (result.IsUnlocked && result.AchievementId != null)
                 {
                     // Call player grain to add unlocked achievement to the player state.
-                    var playerGrain = GrainFactory.GetGrain<IPlayerGrain>(item.PlayerId);
+                    // TODO: Change this to post command to a Player.Commands stream instead of calling grain directly.
+                    if(!Guid.TryParse(item.PlayerId, out var playerId))
+                    {
+                        this.logger.LogError("Invalid PlayerId: {PlayerId}", item.PlayerId);
+                        continue; // Skip if PlayerId is invalid
+                    }
+
+                    var playerGrain = GrainFactory.GetGrain<IPlayerGrain>(playerId);
                     var command = new UnlockAchievementCmd(
-                        PlayerId: item.PlayerId,
+                        PlayerId: playerId,
                         AchievementId: result.AchievementId,
                         UnlockedAtUtc: DateTime.UtcNow
                     );

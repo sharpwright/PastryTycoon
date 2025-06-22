@@ -47,8 +47,8 @@ public class TryDiscoverRecipeCmdHdlr : ICommandHandler<TryDiscoverRecipeCmd, Pl
         // Perform state checks and raise an event if a new recipe is discovered
         // Check if the recipe exists and if it has not been discovered by the player
         var shouldDiscover = recipe != null &&
-                Guid.Parse(grainId) == command.PlayerId &&
-                state.PlayerId == command.PlayerId &&
+                grainId == command.PlayerId.ToString("N") &&
+                state.PlayerId == command.PlayerId.ToString("N") &&
                 !state.DiscoveredRecipes.ContainsKey(recipe.Id);
 
         if (!shouldDiscover)
@@ -60,7 +60,7 @@ public class TryDiscoverRecipeCmdHdlr : ICommandHandler<TryDiscoverRecipeCmd, Pl
         // Recipe exists and has not been discovered, so we can raise the discovery event.
         return CommandHandlerResult<PlayerEvent>.Success(
             new PlayerDiscoveredRecipeEvent(
-                command.PlayerId,
+                command.PlayerId.ToString("N"),
                 recipe!.Id,
                 DateTime.UtcNow));
     }

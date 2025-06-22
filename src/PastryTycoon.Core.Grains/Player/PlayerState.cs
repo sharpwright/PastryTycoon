@@ -9,9 +9,9 @@ namespace PastryTycoon.Core.Grains.Player;
 [GenerateSerializer]
 public class PlayerState
 {
-    [Id(0)] public Guid PlayerId { get; set; }
+    [Id(0)] public string PlayerId { get; set; } = string.Empty;
     [Id(1)] public string PlayerName { get; set; } = string.Empty;
-    [Id(2)] public Guid GameId { get; set; } 
+    [Id(2)] public string GameId { get; set; } = string.Empty;
     [Id(3)] public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
     [Id(4)] public DateTime LastActivityAtUtc { get; set; } = DateTime.UtcNow;
     [Id(5)] public bool IsInitialized { get; set; } = false;

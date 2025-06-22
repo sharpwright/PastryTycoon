@@ -27,8 +27,8 @@ public class UnlockAchievementCmdHdlr : ICommandHandler<UnlockAchievementCmd, Pl
 
         // Check if the player validity
         if (!state.IsInitialized
-            || command.PlayerId != Guid.Parse(grainId)
-            || state.PlayerId != command.PlayerId)
+            || grainId != command.PlayerId.ToString("N")
+            || state.PlayerId != command.PlayerId.ToString("N"))
         {
             return CommandHandlerResult<PlayerEvent>.Failure("Invalid player state for unlocking achievement.");
         }
@@ -41,7 +41,7 @@ public class UnlockAchievementCmdHdlr : ICommandHandler<UnlockAchievementCmd, Pl
 
         // Create an event for unlocking the achievement
         var achievementUnlockedEvent = new PlayerUnlockedAchievementEvent(
-            command.PlayerId,
+            command.PlayerId.ToString("N"),
             command.AchievementId,
             DateTime.UtcNow);
 

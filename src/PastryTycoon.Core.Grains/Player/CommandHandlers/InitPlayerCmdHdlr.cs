@@ -34,9 +34,9 @@ public class InitPlayerCmdHdlr : ICommandHandler<InitPlayerCmd, PlayerState, Pla
         // Initialize the player state with the provided command data
         return CommandHandlerResult<PlayerEvent>.Success(
             new PlayerInitializedEvent(
-                Guid.Parse(grainId),
+                grainId,
                 command.PlayerName,
-                command.GameId,
+                command.GameId.ToString("N"),
                 DateTime.UtcNow));
     }
 }

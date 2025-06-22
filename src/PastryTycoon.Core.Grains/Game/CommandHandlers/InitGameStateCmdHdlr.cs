@@ -31,8 +31,8 @@ public class InitGameStateCmdHdlr : ICommandHandler<InitGameStateCmd, GameState,
 
         // Create the event to initialize the game state.
         var evt = new GameStateInitializedEvent(
-            command.GameId,
-            command.PlayerId,
+            command.GameId.ToString("N"),
+            command.PlayerId.ToString("N"),
             command.RecipeIds,
             command.StartTimeUtc);
 

@@ -24,7 +24,7 @@ public class UpdateGameCmdHdlrTests
         // Arrange
         var gameId = Guid.NewGuid();
         var command = new UpdateGameCmd(gameId, DateTime.UtcNow);
-        var gameState = new GameState { IsInitialized = true, GameId = gameId };
+        var gameState = new GameState { IsInitialized = true, GameId = gameId.ToString("N") };
         var handler = new UpdateGameCmdHdlr(validatorMock.Object);
 
         validatorMock
@@ -32,7 +32,7 @@ public class UpdateGameCmdHdlrTests
             .ReturnsAsync(new ValidationResult());
 
         // Act
-        var result = await handler.HandleAsync(command, gameState, gameId.ToString());
+        var result = await handler.HandleAsync(command, gameState, gameId.ToString("N"));
 
         // Assert
         Assert.NotNull(result);
@@ -48,7 +48,7 @@ public class UpdateGameCmdHdlrTests
         // Arrange
         var gameId = Guid.NewGuid();
         var command = new UpdateGameCmd(gameId, DateTime.UtcNow);
-        var gameState = new GameState { IsInitialized = false, GameId = gameId };
+        var gameState = new GameState { IsInitialized = false, GameId = gameId.ToString("N") };
         var handler = new UpdateGameCmdHdlr(validatorMock.Object);
 
         validatorMock
@@ -56,7 +56,7 @@ public class UpdateGameCmdHdlrTests
             .ReturnsAsync(new ValidationResult());
 
         // Act
-        var result = await handler.HandleAsync(command, gameState, gameId.ToString());
+        var result = await handler.HandleAsync(command, gameState, gameId.ToString("N"));
 
         // Assert
         Assert.NotNull(result);
@@ -72,7 +72,7 @@ public class UpdateGameCmdHdlrTests
         // Arrange
         var gameId = Guid.Empty; // Invalid game ID
         var command = new UpdateGameCmd(gameId, DateTime.UtcNow);
-        var gameState = new GameState { IsInitialized = true, GameId = gameId };
+        var gameState = new GameState { IsInitialized = true, GameId = gameId.ToString("N") };
         var handler = new UpdateGameCmdHdlr(validatorMock.Object);
 
         var validationErrors = new List<ValidationFailure>
@@ -85,7 +85,7 @@ public class UpdateGameCmdHdlrTests
             .ReturnsAsync(new ValidationResult(validationErrors));
 
         // Act
-        var result = await handler.HandleAsync(command, gameState, gameId.ToString());
+        var result = await handler.HandleAsync(command, gameState, gameId.ToString("N"));
 
         // Assert
         Assert.NotNull(result);

@@ -26,7 +26,7 @@ public static class AchievementsTestData
     public static IEnumerable<object[]> UnlockAchievementIdForGivenEventAndState =>
     [        
         [
-            new PlayerDiscoveredRecipeEvent(PlayerId: Guid.NewGuid(), RecipeId: "test-recipe", DiscoveryTimeUtc: DateTime.UtcNow),
+            new PlayerDiscoveredRecipeEvent(PlayerId: Guid.NewGuid().ToString("N"), RecipeId: "test-recipe", DiscoveryTimeUtc: DateTime.UtcNow),
             new AchievementsState { RecipesDiscovered = 0, RareIngredientsUsed = new() },
             AchievementConstants.FIRST_RECIPE_DISCOVERED,
             (Expression<Func<AchievementsState, bool>>)(state => state.RecipesDiscovered == 1)

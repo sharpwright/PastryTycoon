@@ -54,8 +54,8 @@ namespace PastryTycoon.Core.Grains.UnitTests.Game
         public async Task HandleGameStartedEvent_ShouldLogInformation()
         {
             // Arrange
-            var gameId = Guid.NewGuid();
-            var playerId = Guid.NewGuid();
+            var gameId = Guid.NewGuid().ToString();
+            var playerId = Guid.NewGuid().ToString();
             var recipeIds = new List<string> { "test-1-recipe", "test-2-recipe" };            
             var evt = new GameStateInitializedEvent(gameId, playerId, recipeIds, DateTime.UtcNow);
 
@@ -77,7 +77,7 @@ namespace PastryTycoon.Core.Grains.UnitTests.Game
         public async Task HandleGameUpdatedEvent_ShouldLogInformation()
         {
             // Arrange
-            var evt = new GameUpdatedEvent(GameId: Guid.NewGuid(), UpdateTimeUtc: DateTime.UtcNow);
+            var evt = new GameUpdatedEvent(GameId: Guid.NewGuid().ToString(), UpdateTimeUtc: DateTime.UtcNow);
 
             // Act
             await grain.HandleGameUpdatedEventAsync(evt);
