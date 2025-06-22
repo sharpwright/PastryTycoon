@@ -8,5 +8,5 @@ namespace PastryTycoon.Core.Abstractions.Achievements;
 /// </summary>
 public interface IAchievementsGrain : IGrainWithGuidKey
 {
-
+    public Task EnsureActivatedAsync();
 }

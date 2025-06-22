@@ -16,5 +16,6 @@ public static class OrleansConstants
     public const string STREAM_PROVIDER_NAME = "StreamProvider";
     public const string STREAM_PUBSUB_STORE = "PubSubStore";
     public const string STREAM_NAMESPACE_GAME_EVENTS = "Game.Events";
+    public const string STREAM_NAMESPACE_PLAYER_COMMANDS = "Player.Commands";
     public const string STREAM_NAMESPACE_PLAYER_EVENTS = "Player.Events";
 }

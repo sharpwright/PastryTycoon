@@ -21,10 +21,11 @@ public class UnlockAchievementCmdHdlrTsts
     public async Task Handle_ShouldUnlockAchievement_WhenValidCommand()
     {
         // Arrange
+        var unlockCmdId = Guid.NewGuid();
         var playerId = Guid.NewGuid();
         var achievementId = "test-achievement";
         var unlockedAtUtc = DateTime.UtcNow;
-        var command = new UnlockAchievementCmd(playerId, achievementId, unlockedAtUtc);
+        var command = new UnlockAchievementCmd(unlockCmdId, playerId, achievementId, unlockedAtUtc);
         var handler = new UnlockAchievementCmdHdlr(validatorMock.Object);
         var playerState = new PlayerState { IsInitialized = true, PlayerId = playerId };
 
@@ -47,10 +48,11 @@ public class UnlockAchievementCmdHdlrTsts
     public async Task Handle_ShouldReturnFailure_WhenAchievementAlreadyUnlocked()
     {
         // Arrange
+        var unlockCmdId = Guid.NewGuid();
         var playerId = Guid.NewGuid();
         var achievementId = "test-achievement";
         var unlockedAtUtc = DateTime.UtcNow;
-        var command = new UnlockAchievementCmd(playerId, achievementId, unlockedAtUtc);
+        var command = new UnlockAchievementCmd(unlockCmdId, playerId, achievementId, unlockedAtUtc);
         var handler = new UnlockAchievementCmdHdlr(validatorMock.Object);
         var playerState = new PlayerState
         {
@@ -77,10 +79,11 @@ public class UnlockAchievementCmdHdlrTsts
     public async Task Handle_ShouldReturnFailure_WhenPlayerStateInvalid()
     {
         // Arrange
+        var unlockCmdId = Guid.NewGuid();
         var playerId = Guid.NewGuid();
         var achievementId = "test-achievement";
         var unlockedAtUtc = DateTime.UtcNow;
-        var command = new UnlockAchievementCmd(playerId, achievementId, unlockedAtUtc);
+        var command = new UnlockAchievementCmd(unlockCmdId, playerId, achievementId, unlockedAtUtc);
         var handler = new UnlockAchievementCmdHdlr(validatorMock.Object);
         var playerState = new PlayerState { IsInitialized = false };
 
@@ -102,10 +105,11 @@ public class UnlockAchievementCmdHdlrTsts
     public async Task Handle_ShouldReturnFailure_WhenPlayerIdMismatch()
     {
         // Arrange
+        var unlockCmdId = Guid.NewGuid();
         var playerId = Guid.NewGuid();
         var achievementId = "test-achievement";
         var unlockedAtUtc = DateTime.UtcNow;
-        var command = new UnlockAchievementCmd(Guid.NewGuid(), achievementId, unlockedAtUtc); // Mismatched PlayerId
+        var command = new UnlockAchievementCmd(unlockCmdId, Guid.NewGuid(), achievementId, unlockedAtUtc); // Mismatched PlayerId
         var handler = new UnlockAchievementCmdHdlr(validatorMock.Object);
         var playerState = new PlayerState { IsInitialized = true, PlayerId = playerId };
 
@@ -127,10 +131,11 @@ public class UnlockAchievementCmdHdlrTsts
     public async Task Handle_ShouldReturnFailure_WhenValidationFails()
     {
         // Arrange
+        var unlockCmdId = Guid.NewGuid();
         var playerId = Guid.NewGuid();
         var achievementId = string.Empty; // Invalid achievement ID
         var unlockedAtUtc = DateTime.UtcNow;
-        var command = new UnlockAchievementCmd(playerId, achievementId, unlockedAtUtc);
+        var command = new UnlockAchievementCmd(unlockCmdId, playerId, achievementId, unlockedAtUtc);
         var handler = new UnlockAchievementCmdHdlr(validatorMock.Object);
         var playerState = new PlayerState { IsInitialized = true, PlayerId = playerId };
 

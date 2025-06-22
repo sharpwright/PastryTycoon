@@ -19,9 +19,10 @@ public class InitPlayerCmdValTests
     public void Validate_ShouldReturnSuccess_WhenCommandIsValid()
     {
         // Arrange
+        var cmdId = Guid.NewGuid();
         var playerName = "Test Player";
         var gameId = Guid.NewGuid();
-        var command = new InitPlayerCmd(playerName, gameId);
+        var command = new InitPlayerCmd(cmdId, playerName, gameId);
 
         // Act
         var result = validator.Validate(command);
@@ -35,9 +36,10 @@ public class InitPlayerCmdValTests
     public void Validate_ShouldReturnFailure_WhenPlayerNameIsEmpty()
     {
         // Arrange
+        var cmdId = Guid.NewGuid(); 
         var playerName = string.Empty;
         var gameId = Guid.NewGuid();
-        var command = new InitPlayerCmd(playerName, gameId);
+        var command = new InitPlayerCmd(cmdId, playerName, gameId);
 
         // Act
         var result = validator.Validate(command);
@@ -52,9 +54,10 @@ public class InitPlayerCmdValTests
     public void Validate_ShouldReturnFailure_WhenPlayerNameExceedsMaxLength()
     {
         // Arrange
+        var cmdId = Guid.NewGuid();
         var playerName = new string('A', 51); // 51 characters long
         var gameId = Guid.NewGuid();
-        var command = new InitPlayerCmd(playerName, gameId);
+        var command = new InitPlayerCmd(cmdId, playerName, gameId);
 
         // Act
         var result = validator.Validate(command);
@@ -69,9 +72,10 @@ public class InitPlayerCmdValTests
     public void Validate_ShouldReturnFailure_WhenGameIdIsEmpty()
     {
         // Arrange
+        var cmdId = Guid.NewGuid();
         var playerName = "Test Player";
         var gameId = Guid.Empty;
-        var command = new InitPlayerCmd(playerName, gameId);
+        var command = new InitPlayerCmd(cmdId, playerName, gameId);
 
         // Act
         var result = validator.Validate(command);

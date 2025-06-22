@@ -39,6 +39,8 @@ public class AchievementsGrain : Grain, IAchievementsGrain,
         this.state = state;
     }
 
+    public Task EnsureActivatedAsync() => Task.CompletedTask;
+
     /// <summary>
     /// Handles the next player event by updating the achievements state and checking for unlock conditions.
     /// </summary>
@@ -76,19 +78,28 @@ public class AchievementsGrain : Grain, IAchievementsGrain,
         foreach (var handler in this.unlockHandlers)
         {
             try
-            {
+            {                
                 var result = await handler.CheckUnlockConditionAsync(item, this.state.State);
                 if (result.IsUnlocked && result.AchievementId != null)
                 {
-                    // Call player grain to add unlocked achievement to the player state.
-                    var playerGrain = GrainFactory.GetGrain<IPlayerGrain>(item.PlayerId);
+                    this.logger.LogInformation("Achievement unlocked: {AchievementId}", result.AchievementId);
+
                     var command = new UnlockAchievementCmd(
+                        CommandId: Guid.NewGuid(),
                         PlayerId: item.PlayerId,
                         AchievementId: result.AchievementId,
                         UnlockedAtUtc: DateTime.UtcNow
                     );
-                    await playerGrain.UnlockAchievementAsync(command);
-                    this.logger.LogInformation("Achievement unlocked: {AchievementId}", result.AchievementId);
+
+                    var streamProvider = this.GetStreamProvider(OrleansConstants.STREAM_PROVIDER_NAME);
+                    var playerCommandStream = streamProvider.GetStream<UnlockAchievementCmd>(
+                        OrleansConstants.STREAM_NAMESPACE_PLAYER_COMMANDS,
+                        item.PlayerId
+                    );
+
+                    this.logger.LogInformation("Sending command to player command stream: {CommandType}", command.GetType().Name);
+                    await playerCommandStream.OnNextAsync(command);
+                    
                 }
             }
             catch (Exception ex)

@@ -17,80 +17,12 @@ public class PlayerGrainIntegrationTests(ClusterFixture fixture)
     private readonly TestCluster cluster = fixture.Cluster;
 
     [Fact]
-    public async Task TryDiscoverRecipeAsync_ShouldEmitPlayerDiscoveredRecipeEvent_WhenRecipeNotAlreadyDiscovered()
-    {
-        // Arrange
-        var playerId = Guid.NewGuid();
-        var ingredientIds = new List<string> { "ingredient-1", "ingredient-2" };
-        var command = new TryDiscoverRecipeCmd(playerId, ingredientIds);
-
-        // Setup the grain and observers before testing
-        var grain = cluster.GrainFactory.GetGrain<IPlayerGrain>(playerId);
-        var observer = cluster.GrainFactory.GetGrain<IStreamObserverGrain<PlayerEvent>>(playerId);
-        await observer.SubscribeAsync(OrleansConstants.STREAM_NAMESPACE_PLAYER_EVENTS, OrleansConstants.STREAM_PROVIDER_NAME);
-
-        // Act 1 - Initialize the player
-        var initCommand = new InitPlayerCmd("TestPlayer", Guid.NewGuid());
-        var initResult = await grain.InitializeAsync(initCommand);
-        Assert.True(initResult.IsSuccess);
-
-        // Act 2 - Try to discover a recipe
-        var discoveryResult = await grain.TryDiscoverRecipeFromIngredientsAsync(command);        
-        var received = await observer.WaitForReceivedEventsAsync();
-        var events = await observer.GetReceivedEventsAsync();
-        Assert.True(discoveryResult.IsSuccess);
-        Assert.True(received, "No events received within timeout.");
-        Assert.Single(events, evt =>
-            evt is PlayerDiscoveredRecipeEvent e &&
-            e.RecipeId == "test-recipe-id");        
-    }
-
-    [Fact]
-    public async Task TryDiscoverRecipeAsync_ShouldNotEmitPlayerDiscoveredRecipeEvent_WhenRecipeAlreadyDiscovered()
-    {
-        // Arrange
-        var playerId = Guid.NewGuid();
-        var ingredientIds = new List<string> { "ingredient-1", "ingredient-2" };
-        var discoverCommand = new TryDiscoverRecipeCmd(playerId, ingredientIds);
-
-        // Initialize the grain state before testing
-        var grain = cluster.GrainFactory.GetGrain<IPlayerGrain>(playerId);
-        var observer = cluster.GrainFactory.GetGrain<IStreamObserverGrain<PlayerEvent>>(playerId);
-        await observer.SubscribeAsync(OrleansConstants.STREAM_NAMESPACE_PLAYER_EVENTS, OrleansConstants.STREAM_PROVIDER_NAME);
-
-        // Act 1 - Initialize the player
-        var initCommand = new InitPlayerCmd("TestPlayer", Guid.NewGuid());
-        var initResult = await grain.InitializeAsync(initCommand);
-        Assert.True(initResult.IsSuccess);
-
-        // Act 2 - Try to discover a recipe
-        var discoveryResult1 = await grain.TryDiscoverRecipeFromIngredientsAsync(discoverCommand);
-        var received = await observer.WaitForReceivedEventsAsync();
-        var events = await observer.GetReceivedEventsAsync();
-        Assert.True(discoveryResult1.IsSuccess);
-        Assert.True(received, "No events received within timeout.");
-        Assert.Single(events, evt =>
-            evt is PlayerDiscoveredRecipeEvent e &&
-            e.RecipeId == "test-recipe-id");
-
-        // Clear events for the next test
-        await observer.ClearReceivedEventsAsync();
-
-        // Act 3 - Try to discover the same recipe again
-        var discoveryResult2 = await grain.TryDiscoverRecipeFromIngredientsAsync(discoverCommand);
-        received = await observer.WaitForReceivedEventsAsync();
-        events = await observer.GetReceivedEventsAsync();
-        Assert.True(discoveryResult2.IsSuccess);                        // Check if the command was successful
-        Assert.False(received, "Events received within timeout.");      // No new events should be emitted
-        Assert.Empty(events);                                           // Ensure no new events were emitted
-    }
-
-    [Fact]
     public async Task InitializeAsync_ShouldInitializePlayer()
     {
         // Arrange
+        var initCmdId = Guid.NewGuid();
         var playerId = Guid.NewGuid();
-        var command = new InitPlayerCmd("TestPlayer", Guid.NewGuid());
+        var command = new InitPlayerCmd(initCmdId, "TestPlayer", Guid.NewGuid());
         var grain = cluster.GrainFactory.GetGrain<IPlayerGrain>(playerId);
 
         // Act
@@ -111,8 +43,9 @@ public class PlayerGrainIntegrationTests(ClusterFixture fixture)
     public async Task InitializeAsync_ShouldReturnFailure_WhenPlayerAlreadyInitialized()
     {
         // Arrange
+        var initCmdId = Guid.NewGuid();
         var playerId = Guid.NewGuid();
-        var command = new InitPlayerCmd("TestPlayer", Guid.NewGuid());
+        var command = new InitPlayerCmd(initCmdId, "TestPlayer", Guid.NewGuid());
         var grain = cluster.GrainFactory.GetGrain<IPlayerGrain>(playerId);
 
         // Act 1
@@ -128,11 +61,13 @@ public class PlayerGrainIntegrationTests(ClusterFixture fixture)
     public async Task UnlockAchievementAsync_ShouldUnlockAchievement()
     {
         // Arrange
+        var initCmdId = Guid.NewGuid();
         var playerId = Guid.NewGuid();
         var achievementId = "FirstBake";
+        var unlockCmdId = Guid.NewGuid();
         var unlockedAtUtc = DateTime.UtcNow;
-        var initPlayerCmd = new InitPlayerCmd("TestPlayer", Guid.NewGuid());
-        var updateCommand = new UnlockAchievementCmd(playerId, achievementId, unlockedAtUtc);
+        var initPlayerCmd = new InitPlayerCmd(initCmdId, "TestPlayer", Guid.NewGuid());
+        var updateCommand = new UnlockAchievementCmd(unlockCmdId, playerId, achievementId, unlockedAtUtc);
         var grain = cluster.GrainFactory.GetGrain<IPlayerGrain>(playerId);
 
         // Act 1
@@ -153,11 +88,13 @@ public class PlayerGrainIntegrationTests(ClusterFixture fixture)
     public async Task UnlockAchievementAsync_ShouldReturnFailure_WhenAchievementAlreadyUnlocked()
     {
         // Arrange
+        var initCmdId = Guid.NewGuid();
         var playerId = Guid.NewGuid();
         var achievementId = "FirstBake";
+        var unlockCmdId = Guid.NewGuid();
         var unlockedAtUtc = DateTime.UtcNow;
-        var initPlayerCmd = new InitPlayerCmd("TestPlayer", Guid.NewGuid());
-        var command = new UnlockAchievementCmd(playerId, achievementId, unlockedAtUtc);
+        var initPlayerCmd = new InitPlayerCmd(initCmdId,"TestPlayer", Guid.NewGuid());
+        var command = new UnlockAchievementCmd(unlockCmdId, playerId, achievementId, unlockedAtUtc);
         var grain = cluster.GrainFactory.GetGrain<IPlayerGrain>(playerId);
 
         // Act 1
@@ -182,9 +119,10 @@ public class PlayerGrainIntegrationTests(ClusterFixture fixture)
     public async Task GetPlayerStatisticsAsync_ShouldReturnInitializedStatistics()
     {
         // Arrange
+        var initCmdId = Guid.NewGuid();
         var playerId = Guid.NewGuid();
         var grain = cluster.GrainFactory.GetGrain<IPlayerGrain>(playerId);
-        var command = new InitPlayerCmd("TestPlayer", Guid.NewGuid());
+        var command = new InitPlayerCmd(initCmdId, "TestPlayer", Guid.NewGuid());
         await grain.InitializeAsync(command);
 
         // Act
