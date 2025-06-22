@@ -12,10 +12,9 @@ namespace PastryTycoon.Core.Grains.IntegrationTests.Player;
 /// Integration tests for the PlayerGrain.
 /// </summary>
 [Collection(ClusterCollection.Name)]
-public class PlayerGrainIntegrationTests(ClusterFixture fixture, ITestOutputHelper output)
+public class PlayerGrainIntegrationTests(ClusterFixture fixture)
 {
     private readonly TestCluster cluster = fixture.Cluster;
-    private readonly ITestOutputHelper output = output;
 
     [Fact]
     public async Task TryDiscoverRecipeAsync_ShouldEmitPlayerDiscoveredRecipeEvent_WhenRecipeNotAlreadyDiscovered()

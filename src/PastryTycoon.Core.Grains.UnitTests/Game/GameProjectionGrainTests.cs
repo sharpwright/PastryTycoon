@@ -13,12 +13,12 @@ namespace PastryTycoon.Core.Grains.UnitTests.Game
 {
     public class GameProjectionGrainTests
     {
-        private readonly Mock<ILogger<IGameProjectionGrain>> loggerMock;
+        private readonly Mock<ILogger<GameProjectionGrain>> loggerMock;
         private readonly GameProjectionGrain grain;
 
         public GameProjectionGrainTests()
         {
-            loggerMock = new Mock<ILogger<IGameProjectionGrain>>();
+            loggerMock = new Mock<ILogger<GameProjectionGrain>>();
             grain = new GameProjectionGrain(loggerMock.Object);
         }
 

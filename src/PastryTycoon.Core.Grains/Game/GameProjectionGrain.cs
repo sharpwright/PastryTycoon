@@ -26,7 +26,7 @@ public class GameProjectionGrain : Grain,
 {
     private readonly ILogger<IGameProjectionGrain> logger;
 
-    public GameProjectionGrain(ILogger<IGameProjectionGrain> logger)
+    public GameProjectionGrain(ILogger<GameProjectionGrain> logger)
     {
         this.logger = logger;
     }
@@ -78,7 +78,7 @@ public class GameProjectionGrain : Grain,
     public Task HandleGameInitiliazedEventAsync(GameStateInitializedEvent item, StreamSequenceToken? token = null)
     {
         // TODO: Handle the GameStartedEvent here.
-        logger.LogInformation($"Game started at {item.StartTimeUtc}");
+        logger.LogInformation("Game started at {StartTimeUtc}", item.StartTimeUtc);
         return Task.CompletedTask;
     }
 
@@ -91,7 +91,7 @@ public class GameProjectionGrain : Grain,
     public Task HandleGameUpdatedEventAsync(GameUpdatedEvent item, StreamSequenceToken? token = null)
     {
         // TODO: Handle the GameUpdatedEvent here
-        logger.LogInformation($"Game updated at {item.UpdateTimeUtc}");
+        logger.LogInformation("Game updated at {UpdateTimeUtc}", item.UpdateTimeUtc);
         return Task.CompletedTask;
     }
 
@@ -103,7 +103,7 @@ public class GameProjectionGrain : Grain,
     public Task OnErrorAsync(Exception ex)
     {
         // TODO: Handle error
-        logger.LogError(ex, $"Error: {ex.Message}");
+        logger.LogError(ex, "Error: {ErrorMessage}", ex.Message);
         return Task.CompletedTask;
     }
 }
