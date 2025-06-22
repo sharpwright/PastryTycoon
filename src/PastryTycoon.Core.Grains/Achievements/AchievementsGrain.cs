@@ -32,7 +32,7 @@ public class AchievementsGrain : Grain, IAchievementsGrain,
     /// </summary>
     /// <param name="logger"></param>
     /// <param name="state"></param>
-    public AchievementsGrain(ILogger<IAchievementsGrain> logger,
+    public AchievementsGrain(ILogger<AchievementsGrain> logger,
         [PersistentState(OrleansConstants.GRAIN_STATE_ACHIEVEMENTS, OrleansConstants.GRAIN_STATE_ACHIEVEMENTS)] IPersistentState<AchievementsState> state)
     {
         this.logger = logger;
@@ -51,7 +51,7 @@ public class AchievementsGrain : Grain, IAchievementsGrain,
 
         switch (item)
         {
-            case PlayerDiscoveredRecipeEvent e:
+            case PlayerDiscoveredRecipeEvent:
                 this.state.State.RecipesDiscovered++;
                 break;
             default:

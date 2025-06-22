@@ -32,19 +32,6 @@ public class StreamObserverGrain<TEvent> : Grain, IStreamObserverGrain<TEvent>, 
         receivedEvents.Clear();
         return Task.CompletedTask;
     }
-
-    // public async Task<bool> WaitForReceivedEventsAsync(int timeoutMs = 2000, int pollIntervalMs = 50)
-    // {     
-    //     var start = DateTime.UtcNow;
-    //     while ((DateTime.UtcNow - start).TotalMilliseconds < timeoutMs)
-    //     {
-    //         logMessages.Add($"Waiting for events... Received count: {receivedEvents!.Count}");
-    //         if (receivedEvents != null && receivedEvents.Count > 0)
-    //             return true;
-    //         await Task.Delay(pollIntervalMs);
-    //     }
-    //     return false;
-    // }
     
     public Task OnNextAsync(TEvent item, StreamSequenceToken? token = null)
     {

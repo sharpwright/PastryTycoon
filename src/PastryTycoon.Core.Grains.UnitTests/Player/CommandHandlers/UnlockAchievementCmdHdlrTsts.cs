@@ -33,7 +33,7 @@ public class UnlockAchievementCmdHdlrTsts
             .ReturnsAsync(new ValidationResult());
 
         // Act
-        var result = await handler.HandleAsync(command, playerState, playerId);
+        var result = await handler.HandleAsync(command, playerState, playerId.ToString());
 
         // Assert
         Assert.NotNull(result);
@@ -64,7 +64,7 @@ public class UnlockAchievementCmdHdlrTsts
             .ReturnsAsync(new ValidationResult());
 
         // Act
-        var result = await handler.HandleAsync(command, playerState, playerId);
+        var result = await handler.HandleAsync(command, playerState, playerId.ToString());
 
         // Assert
         Assert.NotNull(result);
@@ -89,7 +89,7 @@ public class UnlockAchievementCmdHdlrTsts
             .ReturnsAsync(new ValidationResult());
 
         // Act
-        var result = await handler.HandleAsync(command, playerState, playerId);
+        var result = await handler.HandleAsync(command, playerState, playerId.ToString());
 
         // Assert
         Assert.NotNull(result);
@@ -114,7 +114,7 @@ public class UnlockAchievementCmdHdlrTsts
             .ReturnsAsync(new ValidationResult());
 
         // Act
-        var result = await handler.HandleAsync(command, playerState, playerId);
+        var result = await handler.HandleAsync(command, playerState, playerId.ToString());
 
         // Assert
         Assert.NotNull(result);
@@ -142,7 +142,7 @@ public class UnlockAchievementCmdHdlrTsts
             }));
 
         // Act
-        var result = await handler.HandleAsync(command, playerState, playerId);
+        var result = await handler.HandleAsync(command, playerState, playerId.ToString());
 
         // Assert
         Assert.NotNull(result);

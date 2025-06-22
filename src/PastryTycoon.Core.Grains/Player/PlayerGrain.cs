@@ -18,14 +18,14 @@ namespace PastryTycoon.Core.Grains.Player;
 public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrain
 {
     private IAsyncStream<PlayerEvent>? playerEventStream;    
-    private readonly ICommandHandler<InitPlayerCmd, PlayerState, Guid, PlayerEvent> initializePlayerHandler;
-    private readonly ICommandHandler<TryDiscoverRecipeCmd, PlayerState, Guid, PlayerEvent> recipeDiscoveryHandler;
-    private readonly ICommandHandler<UnlockAchievementCmd, PlayerState, Guid, PlayerEvent> unlockAchievementHandler;
+    private readonly ICommandHandler<InitPlayerCmd, PlayerState, PlayerEvent> initializePlayerHandler;
+    private readonly ICommandHandler<TryDiscoverRecipeCmd, PlayerState, PlayerEvent> recipeDiscoveryHandler;
+    private readonly ICommandHandler<UnlockAchievementCmd, PlayerState, PlayerEvent> unlockAchievementHandler;
 
     public PlayerGrain(
-        ICommandHandler<InitPlayerCmd, PlayerState, Guid, PlayerEvent> initializePlayerHandler,
-        ICommandHandler<TryDiscoverRecipeCmd, PlayerState, Guid, PlayerEvent> recipeDiscoveryHandler,
-        ICommandHandler<UnlockAchievementCmd, PlayerState, Guid, PlayerEvent> unlockAchievementHandler)
+        ICommandHandler<InitPlayerCmd, PlayerState, PlayerEvent> initializePlayerHandler,
+        ICommandHandler<TryDiscoverRecipeCmd, PlayerState, PlayerEvent> recipeDiscoveryHandler,
+        ICommandHandler<UnlockAchievementCmd, PlayerState, PlayerEvent> unlockAchievementHandler)
     {
         this.initializePlayerHandler = initializePlayerHandler;
         this.recipeDiscoveryHandler = recipeDiscoveryHandler;
@@ -40,7 +40,7 @@ public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrai
     public override async Task OnActivateAsync(CancellationToken cancellationToken)
     {
         var streamProvider = this.GetStreamProvider(OrleansConstants.AZURE_QUEUE_STREAM_PROVIDER);
-        playerEventStream = streamProvider.GetStream<PlayerEvent>(OrleansConstants.STREAM_NAMESPACE_PLAYER_EVENTS, this.GetPrimaryKey());
+        playerEventStream = streamProvider.GetStream<PlayerEvent>(OrleansConstants.STREAM_NAMESPACE_PLAYER_EVENTS, this.GetPrimaryKeyString());
         await base.OnActivateAsync(cancellationToken);
     }
 
@@ -52,7 +52,7 @@ public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrai
     /// <exception cref="InvalidOperationException">Thrown if the player is already initialized.</exception>
     public async Task<CommandResult> InitializeAsync(InitPlayerCmd command)
     {
-        var handlerResult = await initializePlayerHandler.HandleAsync(command, State, this.GetPrimaryKey());
+        var handlerResult = await initializePlayerHandler.HandleAsync(command, State, this.GetPrimaryKeyString());
 
         if (!handlerResult.IsSuccess)
         {
@@ -77,7 +77,7 @@ public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrai
     public async Task<CommandResult> TryDiscoverRecipeFromIngredientsAsync(TryDiscoverRecipeCmd command)
     {
         // Use the handler to process the command and get a potential event
-        var handlerResult = await recipeDiscoveryHandler.HandleAsync(command, State, this.GetPrimaryKey());
+        var handlerResult = await recipeDiscoveryHandler.HandleAsync(command, State, this.GetPrimaryKeyString());
 
         if (!handlerResult.IsSuccess)
         {
@@ -109,7 +109,7 @@ public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrai
     /// <returns></returns>
     public virtual async Task<CommandResult> UnlockAchievementAsync(UnlockAchievementCmd command)
     {
-        var handlerResult = await unlockAchievementHandler.HandleAsync(command, State, this.GetPrimaryKey());
+        var handlerResult = await unlockAchievementHandler.HandleAsync(command, State, this.GetPrimaryKeyString());
 
         if (!handlerResult.IsSuccess)
         {

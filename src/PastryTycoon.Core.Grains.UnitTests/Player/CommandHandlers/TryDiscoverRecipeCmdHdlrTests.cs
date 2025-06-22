@@ -50,7 +50,7 @@ public class TryDiscoverRecipeCmdHdlrTests
         );
 
         // Act
-        var result = await handler.HandleAsync(command, playerState, playerId);
+        var result = await handler.HandleAsync(command, playerState, playerId.ToString());
 
         // Assert
         Assert.NotNull(result);
@@ -86,7 +86,7 @@ public class TryDiscoverRecipeCmdHdlrTests
         );
 
         // Act
-        var result = await handler.HandleAsync(command, playerState, playerId);
+        var result = await handler.HandleAsync(command, playerState, playerId.ToString());
 
         // Assert
         Assert.NotNull(result);
@@ -114,7 +114,7 @@ public class TryDiscoverRecipeCmdHdlrTests
         );
 
         // Act
-        var result = await handler.HandleAsync(command, playerState, playerId);
+        var result = await handler.HandleAsync(command, playerState, playerId.ToString());
 
         // Assert
         Assert.NotNull(result);
@@ -141,7 +141,7 @@ public class TryDiscoverRecipeCmdHdlrTests
         );
 
         // Act
-        var result = await handler.HandleAsync(command, playerState, playerId);
+        var result = await handler.HandleAsync(command, playerState, playerId.ToString());
 
         // Assert
         Assert.NotNull(result);

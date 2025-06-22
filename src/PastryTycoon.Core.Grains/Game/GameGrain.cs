@@ -19,12 +19,12 @@ namespace PastryTycoon.Core.Grains.Game;
 public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
 {
     private IAsyncStream<GameEvent>? gameEventStream;
-    private readonly ICommandHandler<InitGameStateCmd, GameState, Guid, GameEvent> initGameHandler;
-    private readonly ICommandHandler<UpdateGameCmd, GameState, Guid, GameEvent> updGameHandler;
+    private readonly ICommandHandler<InitGameStateCmd, GameState, GameEvent> initGameHandler;
+    private readonly ICommandHandler<UpdateGameCmd, GameState, GameEvent> updGameHandler;
 
     public GameGrain(
-        ICommandHandler<InitGameStateCmd, GameState, Guid, GameEvent> initGameHandler,
-        ICommandHandler<UpdateGameCmd, GameState, Guid, GameEvent> updGameHandler)
+        ICommandHandler<InitGameStateCmd, GameState, GameEvent> initGameHandler,
+        ICommandHandler<UpdateGameCmd, GameState, GameEvent> updGameHandler)
     {
         this.initGameHandler = initGameHandler;
         this.updGameHandler = updGameHandler;
@@ -50,7 +50,7 @@ public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
     public async Task<CommandResult> InitializeGameStateAsync(InitGameStateCmd command)
     {
         // Validate the command.
-        var handlerResult = await initGameHandler.HandleAsync(command, State, this.GetPrimaryKey());
+        var handlerResult = await initGameHandler.HandleAsync(command, State, this.GetPrimaryKeyString());
 
         if (!handlerResult.IsSuccess)
         {
@@ -81,7 +81,7 @@ public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
     /// <returns></returns>
     public async Task<CommandResult> UpdateGameAsync(UpdateGameCmd command)
     {
-        var handlerResult = await updGameHandler.HandleAsync(command, State, this.GetPrimaryKey());
+        var handlerResult = await updGameHandler.HandleAsync(command, State, this.GetPrimaryKeyString());
 
         if (!handlerResult.IsSuccess)
         {

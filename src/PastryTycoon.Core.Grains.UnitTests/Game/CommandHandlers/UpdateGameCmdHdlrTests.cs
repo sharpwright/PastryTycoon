@@ -32,7 +32,7 @@ public class UpdateGameCmdHdlrTests
             .ReturnsAsync(new ValidationResult());
 
         // Act
-        var result = await handler.HandleAsync(command, gameState, gameId);
+        var result = await handler.HandleAsync(command, gameState, gameId.ToString());
 
         // Assert
         Assert.NotNull(result);
@@ -56,7 +56,7 @@ public class UpdateGameCmdHdlrTests
             .ReturnsAsync(new ValidationResult());
 
         // Act
-        var result = await handler.HandleAsync(command, gameState, gameId);
+        var result = await handler.HandleAsync(command, gameState, gameId.ToString());
 
         // Assert
         Assert.NotNull(result);
@@ -85,7 +85,7 @@ public class UpdateGameCmdHdlrTests
             .ReturnsAsync(new ValidationResult(validationErrors));
 
         // Act
-        var result = await handler.HandleAsync(command, gameState, gameId);
+        var result = await handler.HandleAsync(command, gameState, gameId.ToString());
 
         // Assert
         Assert.NotNull(result);

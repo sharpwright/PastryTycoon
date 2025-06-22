@@ -10,7 +10,7 @@ namespace PastryTycoon.Core.Grains.Player.CommandHandlers;
 /// <summary>
 /// Handles recipe discovery commands and produces discovery events when appropriate.
 /// </summary>
-public class TryDiscoverRecipeCmdHdlr : ICommandHandler<TryDiscoverRecipeCmd, PlayerState, Guid, PlayerEvent>
+public class TryDiscoverRecipeCmdHdlr : ICommandHandler<TryDiscoverRecipeCmd, PlayerState, PlayerEvent>
 {
     private readonly IRecipeRepository recipeRepository;
     private readonly IValidator<TryDiscoverRecipeCmd> validator;
@@ -30,7 +30,7 @@ public class TryDiscoverRecipeCmdHdlr : ICommandHandler<TryDiscoverRecipeCmd, Pl
     /// <param name="state">Current player state</param>
     /// <param name="playerId">The player's ID</param>
     /// <returns>A discovery event if a new recipe is discovered, null otherwise</returns>
-    public async Task<CommandHandlerResult<PlayerEvent>> HandleAsync(TryDiscoverRecipeCmd command, PlayerState state, Guid primaryKey)
+    public async Task<CommandHandlerResult<PlayerEvent>> HandleAsync(TryDiscoverRecipeCmd command, PlayerState state, string grainId)
     {
         // Validate the command        
         var results = await validator.ValidateAsync(command);
@@ -47,7 +47,7 @@ public class TryDiscoverRecipeCmdHdlr : ICommandHandler<TryDiscoverRecipeCmd, Pl
         // Perform state checks and raise an event if a new recipe is discovered
         // Check if the recipe exists and if it has not been discovered by the player
         var shouldDiscover = recipe != null &&
-                primaryKey == command.PlayerId &&
+                Guid.Parse(grainId) == command.PlayerId &&
                 state.PlayerId == command.PlayerId &&
                 !state.DiscoveredRecipes.ContainsKey(recipe.Id);
 

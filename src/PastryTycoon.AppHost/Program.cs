@@ -31,6 +31,7 @@ var storage = builder.AddConnectionString("Storage");
 // Configure Silo project to use Azure Storage.
 var silo = builder.AddProject<Projects.PastryTycoon_Silo>("silo")
        .WaitFor(azurite)
+       .WaitFor(cosmosdb)
        .WithReference(storage)
        .WithReplicas(1);
 
@@ -42,4 +43,4 @@ builder.AddProject<Projects.PastryTycoon_Web_API>("web-api")
        .WithExternalHttpEndpoints()
        .WithReplicas(1);
 
-builder.Build().Run();
+await builder.Build().RunAsync();

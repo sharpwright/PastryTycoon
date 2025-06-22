@@ -37,11 +37,11 @@ public class GameFactoryGrain : Grain, IGameFactoryGrain
     /// <summary>
     /// Creates a new game and initializes the game and player grains based on the provided command.
     /// </summary>
-    /// <param name="createNewGameCommand">The command containing the details for creating a new game.</param>
+    /// <param name="command">The command containing the details for creating a new game.</param>
     /// <returns>A <see cref="CommandResult"/> indicating the success or failure of the operation.</returns>
-    public async Task<CommandResult> CreateNewGameAsync(CreateNewGameCmd createNewGameCommand)
+    public async Task<CommandResult> CreateNewGameAsync(CreateNewGameCmd command)
     {
-        var results = await validator.ValidateAsync(createNewGameCommand);
+        var results = await validator.ValidateAsync(command);
 
         if (!results.IsValid)
         {
@@ -54,9 +54,9 @@ public class GameFactoryGrain : Grain, IGameFactoryGrain
 
         // TODO: initialize the player and/or game grains based on the specified difficulty level.
         // Initialize the player grain.
-        var playerId = createNewGameCommand.PlayerId;
+        var playerId = command.PlayerId;
         var player = GrainFactory.GetGrain<IPlayerGrain>(playerId);
-        var initPlayerCmd = new InitPlayerCmd(createNewGameCommand.PlayerName, gameId);
+        var initPlayerCmd = new InitPlayerCmd(command.PlayerName, gameId);
         var initPlayerResult = await player.InitializeAsync(initPlayerCmd);
 
         if (!initPlayerResult.IsSuccess)

@@ -5,7 +5,7 @@ using PastryTycoon.Core.Grains.Common;
 
 namespace PastryTycoon.Core.Grains.Game.CommandHandlers;
 
-public class UpdateGameCmdHdlr : ICommandHandler<UpdateGameCmd, GameState, Guid, GameEvent>
+public class UpdateGameCmdHdlr : ICommandHandler<UpdateGameCmd, GameState, GameEvent>
 {
     private readonly IValidator<UpdateGameCmd> validator;
 
@@ -14,7 +14,7 @@ public class UpdateGameCmdHdlr : ICommandHandler<UpdateGameCmd, GameState, Guid,
         this.validator = validator;
     }
 
-    public async Task<CommandHandlerResult<GameEvent>> HandleAsync(UpdateGameCmd command, GameState state, Guid grainId)
+    public async Task<CommandHandlerResult<GameEvent>> HandleAsync(UpdateGameCmd command, GameState state, string grainId)
     {
         // Validate the command.
         var results = await validator.ValidateAsync(command);

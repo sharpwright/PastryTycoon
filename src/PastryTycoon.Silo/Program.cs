@@ -32,16 +32,16 @@ builder.Services.AddSingleton<IGuidProvider, GuidProvider>();
 builder.Services.AddSingleton<IValidator<CreateNewGameCmd>, CreateNewGameCmdVal>();
 builder.Services.AddSingleton<IValidator<InitGameStateCmd>, InitGameStateCmdVal>();
 builder.Services.AddSingleton<IValidator<UpdateGameCmd>, UpdateGameCmdVal>();
-builder.Services.AddSingleton<ICommandHandler<InitGameStateCmd, GameState, Guid, GameEvent>, InitGameStateCmdHdlr>();
-builder.Services.AddSingleton<ICommandHandler<UpdateGameCmd, GameState, Guid, GameEvent>, UpdateGameCmdHdlr>();
+builder.Services.AddSingleton<ICommandHandler<InitGameStateCmd, GameState, GameEvent>, InitGameStateCmdHdlr>();
+builder.Services.AddSingleton<ICommandHandler<UpdateGameCmd, GameState, GameEvent>, UpdateGameCmdHdlr>();
            
 // Add player grain command handlers and validators.
 builder.Services.AddSingleton<IValidator<InitPlayerCmd>, InitPlayerCmdVal>();
 builder.Services.AddSingleton<IValidator<TryDiscoverRecipeCmd>, TryDiscoverRecipeCmdVal>();
 builder.Services.AddSingleton<IValidator<UnlockAchievementCmd>, UnlockAchievementCmdVal>();
-builder.Services.AddSingleton<ICommandHandler<InitPlayerCmd, PlayerState, Guid, PlayerEvent>, InitPlayerCmdHdlr>();
-builder.Services.AddSingleton<ICommandHandler<TryDiscoverRecipeCmd, PlayerState, Guid, PlayerEvent>, TryDiscoverRecipeCmdHdlr>();
-builder.Services.AddSingleton<ICommandHandler<UnlockAchievementCmd, PlayerState, Guid, PlayerEvent>, UnlockAchievementCmdHdlr>();
+builder.Services.AddSingleton<ICommandHandler<InitPlayerCmd, PlayerState, PlayerEvent>, InitPlayerCmdHdlr>();
+builder.Services.AddSingleton<ICommandHandler<TryDiscoverRecipeCmd, PlayerState, PlayerEvent>, TryDiscoverRecipeCmdHdlr>();
+builder.Services.AddSingleton<ICommandHandler<UnlockAchievementCmd, PlayerState, PlayerEvent>, UnlockAchievementCmdHdlr>();
 
 builder.UseOrleans(siloBuilder =>
 {

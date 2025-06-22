@@ -6,7 +6,7 @@ using PastryTycoon.Core.Grains.Common;
 
 namespace PastryTycoon.Core.Grains.Player.CommandHandlers;
 
-public class UnlockAchievementCmdHdlr : ICommandHandler<UnlockAchievementCmd, PlayerState, Guid, PlayerEvent>
+public class UnlockAchievementCmdHdlr : ICommandHandler<UnlockAchievementCmd, PlayerState, PlayerEvent>
 {
     private readonly IValidator<UnlockAchievementCmd> validator;
 
@@ -15,7 +15,7 @@ public class UnlockAchievementCmdHdlr : ICommandHandler<UnlockAchievementCmd, Pl
         this.validator = validator;
     }
 
-    public async Task<CommandHandlerResult<PlayerEvent>> HandleAsync(UnlockAchievementCmd command, PlayerState state, Guid primaryKey)
+    public async Task<CommandHandlerResult<PlayerEvent>> HandleAsync(UnlockAchievementCmd command, PlayerState state, string grainId)
     {
         var results = await validator.ValidateAsync(command);
 
@@ -27,7 +27,7 @@ public class UnlockAchievementCmdHdlr : ICommandHandler<UnlockAchievementCmd, Pl
 
         // Check if the player validity
         if (!state.IsInitialized
-            || command.PlayerId != primaryKey
+            || command.PlayerId != Guid.Parse(grainId)
             || state.PlayerId != command.PlayerId)
         {
             return CommandHandlerResult<PlayerEvent>.Failure("Invalid player state for unlocking achievement.");

@@ -8,7 +8,7 @@ namespace PastryTycoon.Core.Grains.Common;
 /// <typeparam name="TCommand">The type of command being handled</typeparam>
 /// <typeparam name="TState">The type of state the handler operates against</typeparam>
 /// <typeparam name="TEvent">The type of event that may be produced</typeparam>
-public interface ICommandHandler<TCommand, TState, TPrimaryKey, TEvent>
+public interface ICommandHandler<TCommand, TState, TEvent>
 {
     /// <summary>
     /// Handles the command and produces an event if appropriate.
@@ -17,5 +17,5 @@ public interface ICommandHandler<TCommand, TState, TPrimaryKey, TEvent>
     /// <param name="state">The current state</param>
     /// <param name="grainId">The ID of the grain handling the command</param>
     /// <returns>An event if one should be raised, or null if no event</returns>
-    Task<CommandHandlerResult<TEvent>> HandleAsync(TCommand command, TState state, TPrimaryKey grainId);
+    Task<CommandHandlerResult<TEvent>> HandleAsync(TCommand command, TState state, string grainId);
 }

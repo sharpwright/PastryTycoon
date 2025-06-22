@@ -38,16 +38,16 @@ public sealed class DefaultTestSiloConfigurations : ISiloConfigurator
             services.AddSingleton<IValidator<CreateNewGameCmd>, CreateNewGameCmdVal>();
             services.AddSingleton<IValidator<InitGameStateCmd>, InitGameStateCmdVal>();
             services.AddSingleton<IValidator<UpdateGameCmd>, UpdateGameCmdVal>();
-            services.AddSingleton<ICommandHandler<InitGameStateCmd, GameState, Guid, GameEvent>, InitGameStateCmdHdlr>();
-            services.AddSingleton<ICommandHandler<UpdateGameCmd, GameState, Guid, GameEvent>, UpdateGameCmdHdlr>();
+            services.AddSingleton<ICommandHandler<InitGameStateCmd, GameState, GameEvent>, InitGameStateCmdHdlr>();
+            services.AddSingleton<ICommandHandler<UpdateGameCmd, GameState, GameEvent>, UpdateGameCmdHdlr>();
                         
             // Add player grain command handlers and validators.
             services.AddSingleton<IValidator<InitPlayerCmd>, InitPlayerCmdVal>();
             services.AddSingleton<IValidator<TryDiscoverRecipeCmd>, TryDiscoverRecipeCmdVal>();
             services.AddSingleton<IValidator<UnlockAchievementCmd>, UnlockAchievementCmdVal>();
-            services.AddSingleton<ICommandHandler<InitPlayerCmd, PlayerState, Guid, PlayerEvent>, InitPlayerCmdHdlr>();
-            services.AddSingleton<ICommandHandler<TryDiscoverRecipeCmd, PlayerState, Guid, PlayerEvent>, TryDiscoverRecipeCmdHdlr>();
-            services.AddSingleton<ICommandHandler<UnlockAchievementCmd, PlayerState, Guid, PlayerEvent>, UnlockAchievementCmdHdlr>();
+            services.AddSingleton<ICommandHandler<InitPlayerCmd, PlayerState, PlayerEvent>, InitPlayerCmdHdlr>();
+            services.AddSingleton<ICommandHandler<TryDiscoverRecipeCmd, PlayerState, PlayerEvent>, TryDiscoverRecipeCmdHdlr>();
+            services.AddSingleton<ICommandHandler<UnlockAchievementCmd, PlayerState, PlayerEvent>, UnlockAchievementCmdHdlr>();
         });
     }
 
