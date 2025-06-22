@@ -17,7 +17,7 @@ public class StreamObserverGrain<TEvent> : Grain, IStreamObserverGrain<TEvent>, 
     public async Task SubscribeAsync(string streamNamespace, string providerName)
     {
         var provider = this.GetStreamProvider(providerName);
-        var stream = provider.GetStream<TEvent>(streamNamespace, this.GetPrimaryKey());
+        var stream = provider.GetStream<TEvent>(streamNamespace, this.GetPrimaryKeyString());
         await stream.SubscribeAsync(this);
     }
 
