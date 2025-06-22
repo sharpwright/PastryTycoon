@@ -30,7 +30,7 @@ public class TryDiscoverRecipeCmdHdlrTests
     public async Task Handle_ShouldDiscoverRecipe_WhenConditionsMet()
     {
         // Arrange
-        var command = new TryDiscoverRecipeCmd(playerId, ["test-ingredient-1", "test-ingredient-2"]);
+        var command = new TryDiscoverRecipeCmd(Guid.NewGuid(), playerId, ["test-ingredient-1", "test-ingredient-2"]);
 
         validatorMock
             .Setup(v => v.ValidateAsync(command, default))
@@ -62,7 +62,7 @@ public class TryDiscoverRecipeCmdHdlrTests
     public async Task Handle_ShouldReturnSuccess_WhenRecipeAlreadyDiscovered()
     {
         // Arrange
-        var command = new TryDiscoverRecipeCmd(playerId, ["test-ingredient-1", "test-ingredient-2"]);
+        var command = new TryDiscoverRecipeCmd(Guid.NewGuid(), playerId, ["test-ingredient-1", "test-ingredient-2"]);
         playerState.DiscoveredRecipes = new Dictionary<string, DateTime>
         {
             { "test-recipe-1", DateTime.UtcNow }
@@ -98,7 +98,7 @@ public class TryDiscoverRecipeCmdHdlrTests
     public async Task Handle_ShouldReturnSuccess_WhenRecipeNotFound()
     {
         // Arrange
-        var command = new TryDiscoverRecipeCmd(playerId, ["test-ingredient-1", "test-ingredient-2"]);
+        var command = new TryDiscoverRecipeCmd(Guid.NewGuid(), playerId, ["test-ingredient-1", "test-ingredient-2"]);
 
         validatorMock
             .Setup(v => v.ValidateAsync(command, default))
@@ -126,7 +126,7 @@ public class TryDiscoverRecipeCmdHdlrTests
     public async Task Handle_ShouldReturnFalse_WhenValidationFails()
     {
         // Arrange
-        var command = new TryDiscoverRecipeCmd(playerId, []);
+        var command = new TryDiscoverRecipeCmd(Guid.NewGuid(), playerId, []);
 
         validatorMock
             .Setup(v => v.ValidateAsync(command, default))

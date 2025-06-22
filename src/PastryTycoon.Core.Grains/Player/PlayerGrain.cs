@@ -4,8 +4,8 @@ using Orleans.Providers;
 using Orleans.Streams;
 using PastryTycoon.Core.Abstractions.Player;
 using PastryTycoon.Core.Grains.Common;
-using System.IO.Pipelines;
 using PastryTycoon.Core.Abstractions.Common;
+using Orleans.Streams.Core;
 
 namespace PastryTycoon.Core.Grains.Player;
 
@@ -14,7 +14,8 @@ namespace PastryTycoon.Core.Grains.Player;
 /// </summary>
 [LogConsistencyProvider(ProviderName = OrleansConstants.EVENT_SOURCING_LOG_PROVIDER)]
 [StorageProvider(ProviderName = OrleansConstants.EVENT_SOURCING_LOG_STORAGE_PLAYER_EVENTS)]
-public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrain
+[ImplicitStreamSubscription(OrleansConstants.STREAM_NAMESPACE_PLAYER_COMMANDS)]
+public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrain, IAsyncObserver<UnlockAchievementCmd>, IStreamSubscriptionObserver
 {
     private IAsyncStream<PlayerEvent>? playerEventStream;    
     private readonly ICommandHandler<InitPlayerCmd, PlayerState, Guid, PlayerEvent> initializePlayerHandler;
@@ -145,5 +146,22 @@ public class PlayerGrain : JournaledGrain<PlayerState, PlayerEvent>, IPlayerGrai
             State.DiscoveredRecipes.Count,
             State.CreatedAtUtc,
             State.LastActivityAtUtc));
+    }
+
+    public async Task OnSubscribed(IStreamSubscriptionHandleFactory handleFactory)
+    {
+        var handle = handleFactory.Create<UnlockAchievementCmd>();
+        await handle.ResumeAsync(this);
+    }
+
+    public async Task OnErrorAsync(Exception ex)
+    {
+        // TODO: Handle error appropriately, e.g., log it
+        throw new NotImplementedException();
+    }
+
+    public async Task OnNextAsync(UnlockAchievementCmd item, StreamSequenceToken? token = null)
+    {
+        await UnlockAchievementAsync(item);
     }
 }

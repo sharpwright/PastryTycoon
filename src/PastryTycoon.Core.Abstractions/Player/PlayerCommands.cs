@@ -1,4 +1,5 @@
 ﻿using Orleans;
+using PastryTycoon.Core.Abstractions.Common;
 
 namespace PastryTycoon.Core.Abstractions.Player;
 
@@ -9,9 +10,10 @@ namespace PastryTycoon.Core.Abstractions.Player;
 /// <param name="GameId">The unique identifier of the game associated with the player.</param>
 [GenerateSerializer]
 public record InitPlayerCmd(
-    [property: Id(0)] string PlayerName,
-    [property: Id(1)] Guid GameId
-);
+    Guid CommandId,
+    string PlayerName,
+    Guid GameId
+) : BaseCommand(CommandId);
 
 /// <summary>
 /// Command to discover a new recipe in the Pastry Tycoon application.
@@ -20,9 +22,10 @@ public record InitPlayerCmd(
 /// <param name="IngredientIds">A list of ingredient identifiers required for the recipe discovery.</param>
 [GenerateSerializer]
 public record TryDiscoverRecipeCmd(
-    [property: Id(0)] Guid PlayerId,
-    [property: Id(1)] IList<string> IngredientIds
-);
+    Guid CommandId,
+    Guid PlayerId,
+    IList<string> IngredientIds
+) : BaseCommand(CommandId);
 
 /// <summary>
 /// Command to unlock an achievement for a player in the Pastry Tycoon application.
@@ -32,7 +35,8 @@ public record TryDiscoverRecipeCmd(
 /// <param name="UnlockedAtUtc">The UTC timestamp when the achievement was unlocked.</param>
 [GenerateSerializer]
 public record UnlockAchievementCmd(
-    [property: Id(0)] Guid PlayerId,
-    [property: Id(1)] string AchievementId,
-    [property: Id(2)] DateTime UnlockedAtUtc
-);
+    Guid CommandId,
+    Guid PlayerId,
+    string AchievementId,
+    DateTime UnlockedAtUtc
+) : BaseCommand(CommandId);

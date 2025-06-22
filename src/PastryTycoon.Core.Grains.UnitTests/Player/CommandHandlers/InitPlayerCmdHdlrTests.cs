@@ -22,8 +22,9 @@ public class InitPlayerCmdHdlrTests
     public async Task Handle_ShouldInitializePlayer_WhenValidCommand()
     {
         // Arrange
+        var initCmdId = Guid.NewGuid();
         var primaryKey = Guid.NewGuid();
-        var command = new InitPlayerCmd("Test Player", Guid.NewGuid());
+        var command = new InitPlayerCmd(initCmdId, "Test Player", Guid.NewGuid());
         var handler = new InitPlayerCmdHdlr(validatorMock.Object);
         var playerState = new PlayerState { IsInitialized = false };
 
@@ -46,8 +47,9 @@ public class InitPlayerCmdHdlrTests
     public async Task Handle_ShouldReturnFailure_WhenPlayerAlreadyInitialized()
     {
         // Arrange
+        var initCmdId = Guid.NewGuid();
         var primaryKey = Guid.NewGuid();
-        var command = new InitPlayerCmd("Test Player", Guid.NewGuid());
+        var command = new InitPlayerCmd(initCmdId, "Test Player", Guid.NewGuid());
         var handler = new InitPlayerCmdHdlr(validatorMock.Object);
         var playerState = new PlayerState { IsInitialized = true };
 
@@ -70,8 +72,9 @@ public class InitPlayerCmdHdlrTests
     public async Task Handle_ShouldReturnFailure_WhenValidationFails()
     {
         // Arrange
+        var initCmdId = Guid.NewGuid();
         var primaryKey = Guid.NewGuid();
-        var command = new InitPlayerCmd("", Guid.NewGuid()); // Invalid player name
+        var command = new InitPlayerCmd(initCmdId, "", Guid.NewGuid()); // Invalid player name
         var handler = new InitPlayerCmdHdlr(validatorMock.Object);
         var playerState = new PlayerState { IsInitialized = false };
 

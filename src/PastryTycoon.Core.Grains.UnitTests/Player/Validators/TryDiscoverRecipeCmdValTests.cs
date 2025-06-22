@@ -19,9 +19,10 @@ public class TryDiscoverRecipeCmdValTests
     public void Validate_ShouldReturnSuccess_WhenCommandIsValid()
     {
         // Arrange
+        var cmdId = Guid.NewGuid();
         var playerId = Guid.NewGuid();
         var ingredientIds = new[] { "test-ingredient-1", "test-ingredient-2" };
-        var command = new TryDiscoverRecipeCmd(playerId, ingredientIds);
+        var command = new TryDiscoverRecipeCmd(cmdId, playerId, ingredientIds);
 
         // Act
         var result = validator.Validate(command);
@@ -35,9 +36,10 @@ public class TryDiscoverRecipeCmdValTests
     public void Validate_ShouldReturnFailure_WhenPlayerIdIsEmpty()
     {
         // Arrange
+        var cmdId = Guid.NewGuid();
         var playerId = Guid.Empty;
         var ingredientIds = new[] { "test-ingredient-1", "test-ingredient-2" };
-        var command = new TryDiscoverRecipeCmd(playerId, ingredientIds);
+        var command = new TryDiscoverRecipeCmd(cmdId, playerId, ingredientIds);
 
         // Act
         var result = validator.Validate(command);
@@ -52,9 +54,10 @@ public class TryDiscoverRecipeCmdValTests
     public void Validate_ShouldReturnFailure_WhenIngredientIdsIsEmpty()
     {
         // Arrange
+        var cmdId = Guid.NewGuid();
         var playerId = Guid.NewGuid();
         var ingredientIds = Array.Empty<string>();
-        var command = new TryDiscoverRecipeCmd(playerId, ingredientIds);
+        var command = new TryDiscoverRecipeCmd(cmdId, playerId, ingredientIds);
 
         // Act
         var result = validator.Validate(command);

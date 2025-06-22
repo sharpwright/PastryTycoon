@@ -60,8 +60,11 @@ public class AchievementsGrainTests : TestKitBase
         Expression<Func<AchievementsState, bool>> stateValidationExpression)
     {
         // Arrange
-        var player = new Mock<IPlayerGrain>();
-        Silo.AddProbe(identity => player);
+        var streamProbe = Silo.AddStreamProbe<UnlockAchievementCmd>(
+            playerEvent.PlayerId,
+            OrleansConstants.STREAM_NAMESPACE_PLAYER_COMMANDS,            
+            OrleansConstants.STREAM_PROVIDER_NAME);
+
         Silo.AddService(loggerMock.Object);
         Silo.AddPersistentState(OrleansConstants.GRAIN_STATE_ACHIEVEMENTS, OrleansConstants.GRAIN_STATE_ACHIEVEMENTS, grainState);
         var grain = await Silo.CreateGrainAsync<AchievementsGrain>(playerEvent.PlayerId);
@@ -78,16 +81,11 @@ public class AchievementsGrainTests : TestKitBase
             Check if the event updates the state correctly.
             """);
 
-        // Verify behaviour
-        player.Verify(
-            x => x.UnlockAchievementAsync(It.Is<UnlockAchievementCmd>(cmd => 
-                cmd.PlayerId == playerEvent.PlayerId &&
-                cmd.AchievementId == expectedAchievementId &&
-                cmd.UnlockedAtUtc != default)),        
-            Times.Once,
-            $"""
-            Achievement unlock verification failed!
-            Expected player grain (playerId = '{playerEvent.PlayerId}') to be called to unlock the achievement '{expectedAchievementId}'.
-            """);
+        // Verify behaviour        
+        streamProbe.VerifySend(cmd =>
+            cmd.PlayerId == playerEvent.PlayerId &&
+            cmd.AchievementId == expectedAchievementId &&
+            cmd.UnlockedAtUtc != default,
+        Times.Once());
     }
 }

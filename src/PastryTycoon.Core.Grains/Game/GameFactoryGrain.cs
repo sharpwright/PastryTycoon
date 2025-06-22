@@ -56,7 +56,7 @@ public class GameFactoryGrain : Grain, IGameFactoryGrain
         // Initialize the player grain.
         var playerId = createNewGameCommand.PlayerId;
         var player = GrainFactory.GetGrain<IPlayerGrain>(playerId);
-        var initPlayerCmd = new InitPlayerCmd(createNewGameCommand.PlayerName, gameId);
+        var initPlayerCmd = new InitPlayerCmd(Guid.NewGuid(), createNewGameCommand.PlayerName, gameId);
         var initPlayerResult = await player.InitializeAsync(initPlayerCmd);
 
         if (!initPlayerResult.IsSuccess)
