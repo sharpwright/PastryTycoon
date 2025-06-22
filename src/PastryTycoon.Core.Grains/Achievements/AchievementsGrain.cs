@@ -39,8 +39,6 @@ public class AchievementsGrain : Grain, IAchievementsGrain,
         this.state = state;
     }
 
-    public Task EnsureActivatedAsync() => Task.CompletedTask;
-
     /// <summary>
     /// Handles the next player event by updating the achievements state and checking for unlock conditions.
     /// </summary>
