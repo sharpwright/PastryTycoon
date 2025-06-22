@@ -1,5 +1,5 @@
 using Orleans.TestingHost;
-using PastryTycoon.Core.Abstractions.Constants;
+using PastryTycoon.Core.Abstractions.Common;
 using PastryTycoon.Core.Abstractions.Game;
 using PastryTycoon.Core.Grains.Game;
 using PastryTycoon.Core.Grains.IntegrationTests.TestClusterHelpers;
@@ -66,7 +66,7 @@ public class GameGrainIntegrationTests(ClusterFixture fixture)
         var command = new InitGameStateCmd(gameId, playerId, recipeIds, DateTime.UtcNow);
         var grain = cluster.GrainFactory.GetGrain<IGameGrain>(gameId);
         var observer = cluster.GrainFactory.GetGrain<IStreamObserverGrain<GameEvent>>(gameId);
-        await observer.SubscribeAsync(OrleansConstants.STREAM_NAMESPACE_GAME_EVENTS, OrleansConstants.AZURE_QUEUE_STREAM_PROVIDER);
+        await observer.SubscribeAsync(OrleansConstants.STREAM_NAMESPACE_GAME_EVENTS, OrleansConstants.STREAM_PROVIDER_NAME);
 
         // Act
         await grain.InitializeGameStateAsync(command);

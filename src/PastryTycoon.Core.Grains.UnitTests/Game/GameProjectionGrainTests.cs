@@ -3,11 +3,11 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Orleans.Streams;
-using PastryTycoon.Core.Abstractions.Constants;
 using System.Reflection;
 using Orleans.Streams.Core;
 using PastryTycoon.Core.Grains.Game;
 using PastryTycoon.Core.Abstractions.Game;
+using PastryTycoon.Core.Abstractions.Common;
 
 namespace PastryTycoon.Core.Grains.UnitTests.Game
 {

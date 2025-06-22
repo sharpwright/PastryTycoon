@@ -2,7 +2,6 @@ using System;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Orleans.TestingHost;
-using PastryTycoon.Core.Abstractions.Constants;
 using PastryTycoon.Core.Abstractions.Game;
 using PastryTycoon.Core.Abstractions.Player;
 using PastryTycoon.Core.Grains.Common;
@@ -15,6 +14,7 @@ using FluentValidation;
 using PastryTycoon.Core.Grains.Game.Validators;
 using PastryTycoon.Core.Grains.Game;
 using PastryTycoon.Core.Grains.Game.CommandHandlers;
+using PastryTycoon.Core.Abstractions.Common;
 
 namespace PastryTycoon.Core.Grains.IntegrationTests.TestClusterHelpers;
 
@@ -22,7 +22,7 @@ public sealed class DefaultTestSiloConfigurations : ISiloConfigurator
 {
     public void Configure(ISiloBuilder siloBuilder)
     {
-        siloBuilder.AddMemoryStreams(OrleansConstants.AZURE_QUEUE_STREAM_PROVIDER);
+        siloBuilder.AddMemoryStreams(OrleansConstants.STREAM_PROVIDER_NAME);
         siloBuilder.AddMemoryGrainStorage(OrleansConstants.STREAM_PUBSUB_STORE);
         siloBuilder.AddLogStorageBasedLogConsistencyProvider(OrleansConstants.EVENT_SOURCING_LOG_PROVIDER);
         siloBuilder.AddMemoryGrainStorage(OrleansConstants.EVENT_SOURCING_LOG_STORAGE_GAME_EVENTS);

@@ -1,5 +1,4 @@
 ﻿using Azure.Data.Tables;
-using PastryTycoon.Core.Abstractions.Constants;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -18,6 +17,7 @@ using PastryTycoon.Core.Abstractions.Game;
 using PastryTycoon.Core.Grains.Game;
 using PastryTycoon.Core.Grains.Player.Validators;
 using PastryTycoon.Core.Grains.Game.CommandHandlers;
+using PastryTycoon.Core.Abstractions.Common;
 
 // Create a new host builder for the application.
 var builder = Host.CreateApplicationBuilder(args);
@@ -70,7 +70,7 @@ builder.UseOrleans(siloBuilder =>
     });
 
     // CONFIGURE STREAMING API: add streaming using Azure Queue Storage.
-    siloBuilder.AddAzureQueueStreams(OrleansConstants.AZURE_QUEUE_STREAM_PROVIDER, optionsBuilder =>
+    siloBuilder.AddAzureQueueStreams(OrleansConstants.STREAM_PROVIDER_NAME, optionsBuilder =>
     {
         optionsBuilder.Configure(options =>
         {

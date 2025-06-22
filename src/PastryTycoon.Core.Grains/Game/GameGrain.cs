@@ -1,5 +1,4 @@
 using System;
-using PastryTycoon.Core.Abstractions.Constants;
 using Orleans.Providers;
 using Orleans.Streams;
 using Orleans.EventSourcing;
@@ -37,7 +36,7 @@ public class GameGrain : JournaledGrain<GameState, GameEvent>, IGameGrain
     /// <returns></returns>
     public override async Task OnActivateAsync(CancellationToken cancellationToken)
     {
-        var streamProvider = this.GetStreamProvider(OrleansConstants.AZURE_QUEUE_STREAM_PROVIDER);
+        var streamProvider = this.GetStreamProvider(OrleansConstants.STREAM_PROVIDER_NAME);
         gameEventStream = streamProvider.GetStream<GameEvent>(OrleansConstants.STREAM_NAMESPACE_GAME_EVENTS, this.GetPrimaryKey());
         await base.OnActivateAsync(cancellationToken);
     }

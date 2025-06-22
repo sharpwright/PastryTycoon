@@ -1,6 +1,6 @@
 using System;
 using Orleans.TestingHost;
-using PastryTycoon.Core.Abstractions.Constants;
+using PastryTycoon.Core.Abstractions.Common;
 using PastryTycoon.Core.Abstractions.Player;
 using PastryTycoon.Core.Grains.IntegrationTests.TestClusterHelpers;
 using PastryTycoon.Core.Grains.Player;
@@ -28,7 +28,7 @@ public class PlayerGrainIntegrationTests(ClusterFixture fixture, ITestOutputHelp
         // Setup the grain and observers before testing
         var grain = cluster.GrainFactory.GetGrain<IPlayerGrain>(playerId);
         var observer = cluster.GrainFactory.GetGrain<IStreamObserverGrain<PlayerEvent>>(playerId);
-        await observer.SubscribeAsync(OrleansConstants.STREAM_NAMESPACE_PLAYER_EVENTS, OrleansConstants.AZURE_QUEUE_STREAM_PROVIDER);
+        await observer.SubscribeAsync(OrleansConstants.STREAM_NAMESPACE_PLAYER_EVENTS, OrleansConstants.STREAM_PROVIDER_NAME);
 
         // Act 1 - Initialize the player
         var initCommand = new InitPlayerCmd("TestPlayer", Guid.NewGuid());
@@ -57,7 +57,7 @@ public class PlayerGrainIntegrationTests(ClusterFixture fixture, ITestOutputHelp
         // Initialize the grain state before testing
         var grain = cluster.GrainFactory.GetGrain<IPlayerGrain>(playerId);
         var observer = cluster.GrainFactory.GetGrain<IStreamObserverGrain<PlayerEvent>>(playerId);
-        await observer.SubscribeAsync(OrleansConstants.STREAM_NAMESPACE_PLAYER_EVENTS, OrleansConstants.AZURE_QUEUE_STREAM_PROVIDER);
+        await observer.SubscribeAsync(OrleansConstants.STREAM_NAMESPACE_PLAYER_EVENTS, OrleansConstants.STREAM_PROVIDER_NAME);
 
         // Act 1 - Initialize the player
         var initCommand = new InitPlayerCmd("TestPlayer", Guid.NewGuid());

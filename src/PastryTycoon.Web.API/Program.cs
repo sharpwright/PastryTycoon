@@ -1,8 +1,8 @@
 using Azure.Data.Tables;
-using PastryTycoon.Core.Abstractions.Constants;
 using Orleans.Configuration;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
+using PastryTycoon.Core.Abstractions.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
