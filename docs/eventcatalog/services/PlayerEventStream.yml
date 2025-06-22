@@ -1,0 +1,6 @@
+name: PlayerEventStream
+summary: Orleans stream for publishing player-related events.
+eventsConsumed:
+  - PlayerDiscoveredRecipeEvent
+  - PlayerUnlockedAchievementEvent
+  - PlayerEvent

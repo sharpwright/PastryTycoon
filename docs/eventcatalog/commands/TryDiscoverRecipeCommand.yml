@@ -1,0 +1,18 @@
+name: TryDiscoverRecipeCmd
+version: v1
+summary: Command to attempt recipe discovery for a player using specific ingredients.
+producers:
+  - GameFrontend
+consumers:
+  - PlayerGrain
+payload:
+  type: object
+  properties:
+    PlayerId:
+      type: string
+      format: uuid
+    IngredientIds:
+      type: array
+      items:
+        type: string
+        format: uuid

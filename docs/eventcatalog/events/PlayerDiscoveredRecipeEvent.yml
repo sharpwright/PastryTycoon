@@ -1,0 +1,19 @@
+name: PlayerDiscoveredRecipeEvent
+version: v1
+summary: Indicates that a player has discovered a new recipe.
+producers:
+  - PlayerGrain
+consumers:
+  - PlayerEventStream
+payload:
+  type: object
+  properties:
+    PlayerId:
+      type: string
+      format: uuid
+    RecipeId:
+      type: string
+      format: uuid
+    DiscoveredAtUtc:
+      type: string
+      format: date-time

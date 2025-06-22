@@ -1,0 +1,10 @@
+name: PlayerEvent
+version: v1
+summary: Base event type for all player-related events.
+producers:
+  - PlayerGrain
+consumers:
+  - PlayerEventStream
+payload:
+  type: object
+  properties: {}

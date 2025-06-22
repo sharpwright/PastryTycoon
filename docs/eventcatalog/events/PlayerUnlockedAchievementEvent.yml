@@ -1,0 +1,19 @@
+name: PlayerUnlockedAchievementEvent
+version: v1
+summary: Indicates that a player has unlocked an achievement.
+producers:
+  - PlayerGrain
+consumers:
+  - PlayerEventStream
+payload:
+  type: object
+  properties:
+    PlayerId:
+      type: string
+      format: uuid
+    AchievementId:
+      type: string
+      format: uuid
+    UnlockedAtUtc:
+      type: string
+      format: date-time

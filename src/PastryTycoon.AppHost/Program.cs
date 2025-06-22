@@ -1,5 +1,10 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
+var eventCatalog = builder.AddContainer("eventcatalog", "eventcatalog/eventcatalog:latest")
+    .WithBindMount("../../docs/eventcatalog", "/eventcatalog/catalog")
+    .WithEnvironment("EVENTCATALOG_CATALOG_PATH", "/eventcatalog/catalog")
+    .WithEndpoint(port: 3000, targetPort: 3000, name: "http");
+
 // Azurite container
 var azurite = builder.AddContainer("azurite", "mcr.microsoft.com/azure-storage/azurite")
     .WithVolume("azurite-data", "/data")

@@ -1,0 +1,6 @@
+name: PlayerGrain
+summary: Grain representing a player, handling player state, recipe discovery, and achievements.
+eventsProduced:
+  - PlayerDiscoveredRecipeEvent
+commandsConsumed:
+  - TryDiscoverRecipeCmd

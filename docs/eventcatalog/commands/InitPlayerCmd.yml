@@ -1,0 +1,15 @@
+name: InitPlayerCmd
+version: v1
+summary: Command to initialize a new player.
+producers:
+  - GameFrontend
+consumers:
+  - PlayerGrain
+payload:
+  type: object
+  properties:
+    PlayerId:
+      type: string
+      format: uuid
+    InitialData:
+      type: object
