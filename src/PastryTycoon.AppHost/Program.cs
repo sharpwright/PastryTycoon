@@ -36,10 +36,17 @@ var silo = builder.AddProject<Projects.PastryTycoon_Silo>("silo")
 
 // Configure Web API project to use Azure Storage and Silo.
 builder.AddProject<Projects.PastryTycoon_Web_API>("web-api")
-       .WaitFor(azurite)
        .WaitFor(silo)
+       .WithReference(silo)
        .WithReference(storage)
        .WithExternalHttpEndpoints()
        .WithReplicas(1);
+
+// Configure Web UI project to use Silo.
+builder.AddProject<Projects.PastryTycoon_Web_UI>("web-ui")
+       .WaitFor(silo)
+       .WithReference(silo)
+       .WithReference(storage)       
+       .WithExternalHttpEndpoints();       
 
 builder.Build().Run();

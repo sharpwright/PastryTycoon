@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\PastryTycoon.Silo\PastryTycoon.Silo.csproj" />
     <ProjectReference Include="..\PastryTycoon.Web.API\PastryTycoon.Web.API.csproj" />
+    <ProjectReference Include="..\PastryTycoon.Web.UI\PastryTycoon.Web.UI.csproj" />
   </ItemGroup>
 
 </Project>

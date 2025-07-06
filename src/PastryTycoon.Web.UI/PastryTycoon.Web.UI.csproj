@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Orleans.Client" Version="9.1.2" />
+    <PackageReference Include="Microsoft.Orleans.Clustering.AzureStorage" Version="9.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PastryTycoon.Core.Abstractions\PastryTycoon.Core.Abstractions.csproj" />
+    <ProjectReference Include="..\PastryTycoon.ServiceDefaults\PastryTycoon.ServiceDefaults.csproj" />
+  </ItemGroup>
+
+</Project>
